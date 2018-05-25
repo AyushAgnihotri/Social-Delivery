@@ -1,4 +1,6 @@
 <resources>
+
+    % login
     <string name="app_name">theDeliveryApp</string>
     <string name="action_sign_in_short">Register</string>
     <string name="email">Email</string>
@@ -30,4 +32,9 @@
     <string name="btn_use_as_deliverer">Use as a Deliverer</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
+
+    %user
+    <string name="title_item_detail">Item Detail</string>
+    <string name="my_orders">My orders</string>
+
 </resources>

@@ -36,6 +36,15 @@
             android:name=".login.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".user.ItemListActivity"
+            android:label="@string/my_orders"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".user.ItemDetailActivity"
+            android:label="@string/title_item_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
 
 </manifest>
