@@ -1,4 +1,4 @@
-package com.thedeliveryapp.thedeliveryapp;
+package com.thedeliveryapp.thedeliveryapp.login;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.thedeliveryapp.thedeliveryapp.R;
 
 public class ResetPasswordActivity extends AppCompatActivity {
 

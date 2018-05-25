@@ -1,4 +1,4 @@
-package com.thedeliveryapp.thedeliveryapp;
+package com.thedeliveryapp.thedeliveryapp.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import com.thedeliveryapp.thedeliveryapp.R;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -84,14 +86,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 progressBar.setVisibility(View.VISIBLE);
 
-                //authenticate user
+                //authenticate com.thedeliveryapp.thedeliveryapp.user.user
                 auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                // If sign in fails, display a message to the user. If sign in succeeds
+                                // If sign in fails, display a message to the com.thedeliveryapp.thedeliveryapp.user.user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
+                                // signed in com.thedeliveryapp.thedeliveryapp.user.user can be handled in the listener.
                                 progressBar.setVisibility(View.GONE);
                                 if (!task.isSuccessful()) {
                                     // there was an error
