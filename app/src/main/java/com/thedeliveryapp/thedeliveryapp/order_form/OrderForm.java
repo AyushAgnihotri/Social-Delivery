@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -24,9 +25,16 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
+import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 public class OrderForm extends AppCompatActivity {
 
+    TextView category = null;
+    Button date_picker = null;
+    Button time_picker = null;
+    Calendar calendar = null;
+    EditText description = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +47,12 @@ public class OrderForm extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        final TextView category = (TextView) findViewById(R.id.btn_category);
-        final Button date_picker = (Button) findViewById(R.id.btn_date_picker);
-        final Button time_picker = (Button) findViewById(R.id.btn_time_picker);
-        final Calendar calendar = Calendar.getInstance();;
+        category = findViewById(R.id.btn_category);
+        date_picker = findViewById(R.id.btn_date_picker);
+        time_picker = findViewById(R.id.btn_time_picker);
+        calendar = Calendar.getInstance();
+        description = findViewById(R.id.description_of_order);
+
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,8 +138,13 @@ public class OrderForm extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+
         if (id == R.id.action_save) {
-            Toast.makeText(OrderForm.this, "Action clicked", Toast.LENGTH_LONG).show();
+            // TODO create dialog
+            if(calendar == null || time_picker == null || date_picker == null || description == null);
+            ItemListActivity.adapter.insert(ItemListActivity.adapter.getItemCount(),
+                    new OrderData(category.toString(),description.toString(),R.drawable.ic_action_movie));
+
             return true;
         }
 

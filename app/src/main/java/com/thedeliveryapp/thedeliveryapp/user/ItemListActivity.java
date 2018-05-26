@@ -9,19 +9,26 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.thedeliveryapp.thedeliveryapp.user.dummy.DummyContent;
+import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,10 +42,8 @@ import java.util.List;
 public class ItemListActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+    public static RecyclerViewOrderAdapter adapter;
 
-    View recyclerView;
-    SimpleItemRecyclerViewAdapter mAdapter;
-    static int newItemPos = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +85,6 @@ public class ItemListActivity extends AppCompatActivity {
         );
 
 
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -99,16 +103,15 @@ public class ItemListActivity extends AppCompatActivity {
                 });
 
 
-
         toolbar.setTitle(getTitle());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO : add meaningful data
+                //TODO : add meaningful OrderData
                 /*
-                DummyContent.DummyItem newItem = createNewItem((newItemPos));
+                OrderOrderData newItem = createNewItem((newItemPos));
                 newItemPos++;
                 DummyContent.addItem(newItem);
                 mAdapter.notifyItemInserted(SimpleItemRecyclerViewAdapter.mValues.size()-1);
@@ -118,10 +121,27 @@ public class ItemListActivity extends AppCompatActivity {
             }
         });
 
-        recyclerView = findViewById(R.id.item_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        List<OrderData> data = fill_with_data();
 
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
+        adapter = new RecyclerViewOrderAdapter(data, getApplication());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    }
+
+    public List<OrderData> fill_with_data() {
+
+        List<OrderData> data = new ArrayList<>();
+
+        data.add(new OrderData("Batman vs Superman", "Following the destruction of Metropolis, Batman embarks on a personal vendetta against Superman ", R.drawable.ic_action_movie));
+        data.add(new OrderData("X-Men: Apocalypse", "X-Men: Apocalypse is an upcoming American superhero film based on the X-Men characters that appear in Marvel Comics ", R.drawable.ic_action_movie));
+        data.add(new OrderData("Captain America: Civil War", "A feud between Captain America and Iron Man leaves the Avengers in turmoil.  ", R.drawable.ic_action_movie));
+        data.add(new OrderData("Kung Fu Panda 3", "After reuniting with his long-lost father, Po  must train a village of pandas", R.drawable.ic_action_movie));
+        data.add(new OrderData("Warcraft", "Fleeing their dying home to colonize another, fearsome orc warriors invade the peaceful realm of Azeroth. ", R.drawable.ic_action_movie));
+        data.add(new OrderData("Alice in Wonderland", "Alice in Wonderland: Through the Looking Glass ", R.drawable.ic_action_movie));
+
+        return data;
     }
 
     @Override
@@ -134,74 +154,87 @@ public class ItemListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHolder> {
 
+        List<OrderData> list = Collections.emptyList();
+        Context context;
 
-    private DummyContent.DummyItem createNewItem(int position) {
-        return new DummyContent.DummyItem(String.valueOf(position), "Item " + position, DummyContent.makeDetails(position));
-    }
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(mAdapter = new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS));
-    }
-
-    public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-
-        private final ItemListActivity mParentActivity;
-        public static List<DummyContent.DummyItem> mValues;
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
-
-                Context context = view.getContext();
-                Intent intent = new Intent(context, ItemDetailActivity.class);
-                intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id);
-
-                context.startActivity(intent);
-
-            }
-        };
-
-        SimpleItemRecyclerViewAdapter(ItemListActivity parent,
-                                      List<DummyContent.DummyItem> items) {
-            mValues = items;
-            mParentActivity = parent;
+        public RecyclerViewOrderAdapter(List<OrderData> list, Context context) {
+            this.list = list;
+            this.context = context;
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_content, parent, false);
-            return new ViewHolder(view);
+        public OrderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            //Inflate the layout, initialize the View Holder
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_content, parent, false);
+            OrderViewHolder holder = new OrderViewHolder(v);
+            return holder;
+
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+        public void onBindViewHolder(OrderViewHolder holder, int position) {
 
-            holder.itemView.setTag(mValues.get(position));
-            holder.itemView.setOnClickListener(mOnClickListener);
+            //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
+            holder.category.setText(list.get(position).category);
+            holder.description.setText(list.get(position).description);
+            holder.imageView.setImageResource(list.get(position).imageId);
+
+            animate(holder);
+
         }
-
-
-
-
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            //returns the number of elements the RecyclerView will display
+            return list.size();
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView mIdView;
-            final TextView mContentView;
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+        }
 
-            ViewHolder(View view) {
-                super(view);
-                mIdView = (TextView) view.findViewById(R.id.id_text);
-                mContentView = (TextView) view.findViewById(R.id.content);
-            }
+        // Insert a new item to the RecyclerView on a predefined position
+        public void insert(int position, OrderData OrderData) {
+            list.add(position, OrderData);
+            notifyItemInserted(position);
+        }
+
+        // Remove a RecyclerView item containing a specified OrderData object
+        public void remove(OrderData OrderData) {
+            int position = list.indexOf(OrderData);
+            list.remove(position);
+            notifyItemRemoved(position);
+        }
+
+        //Animation
+        public void animate(OrderViewHolder viewHolder) {
+            final Animation animAnticipateOvershoot = AnimationUtils.loadAnimation(context,
+                    R.anim.bounce_interpolator);
+            viewHolder.itemView.setAnimation(animAnticipateOvershoot);
+
+        }
+
+
+    }
+    public class OrderViewHolder extends RecyclerView.ViewHolder {
+
+        CardView cv;
+        TextView category;
+        TextView description;
+        ImageView imageView;
+
+        OrderViewHolder(View itemView) {
+            super(itemView);
+            cv = itemView.findViewById(R.id.cardView);
+            category = itemView.findViewById(R.id.category);
+            description = itemView.findViewById(R.id.description);
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 }
+
+
+
