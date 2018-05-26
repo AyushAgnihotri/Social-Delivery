@@ -42,7 +42,6 @@ import java.util.List;
 public class ItemListActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
-    public static RecyclerViewOrderAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,22 +108,18 @@ public class ItemListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO : add meaningful OrderData
-                /*
-                OrderOrderData newItem = createNewItem((newItemPos));
-                newItemPos++;
-                DummyContent.addItem(newItem);
-                mAdapter.notifyItemInserted(SimpleItemRecyclerViewAdapter.mValues.size()-1);
-                */
+                //TODO : improve OrderData
                 Intent intent = new Intent(ItemListActivity.this, OrderForm.class);
                 startActivity(intent);
+                finish();
+
             }
         });
 
         List<OrderData> data = fill_with_data();
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
-        adapter = new RecyclerViewOrderAdapter(data, getApplication());
+        RecyclerViewOrderAdapter adapter = new RecyclerViewOrderAdapter(data, getApplication());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -132,6 +127,7 @@ public class ItemListActivity extends AppCompatActivity {
 
     public List<OrderData> fill_with_data() {
 
+        //TODO : FETCH FROM DATABASE
         List<OrderData> data = new ArrayList<>();
 
         data.add(new OrderData("Batman vs Superman", "Following the destruction of Metropolis, Batman embarks on a personal vendetta against Superman ", R.drawable.ic_action_movie));

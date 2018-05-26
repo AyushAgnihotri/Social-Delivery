@@ -3,6 +3,7 @@ package com.thedeliveryapp.thedeliveryapp.order_form;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import com.thedeliveryapp.thedeliveryapp.login.MainActivity;
 import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
@@ -142,10 +145,11 @@ public class OrderForm extends AppCompatActivity {
         if (id == R.id.action_save) {
             // TODO create dialog
             if(calendar == null || time_picker == null || date_picker == null || description == null);
-            ItemListActivity.adapter.insert(ItemListActivity.adapter.getItemCount(),
-                    new OrderData(category.toString(),description.toString(),R.drawable.ic_action_movie));
-
-            return true;
+            // TODO update database
+            //ItemListActivity.adapter.insert(0,
+                  //  new OrderData(category.getText().toString(),description.getText().toString(),R.drawable.ic_action_movie));
+            startActivity(new Intent(OrderForm.this, ItemListActivity.class));
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
