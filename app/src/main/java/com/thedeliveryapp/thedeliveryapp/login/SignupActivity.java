@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.thedeliveryapp.thedeliveryapp.R;
 
 public class SignupActivity extends AppCompatActivity {
@@ -62,32 +63,45 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (password.length() < 6) {
-                    Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 progressBar.setVisibility(View.VISIBLE);
                 //create com.thedeliveryapp.thedeliveryapp.user.user
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(SignupActivity.this, "Successfully Registered.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(SignupActivity.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
+                                }
+
                                 progressBar.setVisibility(View.GONE);
                                 // If sign in fails, display a message to the com.thedeliveryapp.thedeliveryapp.user.user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in com.thedeliveryapp.thedeliveryapp.user.user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
-                                            Toast.LENGTH_SHORT).show();
+                                if(!task.isSuccessful()) {
+                                    String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
+
+                                    switch (errorCode) {
+
+                                        case "ERROR_INVALID_EMAIL":
+                                            Toast.makeText(SignupActivity.this, "The email address is badly formatted.", Toast.LENGTH_SHORT).show();
+                                            break;
+
+                                        case "ERROR_EMAIL_ALREADY_IN_USE":
+                                            Toast.makeText(SignupActivity.this, "The email address is already in use by another account.", Toast.LENGTH_SHORT).show();
+                                            break;
+
+                                        case "ERROR_WEAK_PASSWORD":
+                                            Toast.makeText(SignupActivity.this, "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
+                                            break;
+                                    }
                                 } else {
                                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();
                                 }
                             }
                         });
-
             }
         });
     }

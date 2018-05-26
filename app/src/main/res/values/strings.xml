@@ -46,4 +46,17 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_main2_activitydadd">Main2Activitydadd</string>
 
+    %user form
+    <string name="action_button_save">Save</string>
+    <string name="price_range">Estimated Price Range</string>
+    <string name="btn_purchase_location">Set Purchase Location</string>
+    <string name="category">Category</string>
+    <string name="expiry_time">Set Expiry time of order</string>
+    <string name="btn_category">None</string>
+    <string name="btn_expiry">None</string>
+    <string name="min_int">Min</string>
+    <string name="max_int">Max</string>
+    <string name="main_dialog_date_picker">Date</string>
+    <string name="main_dialog_time_picker">Time</string>
+
 </resources>

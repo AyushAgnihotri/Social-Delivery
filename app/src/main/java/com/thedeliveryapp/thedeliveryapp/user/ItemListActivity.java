@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +20,8 @@ import android.widget.TextView;
 
 import com.thedeliveryapp.thedeliveryapp.user.dummy.DummyContent;
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
+
 import java.util.List;
 
 /**
@@ -106,11 +107,14 @@ public class ItemListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO : add meaningful data
+                /*
                 DummyContent.DummyItem newItem = createNewItem((newItemPos));
                 newItemPos++;
                 DummyContent.addItem(newItem);
                 mAdapter.notifyItemInserted(SimpleItemRecyclerViewAdapter.mValues.size()-1);
-
+                */
+                Intent intent = new Intent(ItemListActivity.this, OrderForm.class);
+                startActivity(intent);
             }
         });
 
