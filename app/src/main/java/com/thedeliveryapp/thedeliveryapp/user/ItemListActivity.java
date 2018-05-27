@@ -42,7 +42,7 @@ import java.util.List;
 public class ItemListActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
-
+    public static RecyclerViewOrderAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +111,7 @@ public class ItemListActivity extends AppCompatActivity {
                 //TODO : improve OrderData
                 Intent intent = new Intent(ItemListActivity.this, OrderForm.class);
                 startActivity(intent);
-                finish();
+                //finish();
 
             }
         });
@@ -119,7 +119,7 @@ public class ItemListActivity extends AppCompatActivity {
         List<OrderData> data = fill_with_data();
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
-        RecyclerViewOrderAdapter adapter = new RecyclerViewOrderAdapter(data, getApplication());
+        adapter = new RecyclerViewOrderAdapter(data, getApplication());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

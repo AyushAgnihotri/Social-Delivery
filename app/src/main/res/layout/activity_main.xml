@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
-            android:background="@color/colorPrimary"
+            android:background="@color/primary"
             android:text="@string/btn_use_as_user"
             android:textColor="@android:color/white"
             android:textStyle="bold|italic" />
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:background="@color/colorPrimary"
+            android:background="@color/primary"
             android:text="@string/btn_use_as_deliverer"
             android:textColor="@android:color/white"
             android:textStyle="bold|italic" />
@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="220dp"
-            android:background="@color/colorPrimary"
+            android:background="@color/primary"
             android:text="@string/btn_sign_out"
             android:textColor="@android:color/black"
             android:textStyle="bold" />

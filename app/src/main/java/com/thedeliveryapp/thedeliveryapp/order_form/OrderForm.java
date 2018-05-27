@@ -33,11 +33,14 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 public class OrderForm extends AppCompatActivity {
 
-    TextView category = null;
-    Button date_picker = null;
-    Button time_picker = null;
-    Calendar calendar = null;
-    EditText description = null;
+    TextView category ;
+    Button date_picker;
+    Button time_picker ;
+    Calendar calendar ;
+    EditText description ;
+    EditText min_int_range ;
+    EditText max_int_range ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,8 @@ public class OrderForm extends AppCompatActivity {
         time_picker = findViewById(R.id.btn_time_picker);
         calendar = Calendar.getInstance();
         description = findViewById(R.id.description_of_order);
+        min_int_range = findViewById(R.id.min_int);
+        max_int_range = findViewById(R.id.max_int);
 
 
         category.setOnClickListener(new View.OnClickListener() {
@@ -143,12 +148,19 @@ public class OrderForm extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_save) {
-            // TODO create dialog
-            if(calendar == null || time_picker == null || date_picker == null || description == null);
+            //Default text for date_picker = "Date"
+            //Default text for time_picker = "Time"
+            if(category.getText().toString().equals("None") || description.getText().toString().equals("")
+                    || min_int_range.getText().toString().equals("") || max_int_range.getText().toString().equals("")) {
+                new AlertDialog.Builder(OrderForm.this)
+                        .setMessage(getString(R.string.dialog_save))
+                        .setPositiveButton(getString(R.string.dialog_ok), null)
+                        .show();
+                return true;
+            }
             // TODO update database
-            //ItemListActivity.adapter.insert(0,
-                  //  new OrderData(category.getText().toString(),description.getText().toString(),R.drawable.ic_action_movie));
-            startActivity(new Intent(OrderForm.this, ItemListActivity.class));
+            ItemListActivity.adapter.insert(0,
+                    new OrderData(category.getText().toString(),description.getText().toString(),R.drawable.ic_action_movie));
             finish();
         }
 

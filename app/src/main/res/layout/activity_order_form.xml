@@ -10,7 +10,7 @@
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/primary"
         app:titleTextColor="@color/white" />
 
     <LinearLayout
@@ -38,7 +38,7 @@
             android:paddingLeft="3dp"
             android:text="@string/price_range"
             android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="15sp" />
 
         <LinearLayout
@@ -70,7 +70,7 @@
             android:paddingLeft="3dp"
             android:text="@string/category"
             android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="15sp" />
 
         <TextView
@@ -81,7 +81,7 @@
             android:paddingLeft="20dp"
             android:text="@string/btn_category"
             android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="13sp"
             android:clickable="true" />
 
@@ -92,7 +92,7 @@
             android:paddingLeft="3dp"
             android:text="@string/expiry_time"
             android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="15sp" />
 
         <LinearLayout

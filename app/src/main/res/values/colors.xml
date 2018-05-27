@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#3F51B5</color>
-    <color name="primary_dark">#303F9F</color>
+    <color name="primary">#01AAD5</color>
+    <color name="primary_dark">#0188A5</color>
     <color name="primary_light">#C5CAE9</color>
     <color name="accent">#607D8B</color>
     <color name="primary_text">#212121</color>
@@ -9,9 +9,8 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
 
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#607D8B</color>
+    <color name="login_btn">#4b4a4a</color>
+    <color name="login_btn_text">#ffffff</color>
 
     <color name="bg_login">#1976D2</color>
     <color name="bg_register">#1976D2</color>

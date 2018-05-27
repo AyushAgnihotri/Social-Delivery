@@ -58,5 +58,9 @@
     <string name="max_int">Max</string>
     <string name="main_dialog_date_picker">Date</string>
     <string name="main_dialog_time_picker">Time</string>
+    <string name="dialog_save">Please fill all the details!</string>
+    <string name="dialog_ok">OK</string>
+
+
 
 </resources>
