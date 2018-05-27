@@ -2,6 +2,7 @@ package com.thedeliveryapp.thedeliveryapp.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -18,7 +19,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.thedeliveryapp.thedeliveryapp.R;
 
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
+
 public class SignupActivity extends AppCompatActivity {
+
+
 
     private EditText inputEmail, inputPassword;
     private Button btnSignIn, btnSignUp;
@@ -50,8 +58,9 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String email = inputEmail.getText().toString().trim();
+                final String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
@@ -97,6 +106,8 @@ public class SignupActivity extends AppCompatActivity {
                                             break;
                                     }
                                 } else {
+                                    update_userdetails_database("XXXXX","7686878787","7686878787",email,0);
+
                                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();
                                 }
@@ -106,9 +117,26 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
         progressBar.setVisibility(View.GONE);
     }
+
+
+
+
+    //Method to upload details in database;
+    void update_userdetails_database(String name, String Mobile, String Alt_Mobile, String Email, int last_order) {
+        UserDetails Details = new UserDetails(name, Mobile, Alt_Mobile, Email, last_order);
+        DatabaseReference root = FirebaseDatabase.getInstance().getReference();;
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId;
+        userId = user.getUid();
+
+        root.child("users").child(userId).setValue(Details);
+    }
+
 }

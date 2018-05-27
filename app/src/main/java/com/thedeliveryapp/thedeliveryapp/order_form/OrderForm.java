@@ -3,7 +3,6 @@ package com.thedeliveryapp.thedeliveryapp.order_form;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,23 +16,21 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import com.thedeliveryapp.thedeliveryapp.login.MainActivity;
-import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
-import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 public class OrderForm extends AppCompatActivity {
 
@@ -70,7 +67,7 @@ public class OrderForm extends AppCompatActivity {
         max_int_range = findViewById(R.id.max_int);
 
         root = FirebaseDatabase.getInstance().getReference();
-        user_orders = root.child("user_orders");
+        //user_orders = root.child("user_orders");
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,25 +137,7 @@ public class OrderForm extends AppCompatActivity {
 
     }
 
-    public static class OrderDetails {
 
-        public String description;
-        public String category;
-        public int min_range;
-        public int max_range;
-
-        // Default constructor required for calls to
-        // DataSnapshot.getValue(OrderDetails.class)
-        public OrderDetails() {
-        }
-
-        public OrderDetails(String description, String category, int min_range, int max_range) {
-            this.description = description;
-            this.category = category;
-            this.min_range = min_range;
-            this.max_range = max_range;
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -167,6 +146,35 @@ public class OrderForm extends AppCompatActivity {
         menuInflater.inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    int getImageId(String category) {
+        if(category.equals("None"))
+            return R.drawable.ic_action_movie;
+        else if(category.equals("Food") )
+            return R.drawable.ic_action_movie;
+        else if(category.equals("Medicine") )
+            return R.drawable.ic_action_movie;
+        else if(category.equals("Household") )
+            return R.drawable.ic_action_movie;
+        else if(category.equals("Electronics") )
+            return R.drawable.ic_action_movie;
+        else if(category.equals("Toiletries") )
+            return R.drawable.ic_action_movie;
+        else if(category.equals("Books") )
+            return R.drawable.ic_action_movie;
+        else if(category.equals("Clothing") )
+            return R.drawable.ic_action_movie;
+        else if(category.equals("Shoes") )
+            return R.drawable.ic_action_movie;
+        else if(category.equals("Sports") )
+            return R.drawable.ic_action_movie;
+        else if(category.equals("Games") )
+            return R.drawable.ic_action_movie;
+        else
+            return R.drawable.ic_action_movie;
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -178,7 +186,7 @@ public class OrderForm extends AppCompatActivity {
         String order_category = category.getText().toString();
         String order_min_range = min_int_range.getText().toString();
         String order_max_range = max_int_range.getText().toString();
-
+        int order_image_id = getImageId(order_category);
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_save) {
@@ -191,11 +199,35 @@ public class OrderForm extends AppCompatActivity {
                         .show();
                 return true;
             }
+
             // TODO update database
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();
-            OrderDetails order = new OrderDetails(order_description, order_category, Integer.parseInt(order_min_range), Integer.parseInt(order_max_range));
-            user_orders.child(userId).setValue(order);
+
+            final int LastOrder=0;
+/*
+            root.child("users").child(userId).child("last_order").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String key=dataSnapshot.getKey();
+                    if(key.equals("last_order")) {
+                        LastOrder = dataSnapshot.getValue(String.class);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+*/
+            //user_orders = root.child("users_orders").child(userId).child();
+
+
+            //OrderData order = new OrderData(order_description, order_category,order_image_id ,Integer.parseInt(order_min_range)  ,Integer.parseInt(order_min_range), Integer.parseInt(order_max_range));
+            //user_orders.child(userId).setValue(order);
             finish();
             /*
             ItemListActivity.adapter.insert(0,
