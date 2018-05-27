@@ -20,6 +20,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.thedeliveryapp.thedeliveryapp.R;
 
 import java.text.DateFormat;
@@ -41,6 +45,10 @@ public class OrderForm extends AppCompatActivity {
     EditText min_int_range ;
     EditText max_int_range ;
 
+    private DatabaseReference root;
+    private DatabaseReference user_orders;
+    private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +69,8 @@ public class OrderForm extends AppCompatActivity {
         min_int_range = findViewById(R.id.min_int);
         max_int_range = findViewById(R.id.max_int);
 
+        root = FirebaseDatabase.getInstance().getReference();
+        user_orders = root.child("user_orders");
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +140,26 @@ public class OrderForm extends AppCompatActivity {
 
     }
 
+    public static class OrderDetails {
+
+        public String description;
+        public String category;
+        public int min_range;
+        public int max_range;
+
+        // Default constructor required for calls to
+        // DataSnapshot.getValue(OrderDetails.class)
+        public OrderDetails() {
+        }
+
+        public OrderDetails(String description, String category, int min_range, int max_range) {
+            this.description = description;
+            this.category = category;
+            this.min_range = min_range;
+            this.max_range = max_range;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -144,14 +174,17 @@ public class OrderForm extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        String order_description = description.getText().toString();
+        String order_category = category.getText().toString();
+        String order_min_range = min_int_range.getText().toString();
+        String order_max_range = max_int_range.getText().toString();
 
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_save) {
             //Default text for date_picker = "Date"
             //Default text for time_picker = "Time"
-            if(category.getText().toString().equals("None") || description.getText().toString().equals("")
-                    || min_int_range.getText().toString().equals("") || max_int_range.getText().toString().equals("")) {
+            if(order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")) {
                 new AlertDialog.Builder(OrderForm.this)
                         .setMessage(getString(R.string.dialog_save))
                         .setPositiveButton(getString(R.string.dialog_ok), null)
@@ -159,9 +192,16 @@ public class OrderForm extends AppCompatActivity {
                 return true;
             }
             // TODO update database
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            userId = user.getUid();
+            OrderDetails order = new OrderDetails(order_description, order_category, Integer.parseInt(order_min_range), Integer.parseInt(order_max_range));
+            user_orders.child(userId).setValue(order);
+            finish();
+            /*
             ItemListActivity.adapter.insert(0,
                     new OrderData(category.getText().toString(),description.getText().toString(),R.drawable.ic_action_movie));
             finish();
+            */
         }
 
         return super.onOptionsItemSelected(item);
