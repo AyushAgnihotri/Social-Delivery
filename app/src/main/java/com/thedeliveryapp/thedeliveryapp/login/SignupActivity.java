@@ -106,7 +106,7 @@ public class SignupActivity extends AppCompatActivity {
                                             break;
                                     }
                                 } else {
-                                    update_userdetails_database("XXXXX","7686878787","7686878787",email,0);
+                                    update_userdetails_database("XXXXX","7686878787","7686878787",email);
 
                                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();
@@ -126,17 +126,14 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
-
-
     //Method to upload details in database;
-    void update_userdetails_database(String name, String Mobile, String Alt_Mobile, String Email, int last_order) {
-        UserDetails Details = new UserDetails(name, Mobile, Alt_Mobile, Email, last_order);
-        DatabaseReference root = FirebaseDatabase.getInstance().getReference();;
+    void update_userdetails_database(String name, String Mobile, String Alt_Mobile, String Email) {
+        UserDetails Details = new UserDetails(name, Mobile, Alt_Mobile, Email);
+        DatabaseReference root = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String userId;
-        userId = user.getUid();
+        String userId=user.getUid();
 
-        root.child("users").child(userId).setValue(Details);
+        root.child("deliveryApp").child("users").child(userId).setValue(Details);
     }
 
 }

@@ -1,18 +1,20 @@
 package com.thedeliveryapp.thedeliveryapp.login.user_details;
 
 public class UserDetails {
-    private String name;
-    private String Mobile;
-    private String Alt_Mobile;
-    private String Email;
-    private int last_order;
+    public String name;
+    public String Mobile;
+    public String Alt_Mobile;
+    public String Email;
 
-    public UserDetails(String name, String Mobile, String Alt_Mobile, String Email, int last_order) {
+    public UserDetails() {
+
+    }
+
+    public UserDetails(String name, String Mobile, String Alt_Mobile, String Email) {
         this.name=name;
         this.Mobile=Mobile;
         this.Alt_Mobile= Alt_Mobile;
         this.Email=Email;
-        this.last_order=last_order;
     }
 
 }

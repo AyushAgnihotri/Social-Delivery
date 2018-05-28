@@ -26,6 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
+import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -43,8 +45,11 @@ public class OrderForm extends AppCompatActivity {
     EditText max_int_range ;
 
     private DatabaseReference root;
+    private DatabaseReference deliveryApp;
     private DatabaseReference user_orders;
     private String userId;
+    private int OrderNumber;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +71,6 @@ public class OrderForm extends AppCompatActivity {
         min_int_range = findViewById(R.id.min_int);
         max_int_range = findViewById(R.id.max_int);
 
-        root = FirebaseDatabase.getInstance().getReference();
-        //user_orders = root.child("user_orders");
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,18 +203,33 @@ public class OrderForm extends AppCompatActivity {
                 return true;
             }
 
+
             // TODO update database
+            final OrderData order= new OrderData(order_description, order_category,order_image_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range));
+
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();
 
-            final int LastOrder=0;
-/*
-            root.child("users").child(userId).child("last_order").addValueEventListener(new ValueEventListener() {
+
+            root = FirebaseDatabase.getInstance().getReference();
+            deliveryApp = root.child("deliveryApp");
+
+            deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    String key=dataSnapshot.getKey();
-                    if(key.equals("last_order")) {
-                        LastOrder = dataSnapshot.getValue(String.class);
+                    if (!dataSnapshot.hasChild("totalOrders")) {
+                        root.child("deliveryApp").child("totalOrders").setValue(0);
+                        OrderNumber = 0;
+                        root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
+
+                    }
+                    else {
+                        OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
+                        OrderNumber++;
+                        root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
+                        root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
+
+
                     }
                 }
 
@@ -222,18 +240,13 @@ public class OrderForm extends AppCompatActivity {
             });
 
 
-*/
-            //user_orders = root.child("users_orders").child(userId).child();
 
 
-            //OrderData order = new OrderData(order_description, order_category,order_image_id ,Integer.parseInt(order_min_range)  ,Integer.parseInt(order_min_range), Integer.parseInt(order_max_range));
-            //user_orders.child(userId).setValue(order);
-            finish();
-            /*
-            ItemListActivity.adapter.insert(0,
-                    new OrderData(category.getText().toString(),description.getText().toString(),R.drawable.ic_action_movie));
-            finish();
+          /*  ItemListActivity.adapter.insert(0,
+                    new OrderData(order_category,order_description, R.drawable.ic_action_movie, 100, 200));
             */
+            finish();
+
         }
 
         return super.onOptionsItemSelected(item);
