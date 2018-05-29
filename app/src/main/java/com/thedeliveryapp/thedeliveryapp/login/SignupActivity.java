@@ -28,7 +28,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
 
-    private EditText inputEmail, inputPassword;
+    private EditText inputName, inputMobile, inputAltMobile, inputEmail, inputPassword;
     private Button btnSignIn, btnSignUp;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
@@ -43,6 +43,9 @@ public class SignupActivity extends AppCompatActivity {
 
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
+        inputName = (EditText) findViewById(R.id.name);
+        inputMobile = (EditText) findViewById(R.id.mobile);
+        inputAltMobile = (EditText) findViewById(R.id.alt_mobile);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -60,7 +63,28 @@ public class SignupActivity extends AppCompatActivity {
 
                 final String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+                final String name = inputName.getText().toString().trim();
+                final String mobile = inputMobile.getText().toString().trim();
+                final String alt_mobile = inputAltMobile.getText().toString().trim();
 
+                if (TextUtils.isEmpty(name)) {
+                    Toast.makeText(getApplicationContext(), "Enter your Name!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (TextUtils.isEmpty(mobile)) {
+                    Toast.makeText(getApplicationContext(), "Enter your Mobile No.!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if ((mobile.length() != 10) || (alt_mobile.length() != 10)) {
+                    Toast.makeText(getApplicationContext(), "Enter 10-digit Mobile No.!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (TextUtils.isEmpty(alt_mobile)) {
+                    Toast.makeText(getApplicationContext(), "Enter your Alternate Mobile No.!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
@@ -106,7 +130,7 @@ public class SignupActivity extends AppCompatActivity {
                                             break;
                                     }
                                 } else {
-                                    update_userdetails_database("XXXXX","7686878787","7686878787",email);
+                                    update_userdetails_database(name, mobile, alt_mobile, email);
 
                                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();

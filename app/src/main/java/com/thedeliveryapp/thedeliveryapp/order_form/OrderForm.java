@@ -46,7 +46,6 @@ public class OrderForm extends AppCompatActivity {
 
     private DatabaseReference root;
     private DatabaseReference deliveryApp;
-    private DatabaseReference user_orders;
     private String userId;
     private int OrderNumber;
 

@@ -32,6 +32,11 @@
     <string name="btn_use_as_deliverer">Use as a Deliverer</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
+    <string name="user_name">Name</string>
+    <string name="user_mobile">Mobile No.</string>
+    <string name="user_alt_mobile">Alternate Mobile No.</string>
+
+
 
     %user
     <string name="title_item_detail">Item Detail</string>
