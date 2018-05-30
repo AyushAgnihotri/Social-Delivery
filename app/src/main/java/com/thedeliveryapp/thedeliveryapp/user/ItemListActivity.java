@@ -162,7 +162,8 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
     void fill_with_data() {
-
+        //TODO Currently fetched data is getting inserted again and again when it is fetched.
+        //TODO Add Progress bar.
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userId = user.getUid();
 
