@@ -137,7 +137,7 @@
             android:gravity="center"
             android:orientation="vertical" >
             <Button
-                android:id="@+id/btn_purchase_location"
+                android:id="@+id/user_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
@@ -145,7 +145,7 @@
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
                 android:layout_marginTop="30dp"
-                android:text="@string/btn_purchase_location"
+                android:text="@string/btn_user_location"
                 android:textColor="@android:color/black"
                 android:background="@drawable/button_round"
                 android:layout_centerInParent="true" />

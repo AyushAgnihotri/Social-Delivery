@@ -55,7 +55,7 @@
     %user form
     <string name="action_button_save">Save</string>
     <string name="price_range">Estimated Price Range</string>
-    <string name="btn_purchase_location">Set Purchase Location</string>
+    <string name="btn_user_location">Set Your Location</string>
     <string name="category">Category</string>
     <string name="expiry_time">Set Expiry time of order</string>
     <string name="btn_category">None</string>

@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +20,10 @@ import android.widget.TimePicker;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import android.content.Intent;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
+import com.thedeliveryapp.thedeliveryapp.user.order.UserLocation;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -44,11 +50,16 @@ public class OrderForm extends AppCompatActivity {
     EditText description ;
     EditText min_int_range ;
     EditText max_int_range ;
-
+    Button user_location;
     private DatabaseReference root;
     private DatabaseReference deliveryApp;
     private String userId;
     private int OrderNumber;
+    UserLocation userLocation;
+
+
+
+   int PLACE_PICKER_REQUEST =1;
 
 
     @Override
@@ -72,6 +83,7 @@ public class OrderForm extends AppCompatActivity {
 
 
 
+
         category = findViewById(R.id.btn_category);
         date_picker = findViewById(R.id.btn_date_picker);
         time_picker = findViewById(R.id.btn_time_picker);
@@ -79,7 +91,7 @@ public class OrderForm extends AppCompatActivity {
         description = findViewById(R.id.description_of_order);
         min_int_range = findViewById(R.id.min_int);
         max_int_range = findViewById(R.id.max_int);
-
+        user_location = findViewById(R.id.user_location);
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,8 +159,35 @@ public class OrderForm extends AppCompatActivity {
             }
         });
 
+
+        user_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(OrderForm.this), PLACE_PICKER_REQUEST);
+                } catch (Exception e) {
+                   // Log.e(TAG, e.getStackTrace().toString());
+                }
+            }
+
+
+
+        });
+
     }
 
+    protected void onActivityResult(int requestCode, int resultCode,Intent data) {
+        if(requestCode == PLACE_PICKER_REQUEST) {
+            if(resultCode == RESULT_OK) {
+               Place place = PlacePicker.getPlace(OrderForm.this,data);
+               userLocation = new UserLocation(place.getName().toString(),place.getAddress().toString(),place.getPhoneNumber().toString());
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(OrderForm.this, toastMsg, Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
 
 
     @Override
@@ -213,7 +252,7 @@ public class OrderForm extends AppCompatActivity {
             }
 
 
-            final OrderData order= new OrderData(order_category,order_description ,order_image_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range));
+            final OrderData order= new OrderData(order_category,order_description ,order_image_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation);
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();
