@@ -204,7 +204,7 @@ public class OrderForm extends AppCompatActivity {
 
 
             // TODO update database
-            final OrderData order= new OrderData(order_description, order_category,order_image_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range));
+            final OrderData order= new OrderData(order_category,order_description ,order_image_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range));
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();
@@ -242,7 +242,7 @@ public class OrderForm extends AppCompatActivity {
 
 
           ItemListActivity.adapter.insert(0,
-                    new OrderData(order_category,order_description, R.drawable.ic_action_movie, 100, 200));
+                    order);
 
           finish();
 
