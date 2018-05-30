@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,6 +52,12 @@ public class OrderForm extends AppCompatActivity {
 
 
     @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_form);
@@ -61,6 +68,9 @@ public class OrderForm extends AppCompatActivity {
 
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
+
+
+
 
         category = findViewById(R.id.btn_category);
         date_picker = findViewById(R.id.btn_date_picker);
@@ -245,6 +255,10 @@ public class OrderForm extends AppCompatActivity {
                     order);
 
           finish();
+
+        }
+
+        else if (id==android.R.id.home) {
 
         }
 

@@ -20,6 +20,11 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 public class ItemDetailActivity extends AppCompatActivity {
 
     @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail);
@@ -55,8 +60,8 @@ public class ItemDetailActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == android.R.id.home) {
 
-                navigateUpTo(new Intent(this, ItemListActivity.class));
-                return true;
+                //navigateUpTo(new Intent(this, ItemListActivity.class));
+                //return true;
             }
             return super.onOptionsItemSelected(item);
         }
