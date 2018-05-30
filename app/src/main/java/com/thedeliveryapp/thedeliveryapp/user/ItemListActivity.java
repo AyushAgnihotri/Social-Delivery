@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -54,7 +55,8 @@ public class ItemListActivity extends AppCompatActivity {
     private DatabaseReference deliveryApp;
     private String userId;
 
-
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerView;
     private DrawerLayout mDrawerLayout;
     public static RecyclerViewOrderAdapter adapter;
     List <OrderData> orderList = new ArrayList<OrderData>();
@@ -131,9 +133,24 @@ public class ItemListActivity extends AppCompatActivity {
             }
         });
 
-        fill_with_data();
 
-        RecyclerView recyclerView = findViewById(R.id.item_list);
+
+        //Swipe Refresh Layout
+        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                refreshOrders();
+
+            }
+        });
+
+
+
+        fill_with_data();
+        recyclerView = findViewById(R.id.item_list);
         adapter = new RecyclerViewOrderAdapter(orderList, getApplication());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -161,6 +178,16 @@ public class ItemListActivity extends AppCompatActivity {
         }));
 
     }
+
+    void refreshOrders() {
+        final int size = orderList.size();
+        if (size>0) {
+            orderList.clear();
+            adapter.notifyItemRangeRemoved(0,size);
+        }
+        fill_with_data();
+    }
+
 
     void fill_with_data() {
         //TODO Add internet connectivity error
