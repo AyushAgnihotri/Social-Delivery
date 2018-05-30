@@ -241,10 +241,10 @@ public class OrderForm extends AppCompatActivity {
 
 
 
-          /*  ItemListActivity.adapter.insert(0,
+          ItemListActivity.adapter.insert(0,
                     new OrderData(order_category,order_description, R.drawable.ic_action_movie, 100, 200));
-            */
-            finish();
+
+          finish();
 
         }
 
