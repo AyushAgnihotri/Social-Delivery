@@ -3,6 +3,7 @@ package com.thedeliveryapp.thedeliveryapp.user;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,7 +29,6 @@ import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -135,7 +135,9 @@ public class ItemListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 OrderData clickedOrder = orderList.get(position);
-                startActivity(new Intent(ItemListActivity.this,ItemDetailActivity.class));
+                Intent intent = new Intent(ItemListActivity.this,ItemDetailActivity.class);
+                intent.putExtra("MyOrder",(Parcelable) clickedOrder);
+                startActivity(intent);
             }
 
             @Override

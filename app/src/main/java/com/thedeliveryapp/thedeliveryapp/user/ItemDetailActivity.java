@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 public class ItemDetailActivity extends AppCompatActivity {
 
@@ -37,6 +39,12 @@ public class ItemDetailActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        Intent intent = getIntent();
+        OrderData myOrder = intent.getParcelableExtra("MyOrder");
+        CollapsingToolbarLayout appBarLayout = findViewById(R.id.toolbar_layout);
+        if (appBarLayout != null) {
+            appBarLayout.setTitle(myOrder.category);
         }
 
     }
