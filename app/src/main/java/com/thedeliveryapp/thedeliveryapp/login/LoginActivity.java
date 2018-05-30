@@ -162,10 +162,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -174,6 +174,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
                 if (result.isSuccess()) {
+                    progressBar.setVisibility(View.VISIBLE);
                     GoogleSignInAccount acct = result.getSignInAccount();
                     // Get account information
                     user_name = acct.getDisplayName();
@@ -215,6 +216,7 @@ public class LoginActivity extends AppCompatActivity {
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(intent);
                                     }
+                                    progressBar.setVisibility(View.GONE);
                                     finish();
                                 }
 

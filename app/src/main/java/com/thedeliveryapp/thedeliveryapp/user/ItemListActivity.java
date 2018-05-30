@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -162,8 +163,10 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
     void fill_with_data() {
-        //TODO Currently fetched data is getting inserted again and again when it is fetched.
-        //TODO Add Progress bar.
+        //TODO Add internet connectivity error
+      final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
+        progressBar.setVisibility(View.VISIBLE);
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userId = user.getUid();
 
@@ -174,7 +177,8 @@ public class ItemListActivity extends AppCompatActivity {
         deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int ct = 0;
+
+
                 for(DataSnapshot orders: dataSnapshot.getChildren()) {
                     OrderData order = orders.getValue(OrderData.class);
                     adapter.insert(0,order);
@@ -182,6 +186,8 @@ public class ItemListActivity extends AppCompatActivity {
                     //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();
 
                 }
+                progressBar.setVisibility(View.GONE);
+
 
             }
 
@@ -326,7 +332,6 @@ public class ItemListActivity extends AppCompatActivity {
         TextView category;
         TextView description;
         ImageView imageView;
-
         OrderViewHolder(View itemView) {
             super(itemView);
             cv = itemView.findViewById(R.id.cardView);
@@ -334,6 +339,12 @@ public class ItemListActivity extends AppCompatActivity {
             description = itemView.findViewById(R.id.description);
             imageView = itemView.findViewById(R.id.imageView);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
 

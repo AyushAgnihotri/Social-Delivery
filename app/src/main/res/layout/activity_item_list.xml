@@ -45,6 +45,14 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <ProgressBar
+                android:id="@+id/progressBarUserOrder"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone" />
+
             <include layout="@layout/item_list" />
 
 

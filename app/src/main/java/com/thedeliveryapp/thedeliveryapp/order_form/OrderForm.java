@@ -213,7 +213,6 @@ public class OrderForm extends AppCompatActivity {
             }
 
 
-            // TODO update database
             final OrderData order= new OrderData(order_category,order_description ,order_image_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range));
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
