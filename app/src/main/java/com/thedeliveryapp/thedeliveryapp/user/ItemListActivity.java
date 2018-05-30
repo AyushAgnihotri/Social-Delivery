@@ -23,7 +23,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
@@ -40,6 +48,11 @@ import java.util.List;
  * item details side-by-side using two vertical panes.
  */
 public class ItemListActivity extends AppCompatActivity {
+
+    private DatabaseReference root;
+    private DatabaseReference deliveryApp;
+    private String userId;
+
 
     private DrawerLayout mDrawerLayout;
     public static RecyclerViewOrderAdapter adapter;
@@ -150,14 +163,32 @@ public class ItemListActivity extends AppCompatActivity {
 
     void fill_with_data() {
 
-        //TODO : FETCH FROM DATABASE
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        userId = user.getUid();
 
-       orderList.add(new OrderData("Batman vs Superman", "Following the destruction of Metropolis, Batman embarks on a personal vendetta against Superman ", R.drawable.ic_action_movie, 100, 200));
-       orderList.add(new OrderData("X-Men: Apocalypse", "X-Men: Apocalypse is an upcoming American superhero film based on the X-Men characters that appear in Marvel Comics ", R.drawable.ic_action_movie, 100, 200));
-       orderList.add(new OrderData("Captain America: Civil War", "A feud between Captain America and Iron Man leaves the Avengers in turmoil.  ", R.drawable.ic_action_movie, 100 , 200));
-       orderList.add(new OrderData("Kung Fu Panda 3", "After reuniting with his long-lost father, Po  must train a village of pandas", R.drawable.ic_action_movie, 100, 200));
-       orderList.add(new OrderData("Warcraft", "Fleeing their dying home to colonize another, fearsome orc warriors invade the peaceful realm of Azeroth. ", R.drawable.ic_action_movie, 100 ,200));
-       orderList.add(new OrderData("Alice in Wonderland", "Alice in Wonderland: Through the Looking Glass ", R.drawable.ic_action_movie, 100, 200));
+
+        root = FirebaseDatabase.getInstance().getReference();
+        deliveryApp = root.child("deliveryApp").child("orders").child(userId);
+
+        deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int ct = 0;
+                for(DataSnapshot orders: dataSnapshot.getChildren()) {
+                    OrderData order = orders.getValue(OrderData.class);
+                    adapter.insert(0,order);
+                    //   Toast.makeText(ItemListActivity.this,Integer.toString(order.max_range), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 

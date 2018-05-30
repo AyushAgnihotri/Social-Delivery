@@ -11,7 +11,10 @@ public class OrderData implements Parcelable {
     public int max_range;
 
 
-   //TODO : experimented -- removed OrderData()
+    public OrderData() {
+        //For DataSnapshot.getValue()
+        //Don't ever try to delete it.
+    }
 
     public  OrderData(Parcel in) {
         category = in.readString();
