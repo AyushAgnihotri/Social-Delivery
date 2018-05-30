@@ -43,6 +43,7 @@ public class ItemListActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     public static RecyclerViewOrderAdapter adapter;
+    List <OrderData> orderList = new ArrayList<OrderData>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,10 +117,10 @@ public class ItemListActivity extends AppCompatActivity {
             }
         });
 
-        List<OrderData> data = fill_with_data();
+        fill_with_data();
 
         RecyclerView recyclerView = findViewById(R.id.item_list);
-        adapter = new RecyclerViewOrderAdapter(data, getApplication());
+        adapter = new RecyclerViewOrderAdapter(orderList, getApplication());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -133,6 +134,7 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView.addOnItemTouchListener(new UserOrderTouchListener(this, recyclerView, new UserOrderItemClickListener() {
             @Override
             public void onClick(View view, int position) {
+                OrderData clickedOrder = orderList.get(position);
                 startActivity(new Intent(ItemListActivity.this,ItemDetailActivity.class));
             }
 
@@ -144,19 +146,17 @@ public class ItemListActivity extends AppCompatActivity {
 
     }
 
-    public List<OrderData> fill_with_data() {
+    void fill_with_data() {
 
         //TODO : FETCH FROM DATABASE
-        List<OrderData> data = new ArrayList<>();
 
-       data.add(new OrderData("Batman vs Superman", "Following the destruction of Metropolis, Batman embarks on a personal vendetta against Superman ", R.drawable.ic_action_movie, 100, 200));
-       data.add(new OrderData("X-Men: Apocalypse", "X-Men: Apocalypse is an upcoming American superhero film based on the X-Men characters that appear in Marvel Comics ", R.drawable.ic_action_movie, 100, 200));
-       data.add(new OrderData("Captain America: Civil War", "A feud between Captain America and Iron Man leaves the Avengers in turmoil.  ", R.drawable.ic_action_movie, 100 , 200));
-       data.add(new OrderData("Kung Fu Panda 3", "After reuniting with his long-lost father, Po  must train a village of pandas", R.drawable.ic_action_movie, 100, 200));
-       data.add(new OrderData("Warcraft", "Fleeing their dying home to colonize another, fearsome orc warriors invade the peaceful realm of Azeroth. ", R.drawable.ic_action_movie, 100 ,200));
-       data.add(new OrderData("Alice in Wonderland", "Alice in Wonderland: Through the Looking Glass ", R.drawable.ic_action_movie, 100, 200));
+       orderList.add(new OrderData("Batman vs Superman", "Following the destruction of Metropolis, Batman embarks on a personal vendetta against Superman ", R.drawable.ic_action_movie, 100, 200));
+       orderList.add(new OrderData("X-Men: Apocalypse", "X-Men: Apocalypse is an upcoming American superhero film based on the X-Men characters that appear in Marvel Comics ", R.drawable.ic_action_movie, 100, 200));
+       orderList.add(new OrderData("Captain America: Civil War", "A feud between Captain America and Iron Man leaves the Avengers in turmoil.  ", R.drawable.ic_action_movie, 100 , 200));
+       orderList.add(new OrderData("Kung Fu Panda 3", "After reuniting with his long-lost father, Po  must train a village of pandas", R.drawable.ic_action_movie, 100, 200));
+       orderList.add(new OrderData("Warcraft", "Fleeing their dying home to colonize another, fearsome orc warriors invade the peaceful realm of Azeroth. ", R.drawable.ic_action_movie, 100 ,200));
+       orderList.add(new OrderData("Alice in Wonderland", "Alice in Wonderland: Through the Looking Glass ", R.drawable.ic_action_movie, 100, 200));
 
-        return data;
     }
 
 
@@ -179,7 +179,7 @@ public class ItemListActivity extends AppCompatActivity {
 
     public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHolder> {
 
-        List<OrderData> list = Collections.emptyList();
+        List<OrderData> list = orderList;
         Context context;
 
         public RecyclerViewOrderAdapter(List<OrderData> list, Context context) {
