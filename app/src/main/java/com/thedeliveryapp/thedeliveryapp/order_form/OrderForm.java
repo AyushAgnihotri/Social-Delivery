@@ -33,6 +33,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
+import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
+import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryTime;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 import com.thedeliveryapp.thedeliveryapp.user.order.UserLocation;
 
@@ -56,6 +58,8 @@ public class OrderForm extends AppCompatActivity {
     private String userId;
     private int OrderNumber;
     UserLocation userLocation;
+    ExpiryTime expiryTime;
+    ExpiryDate expiryDate;
 
 
 
@@ -131,7 +135,7 @@ public class OrderForm extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(OrderForm.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
+                        expiryDate = new ExpiryDate(year,monthOfYear,dayOfMonth);
                         calendar.set(Calendar.YEAR, year);
                         calendar.set(Calendar.MONTH, monthOfYear);
                         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -149,6 +153,7 @@ public class OrderForm extends AppCompatActivity {
                 TimePickerDialog timePickerDialog = new TimePickerDialog(OrderForm.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                        expiryTime = new ExpiryTime(i,i1);
                         calendar.set(Calendar.HOUR_OF_DAY, i);
                         calendar.set(Calendar.MINUTE, i1);
                         String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
@@ -241,8 +246,8 @@ public class OrderForm extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_save) {
-            //Default text for date_picker = "Date"
-            //Default text for time_picker = "Time"
+            //Default text for date_picker = "ExpiryDate"
+            //Default text for time_picker = "ExpiryTime"
             if(order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")) {
                 new AlertDialog.Builder(OrderForm.this)
                         .setMessage(getString(R.string.dialog_save))
@@ -252,7 +257,7 @@ public class OrderForm extends AppCompatActivity {
             }
 
 
-            final OrderData order= new OrderData(order_category,order_description ,order_image_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation);
+            final OrderData order= new OrderData(order_category,order_description ,order_image_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime);
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();

@@ -1,10 +1,7 @@
 package com.thedeliveryapp.thedeliveryapp.user.order;
 
-import android.os.LocaleList;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.android.gms.location.places.Place;
 
 public class OrderData implements Parcelable {
     public String category;
@@ -13,6 +10,8 @@ public class OrderData implements Parcelable {
     public int min_range;
     public int max_range;
     public UserLocation userLocation = new UserLocation();
+    public ExpiryDate expiryDate = new ExpiryDate();
+    public ExpiryTime expiryTime = new ExpiryTime();
 
     public OrderData() {
         //For DataSnapshot.getValue()
@@ -25,9 +24,17 @@ public class OrderData implements Parcelable {
         imageId = in.readInt();
         min_range = in.readInt();
         max_range = in.readInt();
+
         userLocation.Name = in.readString();
         userLocation.Location = in.readString();
         userLocation.PhoneNumber = in.readString();
+
+        expiryTime.hour = in.readInt();
+        expiryTime.minute = in.readInt();
+
+        expiryDate.year = in.readInt();
+        expiryDate.month = in.readInt();
+        expiryDate.day = in.readInt();
     }
 
     @Override
@@ -42,9 +49,17 @@ public class OrderData implements Parcelable {
         dest.writeInt(imageId);
         dest.writeInt(min_range);
         dest.writeInt(max_range);
+
         dest.writeString(userLocation.Name);
         dest.writeString( userLocation.Location);
         dest.writeString(userLocation.PhoneNumber);
+
+        dest.writeInt(expiryTime.hour);
+        dest.writeInt(expiryTime.minute);
+
+        dest.writeInt(expiryDate.year);
+        dest.writeInt(expiryDate.month);
+        dest.writeInt(expiryDate.day);
     }
 
     public static  final Parcelable.Creator<OrderData> CREATOR = new Parcelable.Creator<OrderData>() {
@@ -58,13 +73,15 @@ public class OrderData implements Parcelable {
     };
 
 
-    public OrderData(String category, String description, int imageId, int min_range, int max_range,UserLocation location) {
+    public OrderData(String category, String description, int imageId, int min_range, int max_range,UserLocation location,ExpiryDate expiryDate,ExpiryTime expiryTime) {
         this.category = category;
         this.description = description;
         this.imageId = imageId;
         this.min_range = min_range;
         this.max_range = max_range;
         this.userLocation = location;
+        this.expiryDate = expiryDate;
+        this.expiryTime = expiryTime;
     }
 
 
