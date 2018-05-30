@@ -13,6 +13,8 @@
     <string name="new_pass">New Password</string>
     <string name="title_activity_profile">Firebase</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="title_other_signup">Google Sign Up</string>
+
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="hint_name">Fullname</string>
@@ -35,7 +37,6 @@
     <string name="user_name">Name</string>
     <string name="user_mobile">Mobile No.</string>
     <string name="user_alt_mobile">Alternate Mobile No.</string>
-
 
 
     %user
@@ -66,6 +67,8 @@
     <string name="dialog_save">Please fill all the details!</string>
     <string name="dialog_ok">OK</string>
 
+    %complete profile
 
+    <string name="save_details">Save Details</string>
 
 </resources>

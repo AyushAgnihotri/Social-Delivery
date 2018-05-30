@@ -95,7 +95,6 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 progressBar.setVisibility(View.VISIBLE);
                 //create com.thedeliveryapp.thedeliveryapp.user.user
                 auth.createUserWithEmailAndPassword(email, password)

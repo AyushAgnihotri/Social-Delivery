@@ -9,10 +9,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
+
+import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiClient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 if (user == null) {
                     // com.thedeliveryapp.thedeliveryapp.user.user auth state is changed - com.thedeliveryapp.thedeliveryapp.user.user is null
                     // launch login activity
+
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
                 }
@@ -84,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     //sign out method
     public void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         auth.signOut();
     }
 

@@ -58,6 +58,10 @@
             android:name=".order_form.OrderForm"
             android:parentActivityName=".user.ItemListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity
+            android:name=".login.OtherSignup">
+            android:label="@string/title_other_signup"
+        </activity>
     </application>
 
 </manifest>
