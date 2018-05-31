@@ -52,38 +52,37 @@
             android:layout_height="30dp"
             android:visibility="gone" />
 
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="120dp"
+            android:text="@string/choose_mode"
+            android:textColor="@color/black"
+            android:textSize="30sp" />
+
         <Button
             android:id="@+id/use_as_user"
             style="?android:textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:background="@color/primary"
+            android:layout_marginTop="85dp"
             android:text="@string/btn_use_as_user"
+            android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:textStyle="bold|italic" />
+            android:background="@drawable/button_round_main"/>
 
         <Button
             android:id="@+id/use_as_deliverer"
             style="?android:textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:background="@color/primary"
+            android:layout_marginTop="60dp"
             android:text="@string/btn_use_as_deliverer"
+            android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:textStyle="bold|italic" />
+            android:background="@drawable/button_round_main"/>
 
-        <Button
-            android:id="@+id/sign_out"
-            style="?android:textAppearanceSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="220dp"
-            android:background="@color/primary"
-            android:text="@string/btn_sign_out"
-            android:textColor="@android:color/black"
-            android:textStyle="bold" />
     </LinearLayout>
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>

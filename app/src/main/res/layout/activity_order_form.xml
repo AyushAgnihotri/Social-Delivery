@@ -5,159 +5,176 @@
     android:fillViewport="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="order_form.OrderForm">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary"
-        app:titleTextColor="@color/white" />
+        android:focusableInTouchMode="true"
+        tools:context="order_form.OrderForm">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
-        android:orientation="vertical"
-        android:paddingTop="100dp">
-
-        <android.support.design.widget.TextInputLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            app:titleTextColor="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toolbar"
+            android:orientation="vertical"
+            android:paddingTop="100dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:text="@string/description"
+                android:textColor="@color/primary"
+                android:textSize="15sp" />
+
             <EditText
                 android:id="@+id/description_of_order"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="Description" />
-        </android.support.design.widget.TextInputLayout>
+                android:paddingTop="20dp"
+                android:paddingLeft="3dp"
+                android:text="@string/category"
+                android:textColor="@color/primary"
+                android:textSize="15sp" />
 
+            <TextView
+                android:id="@+id/btn_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="7dp"
+                android:paddingLeft="3dp"
+                android:text="@string/btn_category"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                android:clickable="true" />
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="30dp"
-            android:paddingLeft="3dp"
-            android:text="@string/price_range"
-            android:textAllCaps="true"
-            android:textColor="@color/primary"
-            android:textSize="15sp" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingLeft="3dp"
+                android:text="@string/delivery_charge"
+                android:textColor="@color/primary"
+                android:textSize="15sp" />
 
             <EditText
-                android:id="@+id/min_int"
+                android:id="@+id/delivery_charge"
                 android:inputType="number"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/min_int" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-            <EditText
-                android:id="@+id/max_int"
-                android:inputType="number"
-                android:layout_width="50dp"
+            <TextView
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/max_int" />
+                android:paddingTop="20dp"
+                android:paddingLeft="3dp"
+                android:text="@string/price_range"
+                android:textColor="@color/primary"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/min_int"
+                    android:inputType="number"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/min_int" />
+
+                <EditText
+                    android:id="@+id/max_int"
+                    android:inputType="number"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/max_int" />
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingLeft="3dp"
+                android:text="@string/expiry"
+                android:textColor="@color/primary"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_date_picker"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="13dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:textAllCaps="false"
+                    android:text="@string/main_dialog_date_picker"
+                    android:textColor="@android:color/black"
+                    android:background="@drawable/button_round" />
+
+                <Button
+                    android:id="@+id/btn_time_picker"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="13dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginStart="9dp"
+                    android:textAllCaps="false"
+                    android:text="@string/main_dialog_time_picker"
+                    android:textColor="@android:color/black"
+                    android:background="@drawable/button_round" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical" >
+                <Button
+                    android:id="@+id/user_location"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:layout_marginTop="30dp"
+                    android:text="@string/btn_user_location"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/black"
+                    android:background="@drawable/button_round"
+                    android:layout_centerInParent="true" />
+            </LinearLayout>
+
         </LinearLayout>
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="30dp"
-            android:paddingLeft="3dp"
-            android:text="@string/category"
-            android:textAllCaps="true"
-            android:textColor="@color/primary"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/btn_category"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingLeft="20dp"
-            android:text="@string/btn_category"
-            android:textAllCaps="true"
-            android:textColor="@color/primary"
-            android:textSize="13sp"
-            android:clickable="true" />
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="30dp"
-            android:paddingLeft="3dp"
-            android:text="@string/expiry_time"
-            android:textAllCaps="true"
-            android:textColor="@color/primary"
-            android:textSize="15sp" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_date_picker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="30dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:text="@string/main_dialog_date_picker"
-                android:textColor="@android:color/black"
-                android:background="@drawable/button_round" />
-
-            <Button
-                android:id="@+id/btn_time_picker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="70dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:text="@string/main_dialog_time_picker"
-                android:textColor="@android:color/black"
-                android:background="@drawable/button_round" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical" >
-            <Button
-                android:id="@+id/user_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingLeft="40dp"
-                android:paddingRight="40dp"
-                android:layout_marginTop="30dp"
-                android:text="@string/btn_user_location"
-                android:textColor="@android:color/black"
-                android:background="@drawable/button_round"
-                android:layout_centerInParent="true" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -20,7 +20,7 @@ import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiCl
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button use_as_user, use_as_deliverer, signOut;
+    private Button use_as_user, use_as_deliverer;
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
         use_as_user = (Button) findViewById(R.id.use_as_user);
         use_as_deliverer = (Button) findViewById(R.id.use_as_deliverer);
-        signOut = (Button) findViewById(R.id.sign_out);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -78,19 +77,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOut();
-            }
-        });
-
-    }
-
-    //sign out method
-    public void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        auth.signOut();
     }
 
     @Override

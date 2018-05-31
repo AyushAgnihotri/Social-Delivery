@@ -22,6 +22,8 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleTextAppearance="@style/expandedappbar"
+            app:collapsedTitleTextAppearance="@style/collapsedappbar"
             app:toolbarId="@+id/toolbar">
 
 
