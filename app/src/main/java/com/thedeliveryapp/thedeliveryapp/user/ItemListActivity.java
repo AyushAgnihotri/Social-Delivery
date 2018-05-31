@@ -41,6 +41,10 @@ import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.login.LoginActivity;
 import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
+import com.thedeliveryapp.thedeliveryapp.recyclerview.OrderViewHolder;
+import com.thedeliveryapp.thedeliveryapp.recyclerview.RecyclerViewOrderAdapter;
+import com.thedeliveryapp.thedeliveryapp.recyclerview.UserOrderItemClickListener;
+import com.thedeliveryapp.thedeliveryapp.recyclerview.UserOrderTouchListener;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 import java.util.ArrayList;
@@ -78,7 +82,7 @@ public class ItemListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private DrawerLayout mDrawerLayout;
     public static RecyclerViewOrderAdapter adapter;
-    List <OrderData> orderList = new ArrayList<OrderData>();
+    public static List <OrderData> orderList = new ArrayList<OrderData>();
 
     public void signOut() {
         auth = FirebaseAuth.getInstance();
@@ -114,83 +118,82 @@ public class ItemListActivity extends AppCompatActivity {
         toggle.syncState();
 
         mDrawerLayout.addDrawerListener(
-                new DrawerLayout.DrawerListener() {
-                    @Override
-                    public void onDrawerSlide(View drawerView, float slideOffset) {
-                        // Respond when the drawer's position changes
-                        userId = user.getUid();
+        new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                // Respond when the drawer's position changes
+                userId = user.getUid();
 
-                        forUserData = root.child("deliveryApp").child("users").child(userId);
-                        forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
-                                progressBar.setVisibility(View.VISIBLE);
+                forUserData = root.child("deliveryApp").child("users").child(userId);
+                forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
+                    progressBar.setVisibility(View.VISIBLE);
 
-                                userDetails = dataSnapshot.getValue(UserDetails.class);
-                                mHeaderView = navigationView.getHeaderView(0);
+                    userDetails = dataSnapshot.getValue(UserDetails.class);
+                    mHeaderView = navigationView.getHeaderView(0);
 
-                                textViewUserName = mHeaderView.findViewById(R.id.headerUserName);
-                                textViewEmail = mHeaderView.findViewById(R.id.headerUserEmail);
+                    textViewUserName = mHeaderView.findViewById(R.id.headerUserName);
+                    textViewEmail = mHeaderView.findViewById(R.id.headerUserEmail);
 
-                                textViewUserName.setText(userDetails.name);
-                                textViewEmail.setText(userDetails.Email);
-                                progressBar.setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-                    }
-
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        // Respond when the drawer is opened
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                        // Respond when the drawer is closed
-                    }
-
-                    @Override
-                    public void onDrawerStateChanged(int newState) {
-                        // Respond when the drawer motion state changes
-                    }
+                    textViewUserName.setText(userDetails.name);
+                    textViewEmail.setText(userDetails.Email);
+                    progressBar.setVisibility(View.GONE);
                 }
-        );
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-
-
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        // close drawer when item is tapped
-                        mDrawerLayout.closeDrawers();
-
-                        int id = menuItem.getItemId();
-
-                        switch(id) {
-                            case R.id.sign_out :
-                                Toast.makeText(ItemListActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
-                                signOut();
-
-                        }
-
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        return true;
-                    }
+                }
                 });
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // Respond when the drawer is opened
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // Respond when the drawer is closed
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                // Respond when the drawer motion state changes
+            }
+            }
+    );
+
+
+
+
+
+    navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    // set item as selected to persist highlight
+                    menuItem.setChecked(true);
+                    // close drawer when item is tapped
+                    mDrawerLayout.closeDrawers();
+
+                    int id = menuItem.getItemId();
+
+                    switch(id) {
+                        case R.id.sign_out :
+                            Toast.makeText(ItemListActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
+                            signOut();
+
+                    }
+
+                    // Add code here to update the UI based on the item selected
+                    // For example, swap UI fragments here
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                    return true;
+                }
+            });
 
 
 
@@ -266,7 +269,7 @@ public class ItemListActivity extends AppCompatActivity {
 
     void fill_with_data() {
         //TODO Add internet connectivity error
-      final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
+        final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
         progressBar.setVisibility(View.VISIBLE);
 
         userId = user.getUid();
@@ -297,7 +300,6 @@ public class ItemListActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -313,130 +315,6 @@ public class ItemListActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHolder> {
-
-        List<OrderData> list = orderList;
-        Context context;
-
-        public RecyclerViewOrderAdapter(List<OrderData> list, Context context) {
-            this.list = list;
-            this.context = context;
-        }
-
-        @Override
-        public OrderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            //Inflate the layout, initialize the View Holder
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_content, parent, false);
-            OrderViewHolder holder = new OrderViewHolder(v);
-            return holder;
-
-        }
-
-        @Override
-        public void onBindViewHolder(OrderViewHolder holder, int position) {
-
-            //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
-            holder.category.setText(list.get(position).category);
-            holder.description.setText(list.get(position).description);
-            holder.imageView.setImageResource(list.get(position).imageId);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            //returns the number of elements the RecyclerView will display
-            return list.size();
-        }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
-        }
-
-        // Insert a new item to the RecyclerView on a predefined position
-        public void insert(int position, OrderData OrderData) {
-            list.add(position, OrderData);
-            notifyItemInserted(position);
-        }
-
-        // Remove a RecyclerView item containing a specified OrderData object
-        public void remove(OrderData OrderData) {
-            int position = list.indexOf(OrderData);
-            list.remove(position);
-            notifyItemRemoved(position);
-        }
-
-
-    }
-    public interface UserOrderItemClickListener {
-        public void onClick(View view, int position);
-
-        public void onLongClick(View view, int position);
-    }
-    
-    public class UserOrderTouchListener implements RecyclerView.OnItemTouchListener {
-
-        //GestureDetector to intercept touch events
-        GestureDetector gestureDetector;
-        private UserOrderItemClickListener clickListener;
-
-        public UserOrderTouchListener(Context context, final RecyclerView recyclerView, final UserOrderItemClickListener clickListener) {
-            this.clickListener = clickListener;
-            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-
-                @Override
-                public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
-                }
-
-                @Override
-                public void onLongPress(MotionEvent e) {
-                    //find the long pressed view
-                    View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                    if (child != null && clickListener != null) {
-                        clickListener.onLongClick(child, recyclerView.getChildLayoutPosition(child));
-                    }
-                }
-            });
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent e) {
-
-            View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-            if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
-                clickListener.onClick(child, recyclerView.getChildLayoutPosition(child));
-            }
-            return false;
-        }
-
-        @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-        }
-
-        @Override
-        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-        }
-    }
-    
-
-    public class OrderViewHolder extends RecyclerView.ViewHolder {
-
-        CardView cv;
-        TextView category;
-        TextView description;
-        ImageView imageView;
-        OrderViewHolder(View itemView) {
-            super(itemView);
-            cv = itemView.findViewById(R.id.cardView);
-            category = itemView.findViewById(R.id.category);
-            description = itemView.findViewById(R.id.description);
-            imageView = itemView.findViewById(R.id.imageView);
-        }
     }
 
     @Override
