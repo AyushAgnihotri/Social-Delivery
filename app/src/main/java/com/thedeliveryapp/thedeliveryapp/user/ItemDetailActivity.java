@@ -40,7 +40,6 @@ public class ItemDetailActivity extends AppCompatActivity {
         description = findViewById(R.id.description);
         orderId = findViewById(R.id.orderId);
         min_range = findViewById(R.id.price_range_min);
-
         max_range = findViewById(R.id.price_range_max);
         userLocationName = findViewById(R.id.userLocationName);
         userLocationLocation = findViewById(R.id.userLocationLocation);
@@ -84,14 +83,6 @@ public class ItemDetailActivity extends AppCompatActivity {
         } else {
             userLocationPhoneNumber.setText(myOrder.userLocation.PhoneNumber);
         }
-
-        System.out.println(myOrder.expiryDate);
-        System.out.println(myOrder.expiryDate.day);
-        System.out.println(myOrder.expiryDate.month);
-        System.out.println(myOrder.expiryDate.year);
-        System.out.println(myOrder.expiryTime);
-        System.out.println(myOrder.expiryTime.hour);
-        System.out.println(myOrder.expiryTime.minute);
 
         if (myOrder.expiryDate.day == 0) {
             date = "-";

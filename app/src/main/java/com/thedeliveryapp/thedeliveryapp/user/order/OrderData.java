@@ -76,7 +76,7 @@ public class OrderData implements Parcelable {
     };
 
 
-    public OrderData(String category, String description, int orderId, int min_range, int max_range,UserLocation location,ExpiryDate expiryDate,ExpiryTime expiryTime,String status) {
+    public OrderData(String category, String description, int orderId, int max_range, int min_range,UserLocation location,ExpiryDate expiryDate,ExpiryTime expiryTime,String status) {
         this.category = category;
         this.description = description;
         this.orderId = orderId;
