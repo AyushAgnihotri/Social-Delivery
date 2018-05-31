@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -27,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,11 +38,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.login.LoginActivity;
+import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiClient;
 
 /**
  * An activity representing a list of Items. This activity
@@ -51,15 +58,40 @@ import java.util.List;
  */
 public class ItemListActivity extends AppCompatActivity {
 
-    private DatabaseReference root;
-    private DatabaseReference deliveryApp;
+    private FirebaseAuth.AuthStateListener authListener;
+    private FirebaseAuth auth;
+
+
+    private DatabaseReference root=FirebaseDatabase.getInstance().getReference();;
+    private DatabaseReference deliveryApp, forUserData;
     private String userId;
+    private UserDetails userDetails = new UserDetails();
+
+    NavigationView navigationView;
+    View mHeaderView;
+
+    TextView textViewUserName;
+    TextView textViewEmail;
+
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private DrawerLayout mDrawerLayout;
     public static RecyclerViewOrderAdapter adapter;
     List <OrderData> orderList = new ArrayList<OrderData>();
+
+    public void signOut() {
+        //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        auth.signOut();
+        sendToLogin();
+    }
+
+    public void sendToLogin() {
+        Intent loginIntent = new Intent(ItemListActivity.this, LoginActivity.class);
+        startActivity(loginIntent);
+        finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,13 +106,45 @@ public class ItemListActivity extends AppCompatActivity {
 
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
 
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(ItemListActivity.this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
         mDrawerLayout.addDrawerListener(
                 new DrawerLayout.DrawerListener() {
                     @Override
                     public void onDrawerSlide(View drawerView, float slideOffset) {
                         // Respond when the drawer's position changes
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        userId = user.getUid();
+
+                        forUserData = root.child("deliveryApp").child("users").child(userId);
+                        forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
+                                progressBar.setVisibility(View.VISIBLE);
+
+                                userDetails = dataSnapshot.getValue(UserDetails.class);
+                                mHeaderView = navigationView.getHeaderView(0);
+
+                                textViewUserName = mHeaderView.findViewById(R.id.headerUserName);
+                                textViewEmail = mHeaderView.findViewById(R.id.headerUserEmail);
+
+                                textViewUserName.setText(userDetails.name);
+                                textViewEmail.setText(userDetails.Email);
+                                progressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
                     }
 
                     @Override
@@ -101,9 +165,10 @@ public class ItemListActivity extends AppCompatActivity {
         );
 
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
+
+
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         // set item as selected to persist highlight
@@ -111,12 +176,22 @@ public class ItemListActivity extends AppCompatActivity {
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
+                        int id = menuItem.getItemId();
+
+                        switch(id) {
+                            case R.id.sign_out :
+                                Toast.makeText(ItemListActivity.this,"You are going to sign out", Toast.LENGTH_LONG).show();
+                                signOut();
+                                return true;
+                        }
+
                         // Add code here to update the UI based on the item selected
                         // For example, swap UI fragments here
-
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     }
                 });
+
 
 
         toolbar.setTitle(getTitle());
@@ -197,14 +272,11 @@ public class ItemListActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userId = user.getUid();
 
-
-        root = FirebaseDatabase.getInstance().getReference();
         deliveryApp = root.child("deliveryApp").child("orders").child(userId);
 
         deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
 
                 for(DataSnapshot orders: dataSnapshot.getChildren()) {
                     OrderData order = orders.getValue(OrderData.class);
@@ -370,8 +442,14 @@ public class ItemListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if(drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else {
+            super.onBackPressed();
+            finish();
+        }
     }
 }
 
