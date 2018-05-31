@@ -270,8 +270,8 @@ public class OrderForm extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (!dataSnapshot.hasChild("totalOrders")) {
-                        root.child("deliveryApp").child("totalOrders").setValue(0);
-                        OrderNumber = 0;
+                        root.child("deliveryApp").child("totalOrders").setValue(1);
+                        OrderNumber = 1;
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
 
                     }
