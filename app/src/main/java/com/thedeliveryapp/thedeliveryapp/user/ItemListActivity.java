@@ -82,7 +82,7 @@ public class ItemListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private DrawerLayout mDrawerLayout;
     public static RecyclerViewOrderAdapter adapter;
-    public static List <OrderData> orderList = new ArrayList<OrderData>();
+    public static List <OrderData> orderList;
 
     public void signOut() {
         auth = FirebaseAuth.getInstance();
@@ -128,8 +128,7 @@ public class ItemListActivity extends AppCompatActivity {
                 forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
-                    progressBar.setVisibility(View.VISIBLE);
+
 
                     userDetails = dataSnapshot.getValue(UserDetails.class);
                     mHeaderView = navigationView.getHeaderView(0);
@@ -139,7 +138,6 @@ public class ItemListActivity extends AppCompatActivity {
 
                     textViewUserName.setText(userDetails.name);
                     textViewEmail.setText(userDetails.Email);
-                    progressBar.setVisibility(View.GONE);
                 }
 
                 @Override
@@ -229,6 +227,7 @@ public class ItemListActivity extends AppCompatActivity {
 
         fill_with_data();
         recyclerView = findViewById(R.id.item_list);
+        orderList = new ArrayList<OrderData>();
         adapter = new RecyclerViewOrderAdapter(orderList, getApplication());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -271,9 +270,7 @@ public class ItemListActivity extends AppCompatActivity {
         //TODO Add internet connectivity error
         final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
         progressBar.setVisibility(View.VISIBLE);
-
         userId = user.getUid();
-
         deliveryApp = root.child("deliveryApp").child("orders").child(userId);
 
         deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -319,12 +316,12 @@ public class ItemListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if(drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
         else {
-            super.onBackPressed();
             finish();
         }
     }
