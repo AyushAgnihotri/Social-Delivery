@@ -6,12 +6,13 @@ import android.os.Parcelable;
 public class OrderData implements Parcelable {
     public String category;
     public String description;
-    public int imageId;
+    public int orderId;
     public int min_range;
     public int max_range;
     public UserLocation userLocation = new UserLocation();
     public ExpiryDate expiryDate = new ExpiryDate();
     public ExpiryTime expiryTime = new ExpiryTime();
+    public String status;
 
     public OrderData() {
         //For DataSnapshot.getValue()
@@ -21,9 +22,10 @@ public class OrderData implements Parcelable {
     public  OrderData(Parcel in) {
         category = in.readString();
         description = in.readString();
-        imageId = in.readInt();
+        orderId = in.readInt();
         min_range = in.readInt();
         max_range = in.readInt();
+        status = in.readString();
 
         userLocation.Name = in.readString();
         userLocation.Location = in.readString();
@@ -46,9 +48,10 @@ public class OrderData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(category);
         dest.writeString(description);
-        dest.writeInt(imageId);
+        dest.writeInt(orderId);
         dest.writeInt(min_range);
         dest.writeInt(max_range);
+        dest.writeString(status);
 
         dest.writeString(userLocation.Name);
         dest.writeString( userLocation.Location);
@@ -73,15 +76,16 @@ public class OrderData implements Parcelable {
     };
 
 
-    public OrderData(String category, String description, int imageId, int min_range, int max_range,UserLocation location,ExpiryDate expiryDate,ExpiryTime expiryTime) {
+    public OrderData(String category, String description, int orderId, int min_range, int max_range,UserLocation location,ExpiryDate expiryDate,ExpiryTime expiryTime,String status) {
         this.category = category;
         this.description = description;
-        this.imageId = imageId;
+        this.orderId = orderId;
         this.min_range = min_range;
         this.max_range = max_range;
         this.userLocation = location;
         this.expiryDate = expiryDate;
         this.expiryTime = expiryTime;
+        this.status = status;
     }
 
 

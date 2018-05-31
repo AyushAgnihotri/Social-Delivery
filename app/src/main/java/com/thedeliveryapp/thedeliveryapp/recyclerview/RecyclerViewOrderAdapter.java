@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
@@ -37,7 +38,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
         //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
         holder.category.setText(list.get(position).category);
         holder.description.setText(list.get(position).description);
-        holder.imageView.setImageResource(list.get(position).imageId);
+        holder.imageView.setImageResource(OrderForm.getImageId(list.get(position).category));
 
     }
 

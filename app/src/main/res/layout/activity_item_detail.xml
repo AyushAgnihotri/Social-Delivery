@@ -109,7 +109,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/imageId_h"
+                android:id="@+id/orderId_h"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -119,16 +119,16 @@
                 android:textSize="16sp"
                 android:background="@color/primary"
                 android:padding="10dp"
-                android:text="@string/imageId"
+                android:text="@string/orderId"
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/imageId"
+                android:id="@+id/orderId"
                 android:layout_width="400dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/imageId_h"
+                android:layout_below="@id/orderId_h"
                 android:background="@color/gray"
                 android:padding="10dp"
                 android:text=""
@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/imageId"
+                android:layout_below="@id/orderId"
                 android:layout_marginTop="20dp"
                 android:textSize="16sp"
                 android:background="@color/primary"

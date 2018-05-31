@@ -60,6 +60,8 @@ public class OrderForm extends AppCompatActivity {
     UserLocation userLocation = null;
     ExpiryTime expiryTime = null;
     ExpiryDate expiryDate = null;
+    OrderData order;
+    int order_id;
 
     int PLACE_PICKER_REQUEST =1;
 
@@ -201,7 +203,7 @@ public class OrderForm extends AppCompatActivity {
         return true;
     }
 
-    int getImageId(String category) {
+    public static int getImageId(String category) {
         if(category.equals("None"))
             return R.drawable.ic_action_movie;
         else if(category.equals("Food") )
@@ -236,11 +238,10 @@ public class OrderForm extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        String order_description = description.getText().toString();
-        String order_category = category.getText().toString();
-        String order_min_range = min_int_range.getText().toString();
-        String order_max_range = max_int_range.getText().toString();
-        int order_image_id = getImageId(order_category);
+        final String order_description = description.getText().toString();
+        final String order_category = category.getText().toString();
+        final String order_min_range = min_int_range.getText().toString();
+        final String order_max_range = max_int_range.getText().toString();
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_save) {
@@ -255,7 +256,6 @@ public class OrderForm extends AppCompatActivity {
             }
 
 
-            final OrderData order= new OrderData(order_category,order_description ,order_image_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime);
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();
@@ -270,17 +270,23 @@ public class OrderForm extends AppCompatActivity {
                     if (!dataSnapshot.hasChild("totalOrders")) {
                         root.child("deliveryApp").child("totalOrders").setValue(1);
                         OrderNumber = 1;
+                        order_id = OrderNumber;
+                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING");
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
 
                     }
                     else {
                         OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
                         OrderNumber++;
+                        order_id = OrderNumber;
+                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING");
                         root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
 
 
                     }
+                    ItemListActivity.adapter.insert(0,
+                            order);
                 }
 
                 @Override
@@ -289,11 +295,6 @@ public class OrderForm extends AppCompatActivity {
                 }
             });
 
-
-
-
-          ItemListActivity.adapter.insert(0,
-                    order);
 
           finish();
 

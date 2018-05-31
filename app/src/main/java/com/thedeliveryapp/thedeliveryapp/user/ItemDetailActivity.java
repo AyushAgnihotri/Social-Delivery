@@ -20,7 +20,7 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 public class ItemDetailActivity extends AppCompatActivity {
 
-    private TextView category, description, imageId, min_range, max_range, userLocationName,
+    private TextView category, description, orderId, min_range, max_range, userLocationName,
             userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time;
     private String date, time;
 
@@ -38,7 +38,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
         category = findViewById(R.id.category);
         description = findViewById(R.id.description);
-        imageId = findViewById(R.id.imageId);
+        orderId = findViewById(R.id.orderId);
         min_range = findViewById(R.id.price_range_min);
 
         max_range = findViewById(R.id.price_range_max);
@@ -72,7 +72,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
         category.setText(myOrder.category);
         description.setText(myOrder.description);
-        imageId.setText(myOrder.imageId + "");
+        orderId.setText(myOrder.orderId + "");
         min_range.setText(myOrder.min_range + "");
         max_range.setText(myOrder.max_range + "");
         userLocationName.setText(myOrder.userLocation.Name);
