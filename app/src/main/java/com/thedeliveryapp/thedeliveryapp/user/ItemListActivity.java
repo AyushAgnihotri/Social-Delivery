@@ -60,10 +60,10 @@ public class ItemListActivity extends AppCompatActivity {
 
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
-
-
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private DatabaseReference root=FirebaseDatabase.getInstance().getReference();;
     private DatabaseReference deliveryApp, forUserData;
+
     private String userId;
     private UserDetails userDetails = new UserDetails();
 
@@ -81,7 +81,8 @@ public class ItemListActivity extends AppCompatActivity {
     List <OrderData> orderList = new ArrayList<OrderData>();
 
     public void signOut() {
-        //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        auth = FirebaseAuth.getInstance();
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         auth.signOut();
         sendToLogin();
     }
@@ -117,7 +118,6 @@ public class ItemListActivity extends AppCompatActivity {
                     @Override
                     public void onDrawerSlide(View drawerView, float slideOffset) {
                         // Respond when the drawer's position changes
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         userId = user.getUid();
 
                         forUserData = root.child("deliveryApp").child("users").child(userId);
@@ -180,9 +180,9 @@ public class ItemListActivity extends AppCompatActivity {
 
                         switch(id) {
                             case R.id.sign_out :
-                                Toast.makeText(ItemListActivity.this,"You are going to sign out", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ItemListActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
                                 signOut();
-                                return true;
+
                         }
 
                         // Add code here to update the UI based on the item selected
@@ -269,7 +269,6 @@ public class ItemListActivity extends AppCompatActivity {
       final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
         progressBar.setVisibility(View.VISIBLE);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userId = user.getUid();
 
         deliveryApp = root.child("deliveryApp").child("orders").child(userId);
