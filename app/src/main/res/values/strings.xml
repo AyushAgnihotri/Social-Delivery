@@ -36,7 +36,7 @@
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
     <string name="user_name">Name</string>
     <string name="user_mobile">Mobile No.</string>
-    <string name="user_alt_mobile">Alternate Mobile No.</string>
+    <string name="user_alt_mobile">Alternate Mobile No.(optional)</string>
 
 
     %user
@@ -70,5 +70,19 @@
     %complete profile
 
     <string name="save_details">Save Details</string>
+
+    %item_details
+    <string name="description">Description</string>
+    <string name="imageId">Image ID</string>
+    <string name="min_range">Min:</string>
+    <string name="max_range">Max:</string>
+    <string name="userLocation">User Location</string>
+    <string name="userLocationName">Name:</string>
+    <string name="userLocationLocation">Location:</string>
+    <string name="userLocationPhoneNumber">Location Phone No.:</string>
+    <string name="expiryTime">Expiry time of order</string>
+    <string name="expiryTimeDate">Date:</string>
+    <string name="expiryTimeTime">Time:</string>
+
 
 </resources>

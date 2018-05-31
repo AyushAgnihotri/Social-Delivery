@@ -76,13 +76,13 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Enter your Mobile No.!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if ((mobile.length() != 10) || (alt_mobile.length() != 10)) {
+                if (mobile.length() != 10) {
                     Toast.makeText(getApplicationContext(), "Enter 10-digit Mobile No.!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (TextUtils.isEmpty(alt_mobile)) {
-                    Toast.makeText(getApplicationContext(), "Enter your Alternate Mobile No.!", Toast.LENGTH_SHORT).show();
+                if ((alt_mobile.length() != 0) && (alt_mobile.length() != 10)) {
+                    Toast.makeText(getApplicationContext(), "Enter 10-digit Alt. Mobile No.!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
