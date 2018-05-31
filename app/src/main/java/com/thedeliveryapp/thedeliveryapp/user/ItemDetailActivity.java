@@ -85,8 +85,15 @@ public class ItemDetailActivity extends AppCompatActivity {
             userLocationPhoneNumber.setText(myOrder.userLocation.PhoneNumber);
         }
 
+        System.out.println(myOrder.expiryDate);
+        System.out.println(myOrder.expiryDate.day);
+        System.out.println(myOrder.expiryDate.month);
+        System.out.println(myOrder.expiryDate.year);
+        System.out.println(myOrder.expiryTime);
+        System.out.println(myOrder.expiryTime.hour);
+        System.out.println(myOrder.expiryTime.minute);
 
-        if (myOrder.expiryDate == null) {
+        if (myOrder.expiryDate.day == 0) {
             date = "-";
         } else {
             date = myOrder.expiryDate.day + "/" + myOrder.expiryDate.month + "/" + myOrder.expiryDate.year;
@@ -94,7 +101,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         expiryTime_Date.setText(date);
 
 
-        if (myOrder.expiryTime == null) {
+        if (myOrder.expiryTime.hour == -1) {
             time = "-";
         } else {
             if (myOrder.expiryTime.hour < 12) {

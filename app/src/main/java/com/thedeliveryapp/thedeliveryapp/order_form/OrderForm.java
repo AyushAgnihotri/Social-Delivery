@@ -57,13 +57,11 @@ public class OrderForm extends AppCompatActivity {
     private DatabaseReference deliveryApp;
     private String userId;
     private int OrderNumber;
-    UserLocation userLocation;
-    ExpiryTime expiryTime;
-    ExpiryDate expiryDate;
+    UserLocation userLocation = null;
+    ExpiryTime expiryTime = null;
+    ExpiryDate expiryDate = null;
 
-
-
-   int PLACE_PICKER_REQUEST =1;
+    int PLACE_PICKER_REQUEST =1;
 
 
     @Override
@@ -248,7 +246,7 @@ public class OrderForm extends AppCompatActivity {
         if (id == R.id.action_save) {
             //Default text for date_picker = "ExpiryDate"
             //Default text for time_picker = "ExpiryTime"
-            if(order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")) {
+            if(userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")) {
                 new AlertDialog.Builder(OrderForm.this)
                         .setMessage(getString(R.string.dialog_save))
                         .setPositiveButton(getString(R.string.dialog_ok), null)

@@ -1,7 +1,7 @@
 package com.thedeliveryapp.thedeliveryapp.user.order;
 
 public class ExpiryTime {
-    public int hour;
+    public int hour = -1;
     public int minute;
 
     public  ExpiryTime() {
