@@ -250,6 +250,8 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView.addOnItemTouchListener(new UserOrderTouchListener(this, recyclerView, new UserOrderItemClickListener() {
             @Override
             public void onClick(View view, int position) {
+                if(!((RecyclerViewOrderAdapter)recyclerView.getAdapter()).isClickable)
+                    return;
                 OrderData clickedOrder = orderList.get(position);
                 Intent intent = new Intent(ItemListActivity.this,ItemDetailActivity.class);
                 intent.putExtra("MyOrder",(Parcelable) clickedOrder);

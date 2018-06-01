@@ -20,6 +20,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
     List<OrderData> list;
     Context context;
     List<OrderData> pendingRemovalList;
+    public boolean isClickable = true;
 
     private static final int PENDING_REMOVAL_TIMEOUT = 3000; // 3sec
     private Handler handler = new Handler(); // handler for running delayed runnables
@@ -49,6 +50,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
         if (pendingRemovalList.contains(data)) {
             /** {show swipe layout} and {hide regular layout} */
             holder.cv.setVisibility(View.GONE);
+            isClickable = false;
             holder.swipeLayout.setVisibility(View.VISIBLE);
             holder.undo.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -59,6 +61,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
         } else {
             /** {show regular layout} and {hide swipe layout} */
             holder.cv.setVisibility(View.VISIBLE);
+            isClickable = true;
             holder.swipeLayout.setVisibility(View.GONE);
             //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
             holder.category.setText(list.get(position).category);
