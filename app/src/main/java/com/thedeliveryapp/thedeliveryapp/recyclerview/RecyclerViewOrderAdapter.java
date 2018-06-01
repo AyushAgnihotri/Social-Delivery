@@ -15,7 +15,7 @@ import java.util.List;
 
 public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHolder> {
 
-    List<OrderData> list = ItemListActivity.orderList;
+    List<OrderData> list;
     Context context;
 
     public RecyclerViewOrderAdapter(List<OrderData> list, Context context) {

@@ -82,7 +82,7 @@ public class ItemListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private DrawerLayout mDrawerLayout;
     public static RecyclerViewOrderAdapter adapter;
-    public static List <OrderData> orderList;
+    public List <OrderData> orderList;
 
     public void signOut() {
         auth = FirebaseAuth.getInstance();
