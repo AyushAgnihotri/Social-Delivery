@@ -49,6 +49,7 @@ import com.thedeliveryapp.thedeliveryapp.recyclerview.SwipeOrderUtil;
 import com.thedeliveryapp.thedeliveryapp.recyclerview.UserOrderItemClickListener;
 import com.thedeliveryapp.thedeliveryapp.recyclerview.UserOrderTouchListener;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
+import com.thedeliveryapp.thedeliveryapp.recyclerview.OrderViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -250,7 +251,8 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView.addOnItemTouchListener(new UserOrderTouchListener(this, recyclerView, new UserOrderItemClickListener() {
             @Override
             public void onClick(View view, int position) {
-                if(!((RecyclerViewOrderAdapter)recyclerView.getAdapter()).isClickable)
+                OrderViewHolder viewHolder = (OrderViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
+                if(viewHolder != null && !viewHolder.isClickable)
                     return;
                 OrderData clickedOrder = orderList.get(position);
                 Intent intent = new Intent(ItemListActivity.this,ItemDetailActivity.class);

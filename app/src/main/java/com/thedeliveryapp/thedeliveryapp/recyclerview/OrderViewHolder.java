@@ -17,6 +17,7 @@ public class OrderViewHolder extends RecyclerView.ViewHolder {
     TextView description;
     ImageView imageView;
     TextView undo;
+    public boolean isClickable = true;
     
     OrderViewHolder(View itemView) {
         super(itemView);
