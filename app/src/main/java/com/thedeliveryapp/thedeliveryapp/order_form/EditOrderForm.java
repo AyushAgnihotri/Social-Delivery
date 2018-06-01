@@ -3,27 +3,27 @@ package com.thedeliveryapp.thedeliveryapp.order_form;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Parcelable;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import android.content.Intent;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.user.ItemDetailActivity;
 import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryTime;
@@ -43,62 +44,88 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class OrderForm extends AppCompatActivity {
+public class EditOrderForm extends AppCompatActivity {
+
+
+    private DatabaseReference root;
+    private DatabaseReference order;
+    private String userId;
+    private int OrderNumber, i, i1, year, monthOfYear, dayOfMonth;
 
     TextView category ;
-    Button date_picker;
-    Button time_picker ;
+    Button date_picker, time_picker, user_location;;
     Calendar calendar ;
-    EditText description ;
-    EditText min_int_range ;
-    EditText max_int_range ;
-    EditText delivery_charge;
-
-    Button user_location;
-    private DatabaseReference root;
-    private DatabaseReference deliveryApp;
-    private String userId;
-    private int OrderNumber;
+    EditText description, min_int_range, max_int_range, delivery_charge;
+    OrderData updated_order, myOrder;
     UserLocation userLocation = null;
     ExpiryTime expiryTime = null;
     ExpiryDate expiryDate = null;
-    OrderData order;
-    int order_id;
 
     int PLACE_PICKER_REQUEST =1;
 
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
+    private String date, time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_form);
+        setContentView(R.layout.activity_edit_order_form);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        toolbar.setTitle("New Order");
+        toolbar.setTitle("Edit Order");
         setSupportActionBar(toolbar);
 
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
+        Intent intent = getIntent();
+        myOrder = intent.getParcelableExtra("MyOrder");
 
-
-
-
-        category = findViewById(R.id.btn_category);
-        date_picker = findViewById(R.id.btn_date_picker);
-        time_picker = findViewById(R.id.btn_time_picker);
-        calendar = Calendar.getInstance();
         description = findViewById(R.id.description_of_order);
+        category = findViewById(R.id.btn_category);
+        delivery_charge = findViewById(R.id.delivery_charge);
         min_int_range = findViewById(R.id.min_int);
         max_int_range = findViewById(R.id.max_int);
+        date_picker = findViewById(R.id.btn_date_picker);
+        time_picker = findViewById(R.id.btn_time_picker);
         user_location = findViewById(R.id.user_location);
-        delivery_charge = findViewById(R.id.delivery_charge);
+
+        calendar = Calendar.getInstance();
+        OrderNumber = myOrder.orderId;
+
+        description.setText(myOrder.description);
+        category.setText(myOrder.category);
+        delivery_charge.setText(myOrder.deliveryCharge + "");
+        min_int_range.setText(myOrder.min_range + "");
+        max_int_range.setText(myOrder.max_range + "");
+
+        userLocation = new UserLocation(myOrder.userLocation.Name, myOrder.userLocation.Location, myOrder.userLocation.PhoneNumber);
+
+        year = myOrder.expiryDate.year;
+        monthOfYear = myOrder.expiryDate.month;
+        dayOfMonth = myOrder.expiryDate.day;
+
+        expiryDate = new ExpiryDate(year,monthOfYear,dayOfMonth);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, monthOfYear);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String date = DateFormat.getDateInstance(DateFormat.MEDIUM).format(calendar.getTime());
+        date_picker.setText(date);
+
+        i = myOrder.expiryTime.hour;
+        i1 = myOrder.expiryTime.minute;
+
+        expiryTime = new ExpiryTime(i,i1);
+        calendar.set(Calendar.HOUR_OF_DAY, i);
+        calendar.set(Calendar.MINUTE, i1);
+        String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
+        time_picker.setText(time);
+
+
+
+        /*
+        userLocationName.setText(myOrder.userLocation.Name);
+        userLocationLocation.setText(myOrder.userLocation.Location);
+        */
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +144,7 @@ public class OrderForm extends AppCompatActivity {
                 mcategories.add("Others");
                 //Create sequence of items
                 final CharSequence[] Categories = mcategories.toArray(new String[mcategories.size()]);
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(OrderForm.this);
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(EditOrderForm.this);
                 dialogBuilder.setTitle("Choose Category");
                 dialogBuilder.setItems(Categories, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
@@ -135,7 +162,7 @@ public class OrderForm extends AppCompatActivity {
         date_picker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(OrderForm.this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(EditOrderForm.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         expiryDate = new ExpiryDate(year,monthOfYear,dayOfMonth);
@@ -153,7 +180,7 @@ public class OrderForm extends AppCompatActivity {
         time_picker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog timePickerDialog = new TimePickerDialog(OrderForm.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(EditOrderForm.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
                         expiryTime = new ExpiryTime(i,i1);
@@ -167,15 +194,14 @@ public class OrderForm extends AppCompatActivity {
             }
         });
 
-
         user_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
                 try {
-                    startActivityForResult(builder.build(OrderForm.this), PLACE_PICKER_REQUEST);
+                    startActivityForResult(builder.build(EditOrderForm.this), PLACE_PICKER_REQUEST);
                 } catch (Exception e) {
-                   // Log.e(TAG, e.getStackTrace().toString());
+                    // Log.e(TAG, e.getStackTrace().toString());
                 }
             }
         });
@@ -185,15 +211,14 @@ public class OrderForm extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode,Intent data) {
         if(requestCode == PLACE_PICKER_REQUEST) {
             if(resultCode == RESULT_OK) {
-               Place place = PlacePicker.getPlace(OrderForm.this,data);
-               userLocation = new UserLocation(place.getName().toString(),place.getAddress().toString(),place.getPhoneNumber().toString());
+                Place place = PlacePicker.getPlace(EditOrderForm.this,data);
+                userLocation = new UserLocation(place.getName().toString(),place.getAddress().toString(),place.getPhoneNumber().toString());
                 String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(OrderForm.this, toastMsg, Toast.LENGTH_LONG).show();
+                Toast.makeText(EditOrderForm.this, toastMsg, Toast.LENGTH_LONG).show();
             }
         }
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -203,35 +228,6 @@ public class OrderForm extends AppCompatActivity {
         return true;
     }
 
-    public static int getImageId(String category) {
-        if(category.equals("None"))
-            return R.drawable.ic_action_movie;
-        else if(category.equals("Food") )
-            return R.drawable.ic_action_movie;
-        else if(category.equals("Medicine") )
-            return R.drawable.ic_action_movie;
-        else if(category.equals("Household") )
-            return R.drawable.ic_action_movie;
-        else if(category.equals("Electronics") )
-            return R.drawable.ic_action_movie;
-        else if(category.equals("Toiletries") )
-            return R.drawable.ic_action_movie;
-        else if(category.equals("Books") )
-            return R.drawable.ic_action_movie;
-        else if(category.equals("Clothing") )
-            return R.drawable.ic_action_movie;
-        else if(category.equals("Shoes") )
-            return R.drawable.ic_action_movie;
-        else if(category.equals("Sports") )
-            return R.drawable.ic_action_movie;
-        else if(category.equals("Games") )
-            return R.drawable.ic_action_movie;
-        else
-            return R.drawable.ic_action_movie;
-    }
-
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -240,54 +236,37 @@ public class OrderForm extends AppCompatActivity {
         int id = item.getItemId();
         final String order_description = description.getText().toString();
         final String order_category = category.getText().toString();
+        final String order_delivery_charge = delivery_charge.getText().toString();
         final String order_min_range = min_int_range.getText().toString();
         final String order_max_range = max_int_range.getText().toString();
-        final String order_delivery_charge = delivery_charge.getText().toString();
+
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_save) {
             //Default text for date_picker = "ExpiryDate"
             //Default text for time_picker = "ExpiryTime"
-            if(userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")|| order_delivery_charge.equals("")) {
-                new AlertDialog.Builder(OrderForm.this)
+            if(order_description.equals("") || order_category.equals("None") || order_delivery_charge.equals("") || order_min_range.equals("") || order_max_range.equals("")) {
+                new AlertDialog.Builder(EditOrderForm.this)
                         .setMessage(getString(R.string.dialog_save))
                         .setPositiveButton(getString(R.string.dialog_ok), null)
                         .show();
                 return true;
             }
 
-
-
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();
-
-
             root = FirebaseDatabase.getInstance().getReference();
-            deliveryApp = root.child("deliveryApp");
+            order = root.child("deliveryApp").child("orders").child(userId).child(OrderNumber+"");
 
-            deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
+            order.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.hasChild("totalOrders")) {
-                        root.child("deliveryApp").child("totalOrders").setValue(1);
-                        OrderNumber = 1;
-                        order_id = OrderNumber;
-                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge),"------");
-                        root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
-
-                    }
-                    else {
-                        OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
-                        OrderNumber++;
-                        order_id = OrderNumber;
-                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge),"------");
-                        root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
-                        root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
-
-
-                    }
-                    ItemListActivity.adapter.insert(0,
-                            order);
+                    updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge),"------");
+                    root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(updated_order);
+                    Intent intent = new Intent(EditOrderForm.this, ItemDetailActivity.class);
+                    intent.putExtra("MyOrder",(Parcelable) updated_order);
+                    startActivity(intent);
+                    finish();
                 }
 
                 @Override
@@ -296,16 +275,14 @@ public class OrderForm extends AppCompatActivity {
                 }
             });
 
-
-          finish();
-
-        }
-
-        else if (id==android.R.id.home) {
+        } else if (id==android.R.id.home) {
+            Intent intent = new Intent(EditOrderForm.this, ItemDetailActivity.class);
+            intent.putExtra("MyOrder",(Parcelable) myOrder);
+            startActivity(intent);
+            finish();
 
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 }

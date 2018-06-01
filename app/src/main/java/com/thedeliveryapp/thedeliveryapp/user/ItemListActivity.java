@@ -73,6 +73,7 @@ public class ItemListActivity extends AppCompatActivity {
     private DatabaseReference deliveryApp, forUserData;
 
     private String userId;
+    boolean isRefreshing  = false;
     private UserDetails userDetails = new UserDetails();
 
     NavigationView navigationView;
@@ -170,9 +171,6 @@ public class ItemListActivity extends AppCompatActivity {
         );
 
 
-
-
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -197,8 +195,6 @@ public class ItemListActivity extends AppCompatActivity {
             }
         });
 
-
-
         toolbar.setTitle(getTitle());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -212,27 +208,37 @@ public class ItemListActivity extends AppCompatActivity {
 
             }
         });
+        setUpSwipeRefresh();
+        setUpRecyclerView();
 
+    }
 
-
+    void setUpSwipeRefresh() {
         //Swipe Refresh Layout
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(false);
+                if(isRefreshing) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    return;
+                }
                 refreshOrders();
+                if(swipeRefreshLayout.isRefreshing())
+                    swipeRefreshLayout.setRefreshing(false);
 
             }
+
+
         });
-
-
-
-        fill_with_data();
-        setUpRecyclerView();
-
     }
+   @Override
+    protected void onResume() {
+        super.onResume();
+        refreshOrders();
+    }
+
     void setUpRecyclerView() {
 
         recyclerView = findViewById(R.id.item_list);
@@ -258,6 +264,7 @@ public class ItemListActivity extends AppCompatActivity {
                 Intent intent = new Intent(ItemListActivity.this,ItemDetailActivity.class);
                 intent.putExtra("MyOrder",(Parcelable) clickedOrder);
                 startActivity(intent);
+
             }
 
             @Override
@@ -296,8 +303,10 @@ public class ItemListActivity extends AppCompatActivity {
     void refreshOrders() {
         final int size = orderList.size();
         if (size>0) {
-            orderList.clear();
-            adapter.notifyItemRangeRemoved(0,size);
+            for(int i = 0;i < size;i++) {
+                adapter.remove(0);
+                adapter.notifyItemRemoved(0);
+            }
         }
         fill_with_data();
     }
@@ -307,6 +316,7 @@ public class ItemListActivity extends AppCompatActivity {
         //TODO Add internet connectivity error
         final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
         progressBar.setVisibility(View.VISIBLE);
+        isRefreshing = true;
         userId = user.getUid();
         deliveryApp = root.child("deliveryApp").child("orders").child(userId);
 
@@ -321,6 +331,7 @@ public class ItemListActivity extends AppCompatActivity {
                     //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();
 
                 }
+                isRefreshing = false;
                 progressBar.setVisibility(View.GONE);
 
 

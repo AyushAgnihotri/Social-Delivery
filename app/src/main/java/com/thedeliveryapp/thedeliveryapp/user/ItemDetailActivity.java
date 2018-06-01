@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -49,27 +50,28 @@ public class ItemDetailActivity extends AppCompatActivity {
         deliveryCharge = findViewById(R.id.delivery_charge);
         acceptedBy = findViewById(R.id.accepted_by);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         Intent intent = getIntent();
-        OrderData myOrder = intent.getParcelableExtra("MyOrder");
+        final OrderData myOrder = intent.getParcelableExtra("MyOrder");
         CollapsingToolbarLayout appBarLayout = findViewById(R.id.toolbar_layout);
         if (appBarLayout != null) {
             appBarLayout.setTitle(myOrder.category);
         }
 
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ItemDetailActivity.this,com.thedeliveryapp.thedeliveryapp.order_form.EditOrderForm.class);
+                intent.putExtra("MyOrder",(Parcelable) myOrder);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         category.setText(myOrder.category);
         description.setText(myOrder.description);

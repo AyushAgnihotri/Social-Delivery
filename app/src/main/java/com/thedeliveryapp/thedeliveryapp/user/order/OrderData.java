@@ -60,7 +60,7 @@ public class OrderData implements Parcelable {
         dest.writeInt(deliveryCharge);
 
         dest.writeString(userLocation.Name);
-        dest.writeString( userLocation.Location);
+        dest.writeString(userLocation.Location);
         dest.writeString(userLocation.PhoneNumber);
 
         dest.writeInt(expiryTime.hour);
