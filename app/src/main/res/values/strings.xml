@@ -82,7 +82,7 @@
     <string name="userLocationName">Name:</string>
     <string name="userLocationLocation">Location:</string>
     <string name="userLocationPhoneNumber">Location Phone No.:</string>
-    <string name="expiryTime">Expiry time of order</string>
+    <string name="expiryTime">Order Expiry</string>
     <string name="expiryTimeDate">Date:</string>
     <string name="expiryTimeTime">Time:</string>
 
