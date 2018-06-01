@@ -76,6 +76,8 @@
     %item_details
     <string name="description">Description</string>
     <string name="orderId">order ID</string>
+    <string name="deliveryCharge">Delivery Charge</string>
+    <string name="acceptedBy">Accepted By</string>
     <string name="min_range">Min:</string>
     <string name="max_range">Max:</string>
     <string name="userLocation">User Location</string>

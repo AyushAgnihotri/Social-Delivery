@@ -21,7 +21,7 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 public class ItemDetailActivity extends AppCompatActivity {
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
-            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time;
+            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, acceptedBy;
     private String date, time;
 
     @Override
@@ -46,6 +46,8 @@ public class ItemDetailActivity extends AppCompatActivity {
         userLocationPhoneNumber = findViewById(R.id.userLocationPhoneNumber);
         expiryTime_Date = findViewById(R.id.expiryTime_Date);
         expiryTime_Time = findViewById(R.id.expiryTime_Time);
+        deliveryCharge = findViewById(R.id.delivery_charge);
+        acceptedBy = findViewById(R.id.accepted_by);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +78,8 @@ public class ItemDetailActivity extends AppCompatActivity {
         max_range.setText(myOrder.max_range + "");
         userLocationName.setText(myOrder.userLocation.Name);
         userLocationLocation.setText(myOrder.userLocation.Location);
-
+        deliveryCharge.setText((myOrder.deliveryCharge+""));
+        acceptedBy.setText((myOrder.acceptedBy+""));
 
         if (myOrder.userLocation.PhoneNumber.equals("")) {
             userLocationPhoneNumber.setText("-");

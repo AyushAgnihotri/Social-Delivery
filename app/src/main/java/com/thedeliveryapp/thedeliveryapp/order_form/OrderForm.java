@@ -52,6 +52,8 @@ public class OrderForm extends AppCompatActivity {
     EditText description ;
     EditText min_int_range ;
     EditText max_int_range ;
+    EditText delivery_charge;
+
     Button user_location;
     private DatabaseReference root;
     private DatabaseReference deliveryApp;
@@ -96,6 +98,7 @@ public class OrderForm extends AppCompatActivity {
         min_int_range = findViewById(R.id.min_int);
         max_int_range = findViewById(R.id.max_int);
         user_location = findViewById(R.id.user_location);
+        delivery_charge = findViewById(R.id.delivery_charge);
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,12 +245,13 @@ public class OrderForm extends AppCompatActivity {
         final String order_category = category.getText().toString();
         final String order_min_range = min_int_range.getText().toString();
         final String order_max_range = max_int_range.getText().toString();
+        final String order_delivery_charge = delivery_charge.getText().toString();
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_save) {
             //Default text for date_picker = "ExpiryDate"
             //Default text for time_picker = "ExpiryTime"
-            if(userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")) {
+            if(userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")|| order_delivery_charge.equals("")) {
                 new AlertDialog.Builder(OrderForm.this)
                         .setMessage(getString(R.string.dialog_save))
                         .setPositiveButton(getString(R.string.dialog_ok), null)
@@ -271,7 +275,7 @@ public class OrderForm extends AppCompatActivity {
                         root.child("deliveryApp").child("totalOrders").setValue(1);
                         OrderNumber = 1;
                         order_id = OrderNumber;
-                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING");
+                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge),"------");
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
 
                     }
@@ -279,7 +283,7 @@ public class OrderForm extends AppCompatActivity {
                         OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
                         OrderNumber++;
                         order_id = OrderNumber;
-                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING");
+                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge),"------");
                         root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
 

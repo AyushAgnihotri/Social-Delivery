@@ -210,7 +210,7 @@ public class ItemListActivity extends AppCompatActivity {
         });
 
 
-
+        //TODO FIX THE BUG : On swipe action fetched orders are appended again on previously fetched orders.
         //Swipe Refresh Layout
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
 
