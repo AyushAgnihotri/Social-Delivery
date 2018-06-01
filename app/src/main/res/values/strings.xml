@@ -91,6 +91,10 @@
     %main
     <string name="choose_mode">Choose Mode of Usage</string>
 
+    %swipetodelete
+    <string name="archived_label">Archived</string>
+    <string name="undo_label">Undo</string>
+
 
 
 </resources>
