@@ -350,10 +350,10 @@ public class DelivererViewActivity extends AppCompatActivity {
                     }
                     for(DataSnapshot orderdata: userdata.getChildren()) {
                         OrderData order = orderdata.getValue(OrderData.class);
-                        if ( (order.status.equals("PENDING") && pending) ||
-                                (order.status.equals("ACTIVE") && active) ||
-                                (order.status.equals("COMPLETED") && completed)
-                                ) {
+                        if ( (order.status.equals("PENDING") && pending ) ||
+                                (order.status.equals("ACTIVE") && active && userId.equals(order.acceptedBy.delivererID)) ||
+                                (order.status.equals("COMPLETED") && completed && userId.equals(order.acceptedBy.delivererID)
+                                )) {
                             adapter.insert(0,order);
                             //   Toast.makeText(ItemListActivity.this,Integer.toString(order.max_range), Toast.LENGTH_SHORT).show();
                             //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();
