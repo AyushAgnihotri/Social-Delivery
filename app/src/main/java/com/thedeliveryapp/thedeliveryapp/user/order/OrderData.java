@@ -13,7 +13,7 @@ public class OrderData implements Parcelable {
     public ExpiryDate expiryDate = new ExpiryDate();
     public ExpiryTime expiryTime = new ExpiryTime();
     public String status;
-    public String acceptedBy;
+    public AcceptedBy acceptedBy;
     public int deliveryCharge;
 
     public OrderData() {
@@ -28,7 +28,6 @@ public class OrderData implements Parcelable {
         min_range = in.readInt();
         max_range = in.readInt();
         status = in.readString();
-        acceptedBy = in.readString();
         deliveryCharge = in.readInt();
 
         userLocation.Name = in.readString();
@@ -41,6 +40,12 @@ public class OrderData implements Parcelable {
         expiryDate.year = in.readInt();
         expiryDate.month = in.readInt();
         expiryDate.day = in.readInt();
+
+        acceptedBy.year = in.readInt();
+        acceptedBy.month = in.readInt();
+        acceptedBy.day = in.readInt();
+        acceptedBy.year = in.readInt();
+        acceptedBy.month = in.readInt();
     }
 
     @Override

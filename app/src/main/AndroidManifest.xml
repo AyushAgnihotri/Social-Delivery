@@ -70,14 +70,16 @@
             android:name=".order_form.OrderForm"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:parentActivityName=".user.UserViewActivity" />
-        <activity
-            android:name=".login.OtherSignup">
+        <activity android:name=".login.OtherSignup">
             android:label="@string/title_other_signup"
         </activity>
         <activity
             android:name=".order_form.EditOrderForm"
-            android:parentActivityName=".user.UserOrderDetailActivity">
-        </activity>
+            android:parentActivityName=".user.UserOrderDetailActivity" />
+        <activity
+            android:name=".deliverer.DelivererViewActivity"
+            android:label="@string/deliverer_all" />
+        <activity android:name=".deliverer.DelivererOrderDetailActivity"></activity>
     </application>
 
 </manifest>

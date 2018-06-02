@@ -95,6 +95,12 @@
     <string name="archived_label">Archived</string>
     <string name="undo_label">Undo</string>
 
+    %delivererOrderDetails
+
+    <string name="deliverer_all">All Orders</string>
+    <string name="btn_accept">Accept</string>
+    <string name="btn_reject">Reject</string>
+    <string name="btn_show_path">Show Path</string>
 
 
 </resources>
