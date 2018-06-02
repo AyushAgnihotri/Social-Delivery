@@ -67,9 +67,12 @@ public class DelivererViewActivity extends AppCompatActivity {
     View mHeaderView;
     Toolbar toolbar;
 
+
     TextView textViewUserName;
     TextView textViewEmail;
-
+    boolean pending ;
+    boolean active ;
+    boolean completed ;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -85,9 +88,15 @@ public class DelivererViewActivity extends AppCompatActivity {
         setUpToolBarAndActionBar();
         setUpNavigationView();
         setUpDrawerLayout();
+        setDefaultFlags();
         setUpSwipeRefresh();
         setUpRecyclerView();
 
+    }
+    void setDefaultFlags() {
+        completed = false;
+        active = true;
+        pending = true;
     }
 
     void setUpNavigationView() {
@@ -102,13 +111,37 @@ public class DelivererViewActivity extends AppCompatActivity {
 
                 int id = menuItem.getItemId();
 
-                switch(id) {
-                    case R.id.sign_out :
-                        Toast.makeText(DelivererViewActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
-                        signOut();
+                if(id == R.id.sign_out) {
+                    Toast.makeText(DelivererViewActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
+                    signOut();
+                }
+                else if(id == R.id.all_orders) {
+                    setDefaultFlags();
+                    toolbar.setTitle("All Orders");
+                    refreshOrders();
+                }
+                else if(id == R.id.completed) {
+                    active = false;
+                    pending = false;
+                    completed = true;
+                    toolbar.setTitle("Completed");
+                    refreshOrders();
 
                 }
-
+                else if(id == R.id.active) {
+                    active = true;
+                    pending = false;
+                    completed = false;
+                    toolbar.setTitle("Active");
+                    refreshOrders();
+                }
+                else if(id == R.id.pending) {
+                    active = false;
+                    pending = true;
+                    completed = false;
+                    toolbar.setTitle("Pending");
+                    refreshOrders();
+                }
                 // Add code here to update the UI based on the item selected
                 // For example, swap UI fragments here
                 mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -312,7 +345,10 @@ public class DelivererViewActivity extends AppCompatActivity {
                     }
                     for(DataSnapshot orderdata: userdata.getChildren()) {
                         OrderData order = orderdata.getValue(OrderData.class);
-                        if (order.status.equals("PENDING") || order.status.equals("ACTIVE")) {
+                        if ( (order.status.equals("PENDING") && pending) ||
+                                (order.status.equals("ACTIVE") && active) ||
+                                (order.status.equals("COMPLETED") && completed)
+                                ) {
                             adapter.insert(0,order);
                             //   Toast.makeText(ItemListActivity.this,Integer.toString(order.max_range), Toast.LENGTH_SHORT).show();
                             //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();

@@ -24,9 +24,9 @@
                 android:icon="@drawable/ic_menu_send"
                 android:title="All orders" />
             <item
-                android:id="@+id/accepted"
+                android:id="@+id/active"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Accepted" />
+                android:title="Active" />
             <item
                 android:id="@+id/pending"
                 android:icon="@drawable/ic_menu_send"
