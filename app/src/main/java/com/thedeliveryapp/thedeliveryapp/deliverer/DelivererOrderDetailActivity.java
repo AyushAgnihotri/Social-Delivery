@@ -30,7 +30,7 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 public class DelivererOrderDetailActivity extends AppCompatActivity {
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
-            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge;
+            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
     private String date, time;
     private Button btn_accept, btn_show_path;
     private DatabaseReference root, allorders, ref1, ref2, deliverer;
@@ -60,6 +60,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity {
         expiryTime_Date = findViewById(R.id.expiryTime_Date);
         expiryTime_Time = findViewById(R.id.expiryTime_Time);
         deliveryCharge = findViewById(R.id.delivery_charge);
+        status = findViewById(R.id.status);
         btn_accept = (Button) findViewById(R.id.btn_accept);
         btn_show_path = (Button) findViewById(R.id.btn_show_path);
 
@@ -75,7 +76,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity {
             appBarLayout.setTitle(myOrder.category);
         }
 
-        if (myOrder.status.equals("COMPLETED")) {
+        if (myOrder.status.equals("FINISHED")) {
             btn_accept.setEnabled(false);
             btn_accept.setVisibility(View.GONE);
             btn_show_path.setEnabled(false);
@@ -96,12 +97,14 @@ public class DelivererOrderDetailActivity extends AppCompatActivity {
 
         category.setText(myOrder.category);
         description.setText(myOrder.description);
+        status.setText(myOrder.status);
         orderId.setText(myOrder.orderId + "");
         min_range.setText(myOrder.min_range + "");
         max_range.setText(myOrder.max_range + "");
         userLocationName.setText(myOrder.userLocation.Name);
         userLocationLocation.setText(myOrder.userLocation.Location);
         deliveryCharge.setText((myOrder.deliveryCharge+""));
+
 
         if (myOrder.userLocation.PhoneNumber.equals("")) {
             userLocationPhoneNumber.setText("-");
@@ -182,6 +185,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity {
 
                                                 btn_accept.setText("Reject");
                                                 myOrder.status = "ACTIVE";
+                                                status.setText((myOrder.status));
 
                                                 ref2 = ref1.child("acceptedBy");
                                                 ref2.child("name").setValue(deliverer_data.name);
@@ -216,6 +220,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity {
 
                                                 btn_accept.setText("Accept");
                                                 myOrder.status = "PENDING";
+                                                status.setText((myOrder.status));
 
                                                 ref2 = ref1.child("acceptedBy");
                                                 ref2.child("name").setValue("-");

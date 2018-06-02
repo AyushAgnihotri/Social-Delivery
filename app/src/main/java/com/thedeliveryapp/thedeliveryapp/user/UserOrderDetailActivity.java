@@ -19,7 +19,7 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 public class UserOrderDetailActivity extends AppCompatActivity {
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
-            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge;
+            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
     private String date, time;
     Button acceptedBy;
 
@@ -47,6 +47,7 @@ public class UserOrderDetailActivity extends AppCompatActivity {
         expiryTime_Time = findViewById(R.id.expiryTime_Time);
         deliveryCharge = findViewById(R.id.delivery_charge);
         acceptedBy = findViewById(R.id.btn_accepted_by);
+        status = findViewById(R.id.status);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -73,6 +74,7 @@ public class UserOrderDetailActivity extends AppCompatActivity {
 
         category.setText(myOrder.category);
         description.setText(myOrder.description);
+        status.setText((myOrder.status));
         orderId.setText(myOrder.orderId + "");
         min_range.setText(myOrder.min_range + "");
         max_range.setText(myOrder.max_range + "");
