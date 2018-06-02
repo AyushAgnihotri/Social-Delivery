@@ -57,26 +57,26 @@
             android:label="@string/title_activity_reset_password"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".user.ItemListActivity"
+            android:name=".user.UserViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/my_orders"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".user.ItemDetailActivity"
+            android:name=".user.UserOrderDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_item_detail"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".order_form.OrderForm"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:parentActivityName=".user.ItemListActivity" />
+            android:parentActivityName=".user.UserViewActivity" />
         <activity
             android:name=".login.OtherSignup">
             android:label="@string/title_other_signup"
         </activity>
         <activity
             android:name=".order_form.EditOrderForm"
-            android:parentActivityName=".user.ItemDetailActivity">
+            android:parentActivityName=".user.UserOrderDetailActivity">
         </activity>
     </application>
 

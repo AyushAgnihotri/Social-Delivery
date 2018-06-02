@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,7 +22,7 @@ import android.widget.Toast;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import android.content.Intent;
-import com.google.android.gms.maps.model.LatLngBounds;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,7 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
-import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
+import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryTime;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
@@ -286,7 +285,7 @@ public class OrderForm extends AppCompatActivity {
 
 
                     }
-                    ItemListActivity.adapter.insert(0,
+                    UserViewActivity.adapter.insert(0,
                             order);
                 }
 

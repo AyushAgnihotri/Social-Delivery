@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Parcelable;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,8 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
-import com.thedeliveryapp.thedeliveryapp.user.ItemDetailActivity;
-import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
+import com.thedeliveryapp.thedeliveryapp.user.UserOrderDetailActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryTime;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
@@ -263,7 +261,7 @@ public class EditOrderForm extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge),"------");
                     root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(updated_order);
-                    Intent intent = new Intent(EditOrderForm.this, ItemDetailActivity.class);
+                    Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
                     intent.putExtra("MyOrder",(Parcelable) updated_order);
                     startActivity(intent);
                     finish();
@@ -276,7 +274,7 @@ public class EditOrderForm extends AppCompatActivity {
             });
 
         } else if (id==android.R.id.home) {
-            Intent intent = new Intent(EditOrderForm.this, ItemDetailActivity.class);
+            Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
             intent.putExtra("MyOrder",(Parcelable) myOrder);
             startActivity(intent);
             finish();

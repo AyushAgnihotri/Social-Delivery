@@ -1,32 +1,24 @@
 package com.thedeliveryapp.thedeliveryapp.user;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +41,6 @@ import com.thedeliveryapp.thedeliveryapp.recyclerview.SwipeOrderUtil;
 import com.thedeliveryapp.thedeliveryapp.recyclerview.UserOrderItemClickListener;
 import com.thedeliveryapp.thedeliveryapp.recyclerview.UserOrderTouchListener;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
-import com.thedeliveryapp.thedeliveryapp.recyclerview.OrderViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +51,11 @@ import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiCl
  * An activity representing a list of Items. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link ItemDetailActivity} representing
+ * lead to a {@link UserOrderDetailActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class ItemListActivity extends AppCompatActivity {
+public class UserViewActivity extends AppCompatActivity {
 
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
@@ -97,7 +88,7 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
     public void sendToLogin() {
-        Intent loginIntent = new Intent(ItemListActivity.this, LoginActivity.class);
+        Intent loginIntent = new Intent(UserViewActivity.this, LoginActivity.class);
         startActivity(loginIntent);
         finish();
     }
@@ -118,7 +109,7 @@ public class ItemListActivity extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(ItemListActivity.this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(UserViewActivity.this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -183,7 +174,7 @@ public class ItemListActivity extends AppCompatActivity {
 
                 switch(id) {
                     case R.id.sign_out :
-                        Toast.makeText(ItemListActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(UserViewActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
                         signOut();
 
                 }
@@ -202,7 +193,7 @@ public class ItemListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //TODO : improve OrderData
-                Intent intent = new Intent(ItemListActivity.this, OrderForm.class);
+                Intent intent = new Intent(UserViewActivity.this, OrderForm.class);
                 startActivity(intent);
                 //finish();
 
@@ -261,7 +252,7 @@ public class ItemListActivity extends AppCompatActivity {
                 if(viewHolder != null && !viewHolder.isClickable)
                     return;
                 OrderData clickedOrder = orderList.get(position);
-                Intent intent = new Intent(ItemListActivity.this,ItemDetailActivity.class);
+                Intent intent = new Intent(UserViewActivity.this,UserOrderDetailActivity.class);
                 intent.putExtra("MyOrder",(Parcelable) clickedOrder);
                 startActivity(intent);
 
@@ -273,7 +264,7 @@ public class ItemListActivity extends AppCompatActivity {
             }
         }));
 
-        SwipeOrderUtil swipeHelper = new SwipeOrderUtil(0, ItemTouchHelper.LEFT,ItemListActivity.this) {
+        SwipeOrderUtil swipeHelper = new SwipeOrderUtil(0, ItemTouchHelper.LEFT,UserViewActivity.this) {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int swipedPosition = viewHolder.getAdapterPosition();

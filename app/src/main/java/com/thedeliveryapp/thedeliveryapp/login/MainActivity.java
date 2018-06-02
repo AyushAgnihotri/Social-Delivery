@@ -9,14 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.thedeliveryapp.thedeliveryapp.R;
-import com.thedeliveryapp.thedeliveryapp.user.ItemListActivity;
-
-import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiClient;
+import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,14 +62,14 @@ public class MainActivity extends AppCompatActivity {
         use_as_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ItemListActivity.class));
+                startActivity(new Intent(MainActivity.this, UserViewActivity.class));
             }
         });
 
         use_as_deliverer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ItemListActivity.class));
+                startActivity(new Intent(MainActivity.this, UserViewActivity.class));
             }
         });
 

@@ -1,14 +1,10 @@
 package com.thedeliveryapp.thedeliveryapp.user;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +15,7 @@ import android.widget.TextView;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
-public class ItemDetailActivity extends AppCompatActivity {
+public class UserOrderDetailActivity extends AppCompatActivity {
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
             userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, acceptedBy;
@@ -66,7 +62,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ItemDetailActivity.this,com.thedeliveryapp.thedeliveryapp.order_form.EditOrderForm.class);
+                Intent intent = new Intent(UserOrderDetailActivity.this,com.thedeliveryapp.thedeliveryapp.order_form.EditOrderForm.class);
                 intent.putExtra("MyOrder",(Parcelable) myOrder);
                 startActivity(intent);
                 finish();
