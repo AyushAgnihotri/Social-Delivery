@@ -82,6 +82,11 @@ public class UserViewActivity extends AppCompatActivity {
     public List <OrderData> orderList;
     Toolbar toolbar;
 
+    boolean pending;
+    boolean completed;
+    boolean cancelled;
+    boolean active;
+    boolean expired;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +97,18 @@ public class UserViewActivity extends AppCompatActivity {
         setUpDrawerLayout();
         setUpFloatingActionButton();
         setUpSwipeRefresh();
+        setDefaultFlags();
         setUpRecyclerView();
 
     }
 
+    void setDefaultFlags() {
+        active = true;
+        pending = true;
+        completed = false;
+        expired = false;
+        cancelled = false;
+    }
     public void signOut() {
         auth = FirebaseAuth.getInstance();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
@@ -128,7 +141,50 @@ public class UserViewActivity extends AppCompatActivity {
                     startActivity(new Intent(UserViewActivity.this, DelivererViewActivity.class));
                     finish();
                 }
-
+                else if(id == R.id.all_orders_user) {
+                    setDefaultFlags();
+                    refreshOrders();
+                }
+                else if(id == R.id.active_user) {
+                    active = true;
+                    pending = false;
+                    cancelled = false;
+                    expired = false;
+                    completed = false;
+                    refreshOrders();
+                }
+                else if(id == R.id.pending_user) {
+                    active = false;
+                    pending = true;
+                    cancelled = false;
+                    expired = false;
+                    completed = false;
+                    refreshOrders();
+                }
+                else if(id == R.id.cancelled_user) {
+                    active = false;
+                    pending = false;
+                    cancelled = false;
+                    expired = false;
+                    completed = true;
+                    refreshOrders();
+                }
+                else if(id == R.id.expired_user) {
+                    active = false;
+                    pending = false;
+                    cancelled = false;
+                    expired = true;
+                    completed = false;
+                    refreshOrders();
+                }
+                else if(id == R.id.completed_user) {
+                    active = false;
+                    pending = false;
+                    cancelled = false;
+                    expired = false;
+                    completed = true;
+                    refreshOrders();
+                }
                 // Add code here to update the UI based on the item selected
                 // For example, swap UI fragments here
                 mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -329,6 +385,11 @@ public class UserViewActivity extends AppCompatActivity {
 
                 for(DataSnapshot orders: dataSnapshot.getChildren()) {
                     OrderData order = orders.getValue(OrderData.class);
+                    if( (order.status.equals("PENDING") && pending) ||
+                            (order.status.equals("ACTIVE") && active) ||
+                            (order.status.equals("COMPLETED") && completed) ||
+                            (order.status.equals("CANCELLED") && cancelled) ||
+                            (order.status.equals("EXPIRED") && expired))
                     adapter.insert(0,order);
                     //   Toast.makeText(ItemListActivity.this,Integer.toString(order.max_range), Toast.LENGTH_SHORT).show();
                     //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();
