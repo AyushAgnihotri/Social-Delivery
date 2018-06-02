@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -14,13 +15,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 public class UserOrderDetailActivity extends AppCompatActivity {
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
             userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
-    private String date, time;
+    private String date, time, deliverer_details;
     Button acceptedBy;
 
     @Override
@@ -61,6 +63,13 @@ public class UserOrderDetailActivity extends AppCompatActivity {
             appBarLayout.setTitle(myOrder.category);
         }
 
+        if (myOrder.status.equals("PENDING") || myOrder.status.equals("CANCELLED") || myOrder.status.equals("EXPIRED")) {
+            acceptedBy.setEnabled(false);
+            acceptedBy.setVisibility(View.GONE);
+        } else if (myOrder.status.equals("FINISHED")) {
+            acceptedBy.setText("Delivered By");
+        }
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +78,22 @@ public class UserOrderDetailActivity extends AppCompatActivity {
                 intent.putExtra("MyOrder",(Parcelable) myOrder);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        deliverer_details = "Name: \t\t\t" + myOrder.acceptedBy.name + "\nMobile: \t\t\t" + myOrder.acceptedBy.mobile;
+        if (!myOrder.acceptedBy.alt_mobile.equals("")) {
+            deliverer_details += "\nAlt. Mobile: \t\t\t" + myOrder.acceptedBy.alt_mobile;
+        }
+        deliverer_details += "\nE-mail: \t\t\t" + myOrder.acceptedBy.email;
+        acceptedBy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(UserOrderDetailActivity.this)
+                        .setTitle("Deliverer Details")
+                        .setMessage(deliverer_details)
+                        .setPositiveButton(getString(R.string.dialog_ok), null)
+                        .show();
             }
         });
 

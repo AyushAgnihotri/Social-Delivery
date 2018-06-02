@@ -82,16 +82,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity {
             btn_show_path.setEnabled(false);
             btn_show_path.setVisibility(View.GONE);
         } else if (myOrder.status.equals("ACTIVE")) {
-            btn_accept.setEnabled(true);
-            btn_accept.setVisibility(View.VISIBLE);
-            btn_show_path.setEnabled(true);
-            btn_show_path.setVisibility(View.VISIBLE);
             btn_accept.setText("Reject");
-        } else {
-            btn_accept.setEnabled(true);
-            btn_accept.setVisibility(View.VISIBLE);
-            btn_show_path.setEnabled(true);
-            btn_show_path.setVisibility(View.VISIBLE);
         }
 
 
