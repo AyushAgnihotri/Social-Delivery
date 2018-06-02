@@ -61,7 +61,7 @@ public class UserViewActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private DatabaseReference root=FirebaseDatabase.getInstance().getReference();;
+    private DatabaseReference root=FirebaseDatabase.getInstance().getReference();
     private DatabaseReference deliveryApp, forUserData;
 
     private String userId;
@@ -167,9 +167,9 @@ public class UserViewActivity extends AppCompatActivity {
                 else if(id == R.id.cancelled_user) {
                     active = false;
                     pending = false;
-                    cancelled = false;
+                    cancelled = true;
                     expired = false;
-                    finished = true;
+                    finished = false;
                     toolbar.setTitle("Cancelled");
                     refreshOrders();
                 }
@@ -349,6 +349,9 @@ public class UserViewActivity extends AppCompatActivity {
             @Override
             public int getSwipeDirs(RecyclerView tempRecyclerView,RecyclerView.ViewHolder viewHolder) {
                 int position = viewHolder.getAdapterPosition();
+
+                if(!orderList.get(position).status.equals("PENDING"))
+                    return 0;
                 RecyclerViewOrderAdapter adapter = (RecyclerViewOrderAdapter) recyclerView.getAdapter();
                 if(adapter.isPendingRemoval(position)) {
                     return  0;

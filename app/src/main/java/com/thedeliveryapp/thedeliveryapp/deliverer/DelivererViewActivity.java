@@ -55,7 +55,7 @@ public class DelivererViewActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private DatabaseReference root= FirebaseDatabase.getInstance().getReference();;
+    private DatabaseReference root= FirebaseDatabase.getInstance().getReference();
     private DatabaseReference forUserData;
     private DatabaseReference users;
 
@@ -293,32 +293,7 @@ public class DelivererViewActivity extends AppCompatActivity {
             }
         }));
 
-        SwipeOrderUtil swipeHelper = new SwipeOrderUtil(0, ItemTouchHelper.LEFT,DelivererViewActivity.this) {
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int swipedPosition = viewHolder.getAdapterPosition();
-                RecyclerViewOrderAdapter adapter = (RecyclerViewOrderAdapter) recyclerView.getAdapter();
-                adapter.pendingRemoval(swipedPosition);
-            }
 
-            @Override
-            public int getSwipeDirs(RecyclerView tempRecyclerView,RecyclerView.ViewHolder viewHolder) {
-                int position = viewHolder.getAdapterPosition();
-                RecyclerViewOrderAdapter adapter = (RecyclerViewOrderAdapter) recyclerView.getAdapter();
-                if(adapter.isPendingRemoval(position)) {
-                    return  0;
-                }
-                return super.getSwipeDirs(tempRecyclerView,viewHolder);
-            }
-        };
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeHelper);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
-
-        //set swipe label
-        swipeHelper.setLeftSwipeLable("Archive");
-        //set swipe background-Color
-        swipeHelper.setLeftcolorCode(R.color.cardview_dark_background);
     }
     void refreshOrders() {
         final int size = orderList.size();

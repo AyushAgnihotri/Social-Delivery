@@ -60,7 +60,7 @@ public abstract class SwipeOrderUtil extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                             float dX, float dY, int actionState, boolean isCurrentlyActive) {
- 
+
         View itemView = viewHolder.itemView;
         if (!initiated) {
             init();
