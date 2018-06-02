@@ -388,7 +388,7 @@ tools:ignore="MergeRootFrame">
             android:layout_centerInParent="true"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:background="@color/primary"
+            android:background="@drawable/button_round_main"
             android:text="@string/btn_show_path"
             android:textColor="@color/black" />
 
@@ -400,8 +400,8 @@ tools:ignore="MergeRootFrame">
             android:layout_centerInParent="true"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:background="@color/primary"
             android:text="@string/btn_accept"
+            android:background="@drawable/button_round_main"
             android:textColor="@color/black" />
 
 

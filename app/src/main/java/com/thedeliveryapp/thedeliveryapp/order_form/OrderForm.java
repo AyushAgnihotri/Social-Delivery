@@ -256,7 +256,6 @@ public class OrderForm extends AppCompatActivity {
             }
 
 
-
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();
 
