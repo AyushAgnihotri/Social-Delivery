@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.thedeliveryapp.thedeliveryapp.R;
@@ -18,8 +19,9 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 public class UserOrderDetailActivity extends AppCompatActivity {
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
-            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, acceptedBy;
+            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge;
     private String date, time;
+    Button acceptedBy;
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -44,7 +46,7 @@ public class UserOrderDetailActivity extends AppCompatActivity {
         expiryTime_Date = findViewById(R.id.expiryTime_Date);
         expiryTime_Time = findViewById(R.id.expiryTime_Time);
         deliveryCharge = findViewById(R.id.delivery_charge);
-        acceptedBy = findViewById(R.id.accepted_by);
+        acceptedBy = findViewById(R.id.btn_accepted_by);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -77,7 +79,6 @@ public class UserOrderDetailActivity extends AppCompatActivity {
         userLocationName.setText(myOrder.userLocation.Name);
         userLocationLocation.setText(myOrder.userLocation.Location);
         deliveryCharge.setText((myOrder.deliveryCharge+""));
-        acceptedBy.setText((myOrder.acceptedBy+""));
 
         if (myOrder.userLocation.PhoneNumber.equals("")) {
             userLocationPhoneNumber.setText("-");

@@ -13,7 +13,7 @@ public class OrderData implements Parcelable {
     public ExpiryDate expiryDate = new ExpiryDate();
     public ExpiryTime expiryTime = new ExpiryTime();
     public String status;
-    public AcceptedBy acceptedBy;
+    public AcceptedBy acceptedBy = new AcceptedBy();
     public int deliveryCharge;
 
     public OrderData() {
@@ -21,7 +21,7 @@ public class OrderData implements Parcelable {
         //Don't ever try to delete it.
     }
 
-    public  OrderData(Parcel in) {
+    public OrderData(Parcel in) {
         category = in.readString();
         description = in.readString();
         orderId = in.readInt();
@@ -41,11 +41,11 @@ public class OrderData implements Parcelable {
         expiryDate.month = in.readInt();
         expiryDate.day = in.readInt();
 
-        acceptedBy.year = in.readInt();
-        acceptedBy.month = in.readInt();
-        acceptedBy.day = in.readInt();
-        acceptedBy.year = in.readInt();
-        acceptedBy.month = in.readInt();
+        acceptedBy.name = in.readString();
+        acceptedBy.mobile = in.readString();
+        acceptedBy.alt_mobile = in.readString();
+        acceptedBy.email = in.readString();
+        acceptedBy.delivererID = in.readString();
     }
 
     @Override
@@ -61,7 +61,6 @@ public class OrderData implements Parcelable {
         dest.writeInt(min_range);
         dest.writeInt(max_range);
         dest.writeString(status);
-        dest.writeString(acceptedBy);
         dest.writeInt(deliveryCharge);
 
         dest.writeString(userLocation.Name);
@@ -74,6 +73,12 @@ public class OrderData implements Parcelable {
         dest.writeInt(expiryDate.year);
         dest.writeInt(expiryDate.month);
         dest.writeInt(expiryDate.day);
+
+        dest.writeString(acceptedBy.name);
+        dest.writeString(acceptedBy.mobile);
+        dest.writeString(acceptedBy.alt_mobile);
+        dest.writeString(acceptedBy.email);
+        dest.writeString(acceptedBy.delivererID);
     }
 
     public static  final Parcelable.Creator<OrderData> CREATOR = new Parcelable.Creator<OrderData>() {
@@ -87,7 +92,7 @@ public class OrderData implements Parcelable {
     };
 
 
-    public OrderData(String category, String description, int orderId, int max_range, int min_range,UserLocation location,ExpiryDate expiryDate,ExpiryTime expiryTime,String status,int deliveryCharge, String acceptedBy) {
+    public OrderData(String category, String description, int orderId, int max_range, int min_range,UserLocation location,ExpiryDate expiryDate,ExpiryTime expiryTime,String status,int deliveryCharge, AcceptedBy acceptedBy) {
         this.category = category;
         this.description = description;
         this.orderId = orderId;

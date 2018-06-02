@@ -2,18 +2,18 @@ package com.thedeliveryapp.thedeliveryapp.user.order;
 
 import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
 
-public class AcceptedBy extends UserDetails{
-    public String delivererID;
+public class AcceptedBy {
+    public String name, mobile, alt_mobile, email, delivererID;
 
     public AcceptedBy() {
 
     }
 
-    public  AcceptedBy(String name, String email, String delivererID, String mobile, String alt_mobile) {
+    public AcceptedBy(String name, String mobile, String alt_mobile, String email, String delivererID) {
         this.name = name;
-        this.Email = email;
+        this.mobile = mobile;
+        this.alt_mobile = alt_mobile;
+        this.email = email;
         this.delivererID = delivererID;
-        this.Mobile = mobile;
-        this.Alt_Mobile = alt_mobile;
     }
 }

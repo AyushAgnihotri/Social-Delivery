@@ -380,32 +380,16 @@
                 android:text=""
                 android:textColor="@color/black" />
 
-
-            <TextView
-                android:id="@+id/accepted_by_h"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/delivery_charge"
-                android:layout_marginTop="10dp"
-                android:textSize="16sp"
-                android:background="@color/primary"
-                android:padding="10dp"
-                android:text="@string/acceptedBy"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/accepted_by"
-                android:layout_width="400dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/accepted_by_h"
-                android:background="@color/gray"
-                android:padding="10dp"
+            <Button
+                android:id="@+id/btn_accepted_by"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:text=""
+                android:layout_below="@id/delivery_charge"
+                android:layout_centerInParent="true"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:background="@color/primary"
+                android:text="@string/btn_accepted_by"
                 android:textColor="@color/black" />
 
 
