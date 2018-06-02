@@ -56,7 +56,8 @@ public class DelivererViewActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private DatabaseReference root= FirebaseDatabase.getInstance().getReference();;
-    private DatabaseReference forUserData, allorders, users;
+    private DatabaseReference forUserData;
+    private DatabaseReference users;
 
     private String userId;
     boolean isRefreshing  = false;
@@ -64,6 +65,7 @@ public class DelivererViewActivity extends AppCompatActivity {
 
     NavigationView navigationView;
     View mHeaderView;
+    Toolbar toolbar;
 
     TextView textViewUserName;
     TextView textViewEmail;
@@ -75,88 +77,21 @@ public class DelivererViewActivity extends AppCompatActivity {
     public static RecyclerViewOrderAdapter adapter;
     public List<OrderData> orderList;
 
-    public void signOut() {
-        auth = FirebaseAuth.getInstance();
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        auth.signOut();
-        sendToLogin();
-    }
-
-    public void sendToLogin() {
-        Intent loginIntent = new Intent(DelivererViewActivity.this, LoginActivity.class);
-        startActivity(loginIntent);
-        finish();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deliverer_view);
+        setUpToolBarAndActionBar();
+        setUpNavigationView();
+        setUpDrawerLayout();
+        setUpSwipeRefresh();
+        setUpRecyclerView();
 
+    }
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-
-
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+    void setUpNavigationView() {
         navigationView = findViewById(R.id.nav_view);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(DelivererViewActivity.this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
-        mDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        mDrawerLayout.addDrawerListener(
-                new DrawerLayout.DrawerListener() {
-                    @Override
-                    public void onDrawerSlide(View drawerView, float slideOffset) {
-                        // Respond when the drawer's position changes
-                        userId = user.getUid();
-
-                        forUserData = root.child("deliveryApp").child("users").child(userId);
-                        forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                                userDetails = dataSnapshot.getValue(UserDetails.class);
-                                mHeaderView = navigationView.getHeaderView(0);
-
-                                textViewUserName = mHeaderView.findViewById(R.id.headerUserName);
-                                textViewEmail = mHeaderView.findViewById(R.id.headerUserEmail);
-
-                                textViewUserName.setText(userDetails.name);
-                                textViewEmail.setText(userDetails.Email);
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        // Respond when the drawer is opened
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                        // Respond when the drawer is closed
-                    }
-
-                    @Override
-                    public void onDrawerStateChanged(int newState) {
-                        // Respond when the drawer motion state changes
-                    }
-                }
-        );
-
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -181,13 +116,86 @@ public class DelivererViewActivity extends AppCompatActivity {
             }
         });
 
-        toolbar.setTitle(getTitle());
-
-        setUpSwipeRefresh();
-        setUpRecyclerView();
-
     }
 
+    public void signOut() {
+        auth = FirebaseAuth.getInstance();
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        auth.signOut();
+        sendToLogin();
+    }
+
+    public void sendToLogin() {
+        Intent loginIntent = new Intent(DelivererViewActivity.this, LoginActivity.class);
+        startActivity(loginIntent);
+        finish();
+    }
+
+    void setUpDrawerLayout() {
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(DelivererViewActivity.this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        mDrawerLayout.addDrawerListener(
+            new DrawerLayout.DrawerListener() {
+                @Override
+                public void onDrawerSlide(View drawerView, float slideOffset) {
+                    // Respond when the drawer's position changes
+                    userId = user.getUid();
+
+                    forUserData = root.child("deliveryApp").child("users").child(userId);
+                    forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                            userDetails = dataSnapshot.getValue(UserDetails.class);
+                            mHeaderView = navigationView.getHeaderView(0);
+
+                            textViewUserName = mHeaderView.findViewById(R.id.headerUserName);
+                            textViewEmail = mHeaderView.findViewById(R.id.headerUserEmail);
+
+                            textViewUserName.setText(userDetails.name);
+                            textViewEmail.setText(userDetails.Email);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    // Respond when the drawer is opened
+                }
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    // Respond when the drawer is closed
+                }
+
+                @Override
+                public void onDrawerStateChanged(int newState) {
+                    // Respond when the drawer motion state changes
+                }
+            }
+        );
+
+    }
+    void setUpToolBarAndActionBar() {
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        toolbar.setTitle(getTitle());
+
+    }
     void setUpSwipeRefresh() {
         //Swipe Refresh Layout
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
@@ -294,7 +302,7 @@ public class DelivererViewActivity extends AppCompatActivity {
         isRefreshing = true;
         userId = user.getUid();
 
-        allorders = root.child("deliveryApp").child("orders");
+        DatabaseReference allorders = root.child("deliveryApp").child("orders");
         allorders.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

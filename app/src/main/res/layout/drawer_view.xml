@@ -20,13 +20,21 @@
         tools:ignore="HardcodedText">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/all_orders"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Filter 1" />
+                android:title="All orders" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/accepted"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Filter 2" />
+                android:title="Accepted" />
+            <item
+                android:id="@+id/pending"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Pending" />
+            <item
+                android:id="@+id/completed"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Completed" />
         </menu>
     </item>
 

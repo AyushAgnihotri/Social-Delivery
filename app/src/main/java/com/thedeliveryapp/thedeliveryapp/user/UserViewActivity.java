@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.deliverer.DelivererViewActivity;
 import com.thedeliveryapp.thedeliveryapp.login.LoginActivity;
 import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
@@ -79,6 +80,21 @@ public class UserViewActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     public static RecyclerViewOrderAdapter adapter;
     public List <OrderData> orderList;
+    Toolbar toolbar;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_item_list);
+        setUpToolBarAndActionBar();
+        setUpNavigationView();
+        setUpDrawerLayout();
+        setUpFloatingActionButton();
+        setUpSwipeRefresh();
+        setUpRecyclerView();
+
+    }
 
     public void signOut() {
         auth = FirebaseAuth.getInstance();
@@ -93,22 +109,35 @@ public class UserViewActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_list);
-
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-
-
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+    void setUpNavigationView() {
         navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                // set item as selected to persist highlight
+                menuItem.setChecked(true);
+                // close drawer when item is tapped
+                mDrawerLayout.closeDrawers();
 
+                int id = menuItem.getItemId();
+
+                switch(id) {
+                    case R.id.sign_out :
+                        Toast.makeText(UserViewActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
+                        signOut();
+
+                }
+
+                // Add code here to update the UI based on the item selected
+                // For example, swap UI fragments here
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+
+    }
+    void setUpDrawerLayout() {
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(UserViewActivity.this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -161,33 +190,19 @@ public class UserViewActivity extends AppCompatActivity {
                 }
         );
 
+    }
+    void setUpToolBarAndActionBar() {
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                // set item as selected to persist highlight
-                menuItem.setChecked(true);
-                // close drawer when item is tapped
-                mDrawerLayout.closeDrawers();
-
-                int id = menuItem.getItemId();
-
-                switch(id) {
-                    case R.id.sign_out :
-                        Toast.makeText(UserViewActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
-                        signOut();
-
-                }
-
-                // Add code here to update the UI based on the item selected
-                // For example, swap UI fragments here
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        });
-
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         toolbar.setTitle(getTitle());
 
+    }
+
+    void setUpFloatingActionButton() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,11 +214,7 @@ public class UserViewActivity extends AppCompatActivity {
 
             }
         });
-        setUpSwipeRefresh();
-        setUpRecyclerView();
-
     }
-
     void setUpSwipeRefresh() {
         //Swipe Refresh Layout
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
