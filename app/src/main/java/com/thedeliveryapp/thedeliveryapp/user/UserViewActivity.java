@@ -83,7 +83,7 @@ public class UserViewActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     boolean pending;
-    boolean completed;
+    boolean finished;
     boolean cancelled;
     boolean active;
     boolean expired;
@@ -105,7 +105,7 @@ public class UserViewActivity extends AppCompatActivity {
     void setDefaultFlags() {
         active = true;
         pending = true;
-        completed = false;
+        finished = false;
         expired = false;
         cancelled = false;
     }
@@ -143,6 +143,7 @@ public class UserViewActivity extends AppCompatActivity {
                 }
                 else if(id == R.id.all_orders_user) {
                     setDefaultFlags();
+                    toolbar.setTitle("My orders");
                     refreshOrders();
                 }
                 else if(id == R.id.active_user) {
@@ -150,7 +151,8 @@ public class UserViewActivity extends AppCompatActivity {
                     pending = false;
                     cancelled = false;
                     expired = false;
-                    completed = false;
+                    finished = false;
+                    toolbar.setTitle("Active");
                     refreshOrders();
                 }
                 else if(id == R.id.pending_user) {
@@ -158,7 +160,8 @@ public class UserViewActivity extends AppCompatActivity {
                     pending = true;
                     cancelled = false;
                     expired = false;
-                    completed = false;
+                    finished = false;
+                    toolbar.setTitle("Pending");
                     refreshOrders();
                 }
                 else if(id == R.id.cancelled_user) {
@@ -166,7 +169,8 @@ public class UserViewActivity extends AppCompatActivity {
                     pending = false;
                     cancelled = false;
                     expired = false;
-                    completed = true;
+                    finished = true;
+                    toolbar.setTitle("Cancelled");
                     refreshOrders();
                 }
                 else if(id == R.id.expired_user) {
@@ -174,7 +178,8 @@ public class UserViewActivity extends AppCompatActivity {
                     pending = false;
                     cancelled = false;
                     expired = true;
-                    completed = false;
+                    finished = false;
+                    toolbar.setTitle("Expired");
                     refreshOrders();
                 }
                 else if(id == R.id.completed_user) {
@@ -182,7 +187,8 @@ public class UserViewActivity extends AppCompatActivity {
                     pending = false;
                     cancelled = false;
                     expired = false;
-                    completed = true;
+                    finished = true;
+                    toolbar.setTitle("Finished");
                     refreshOrders();
                 }
                 // Add code here to update the UI based on the item selected
@@ -355,7 +361,7 @@ public class UserViewActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
         //set swipe label
-        swipeHelper.setLeftSwipeLable("Archive");
+        swipeHelper.setLeftSwipeLable("Cancel");
         //set swipe background-Color
         swipeHelper.setLeftcolorCode(R.color.cardview_dark_background);
     }
@@ -387,7 +393,7 @@ public class UserViewActivity extends AppCompatActivity {
                     OrderData order = orders.getValue(OrderData.class);
                     if( (order.status.equals("PENDING") && pending) ||
                             (order.status.equals("ACTIVE") && active) ||
-                            (order.status.equals("COMPLETED") && completed) ||
+                            (order.status.equals("FINISHED") && finished) ||
                             (order.status.equals("CANCELLED") && cancelled) ||
                             (order.status.equals("EXPIRED") && expired))
                     adapter.insert(0,order);

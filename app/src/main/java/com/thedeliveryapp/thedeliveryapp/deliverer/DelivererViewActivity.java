@@ -3,7 +3,6 @@ package com.thedeliveryapp.thedeliveryapp.deliverer;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -73,7 +72,7 @@ public class DelivererViewActivity extends AppCompatActivity {
     TextView textViewEmail;
     boolean pending ;
     boolean active ;
-    boolean completed ;
+    boolean finished ;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -95,7 +94,7 @@ public class DelivererViewActivity extends AppCompatActivity {
 
     }
     void setDefaultFlags() {
-        completed = false;
+        finished = false;
         active = true;
         pending = true;
     }
@@ -124,7 +123,7 @@ public class DelivererViewActivity extends AppCompatActivity {
                 else if(id == R.id.completed_deliverer) {
                     active = false;
                     pending = false;
-                    completed = true;
+                    finished = true;
                     toolbar.setTitle("Completed");
                     refreshOrders();
 
@@ -132,14 +131,14 @@ public class DelivererViewActivity extends AppCompatActivity {
                 else if(id == R.id.active_deliverer) {
                     active = true;
                     pending = false;
-                    completed = false;
+                    finished = false;
                     toolbar.setTitle("Active");
                     refreshOrders();
                 }
                 else if(id == R.id.pending_deliverer) {
                     active = false;
                     pending = true;
-                    completed = false;
+                    finished = false;
                     toolbar.setTitle("Pending");
                     refreshOrders();
                 }
@@ -344,37 +343,38 @@ public class DelivererViewActivity extends AppCompatActivity {
         allorders.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot userdata: dataSnapshot.getChildren()) {
+                for (DataSnapshot userdata : dataSnapshot.getChildren()) {
                     if (userdata.getKey().equals(userId)) {
                         continue;
                     }
-                    for(DataSnapshot orderdata: userdata.getChildren()) {
+                    for (DataSnapshot orderdata : userdata.getChildren()) {
                         OrderData order = orderdata.getValue(OrderData.class);
-                        if ( (order.status.equals("PENDING") && pending ) ||
+                        if ((order.status.equals("PENDING") && pending) ||
                                 (order.status.equals("ACTIVE") && active && userId.equals(order.acceptedBy.delivererID)) ||
-                                (order.status.equals("COMPLETED") && completed && userId.equals(order.acceptedBy.delivererID)
-                                )) {
-                            adapter.insert(0,order);
-                            //   Toast.makeText(ItemListActivity.this,Integer.toString(order.max_range), Toast.LENGTH_SHORT).show();
-                            //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();
-                        }
+                                (order.status.equals("COMPLETED") && finished && userId.equals(order.acceptedBy.delivererID)))
+                            adapter.insert(0, order);
+                        //   Toast.makeText(ItemListActivity.this,Integer.toString(order.max_range), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();
                     }
                 }
+
                 isRefreshing = false;
                 progressBar.setVisibility(View.GONE);
-
             }
+
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+    });
 
 
 
 
     }
+
 
     @Override
     protected void onStart() {

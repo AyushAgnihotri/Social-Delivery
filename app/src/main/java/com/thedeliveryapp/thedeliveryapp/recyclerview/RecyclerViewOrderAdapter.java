@@ -75,7 +75,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
             status = String.valueOf(list.get(position).status.charAt(0));
             holder.category.setText(list.get(position).category);
             holder.description.setText(list.get(position).description);
-            TextDrawable drawable = TextDrawable.builder().buildRound(status,Color.parseColor(getColor(status)));
+            TextDrawable drawable = TextDrawable.builder().beginConfig().withBorder(6).endConfig().buildRound(status,Color.parseColor(getColor(status)));
             holder.imageView.setImageDrawable(drawable);
         }
         
@@ -158,6 +158,8 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
             return "#8bc34a";
         else if(st.equals("E"))
             return "#f44336";
+        else if(st.equals("F"))
+            return "#673AB7";
         else
             return "#9e9e9e";
 

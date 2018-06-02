@@ -29,7 +29,7 @@
             <item
                 android:id="@+id/completed_deliverer"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Completed" />
+                android:title="Finished" />
         </menu>
     </item>
 
