@@ -34,6 +34,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.login.LoginActivity;
+import com.thedeliveryapp.thedeliveryapp.login.MainActivity;
 import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.recyclerview.OrderViewHolder;
@@ -100,7 +101,7 @@ public class DelivererViewActivity extends AppCompatActivity {
     }
 
     void setUpNavigationView() {
-        navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view_deliverer);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -111,16 +112,16 @@ public class DelivererViewActivity extends AppCompatActivity {
 
                 int id = menuItem.getItemId();
 
-                if(id == R.id.sign_out) {
+                if(id == R.id.sign_out_deliverer) {
                     Toast.makeText(DelivererViewActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
                     signOut();
                 }
-                else if(id == R.id.all_orders) {
+                else if(id == R.id.all_orders_deliverer) {
                     setDefaultFlags();
                     toolbar.setTitle("All Orders");
                     refreshOrders();
                 }
-                else if(id == R.id.completed) {
+                else if(id == R.id.completed_deliverer) {
                     active = false;
                     pending = false;
                     completed = true;
@@ -128,19 +129,23 @@ public class DelivererViewActivity extends AppCompatActivity {
                     refreshOrders();
 
                 }
-                else if(id == R.id.active) {
+                else if(id == R.id.active_deliverer) {
                     active = true;
                     pending = false;
                     completed = false;
                     toolbar.setTitle("Active");
                     refreshOrders();
                 }
-                else if(id == R.id.pending) {
+                else if(id == R.id.pending_deliverer) {
                     active = false;
                     pending = true;
                     completed = false;
                     toolbar.setTitle("Pending");
                     refreshOrders();
+                }
+                else if(id == R.id.use_as_user) {
+                    startActivity(new Intent(DelivererViewActivity.this, UserViewActivity.class));
+                    finish();
                 }
                 // Add code here to update the UI based on the item selected
                 // For example, swap UI fragments here
@@ -165,7 +170,7 @@ public class DelivererViewActivity extends AppCompatActivity {
     }
 
     void setUpDrawerLayout() {
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout_deliverer);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(DelivererViewActivity.this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -391,7 +396,7 @@ public class DelivererViewActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout_deliverer);
         if(drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }

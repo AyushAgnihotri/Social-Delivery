@@ -110,7 +110,7 @@ public class UserViewActivity extends AppCompatActivity {
     }
 
     void setUpNavigationView() {
-        navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view_user);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -120,12 +120,13 @@ public class UserViewActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawers();
 
                 int id = menuItem.getItemId();
-
-                switch(id) {
-                    case R.id.sign_out :
-                        Toast.makeText(UserViewActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
-                        signOut();
-
+                if(id == R.id.sign_out_user) {
+                    Toast.makeText(UserViewActivity.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
+                    signOut();
+                }
+                else if(id == R.id.use_as_deliverer) {
+                    startActivity(new Intent(UserViewActivity.this, DelivererViewActivity.class));
+                    finish();
                 }
 
                 // Add code here to update the UI based on the item selected
@@ -137,7 +138,7 @@ public class UserViewActivity extends AppCompatActivity {
 
     }
     void setUpDrawerLayout() {
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout_user);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(UserViewActivity.this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -367,7 +368,7 @@ public class UserViewActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout_user);
         if(drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }

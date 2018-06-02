@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/use_as_user"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="View as Orderer"
+            tools:ignore="HardcodedText" />
+    </group>
+
+    <item android:title="Filters"
+        tools:ignore="HardcodedText">
+        <menu>
+            <item
+                android:id="@+id/all_orders_deliverer"
+                android:icon="@drawable/ic_menu_send"
+                android:title="All orders" />
+            <item
+                android:id="@+id/active_deliverer"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Active" />
+            <item
+                android:id="@+id/pending_deliverer"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Pending" />
+            <item
+                android:id="@+id/completed_deliverer"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Completed" />
+        </menu>
+    </item>
+
+    <item android:title="Account Settings"
+        tools:ignore="HardcodedText">
+        <menu>
+            <item
+                android:id="@+id/sign_out_deliverer"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Sign Out" />
+        </menu>
+    </item>
+
+</menu>

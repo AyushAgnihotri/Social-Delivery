@@ -5,13 +5,8 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/use_as_user"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="View as Orderer"
-            tools:ignore="HardcodedText" />
-        <item
             android:id="@+id/use_as_deliverer"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_manage"
             android:title="View as Deliverer"
             tools:ignore="HardcodedText" />
     </group>
@@ -20,21 +15,30 @@
         tools:ignore="HardcodedText">
         <menu>
             <item
-                android:id="@+id/all_orders"
+                android:id="@+id/all_orders_user"
                 android:icon="@drawable/ic_menu_send"
                 android:title="All orders" />
             <item
-                android:id="@+id/active"
+                android:id="@+id/active_user"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Active" />
             <item
-                android:id="@+id/pending"
+                android:id="@+id/pending_user"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Pending" />
             <item
-                android:id="@+id/completed"
+                android:id="@+id/completed_user"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Completed" />
+            <item
+                android:id="@+id/cancelled_user"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Cancelled" />
+            <item
+                android:id="@+id/expired_user"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Expired" />
+
         </menu>
     </item>
 
@@ -42,7 +46,7 @@
         tools:ignore="HardcodedText">
         <menu>
             <item
-                android:id="@+id/sign_out"
+                android:id="@+id/sign_out_user"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Sign Out" />
         </menu>
