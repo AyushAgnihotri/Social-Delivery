@@ -36,6 +36,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.google.android.gms:play-services-places:15.0.1'
-
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 }
 apply plugin: 'com.google.gms.google-services'

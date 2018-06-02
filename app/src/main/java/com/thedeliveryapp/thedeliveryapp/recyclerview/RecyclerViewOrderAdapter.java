@@ -1,14 +1,22 @@
 package com.thedeliveryapp.thedeliveryapp.recyclerview;
 
+import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.support.v7.widget.helper.ItemTouchUIUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Handler;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
+import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 import java.util.ArrayList;
@@ -19,12 +27,13 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
 
     List<OrderData> list;
     Context context;
+    String status;
     List<OrderData> pendingRemovalList;
 
     private static final int PENDING_REMOVAL_TIMEOUT = 5000; // 3sec
     private Handler handler = new Handler(); // handler for running delayed runnables
     private HashMap<OrderData, Runnable> pendingRunables = new HashMap<>(); // map of items to pending runnables, so we can cancel a removal if need be
- 
+
     public RecyclerViewOrderAdapter(List<OrderData> list, Context context) {
         this.list = list;
         this.context = context;
@@ -63,9 +72,11 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
             holder.isClickable = true;
             holder.swipeLayout.setVisibility(View.GONE);
             //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
+            status = String.valueOf(list.get(position).status.charAt(0));
             holder.category.setText(list.get(position).category);
             holder.description.setText(list.get(position).description);
-            holder.imageView.setImageResource(OrderForm.getImageId(list.get(position).category));
+            TextDrawable drawable = TextDrawable.builder().buildRound(status,Color.parseColor(getColor(status)));
+            holder.imageView.setImageDrawable(drawable);
         }
         
 
@@ -137,6 +148,19 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
     public boolean isPendingRemoval(int position) {
         OrderData data = list.get(position);
         return pendingRemovalList.contains(data);
+    }
+
+    String getColor(String st) {
+
+        if(st.equals("P"))
+            return "#ffa000";
+        else if(st.equals("A"))
+            return "#8bc34a";
+        else if(st.equals("E"))
+            return "#f44336";
+        else
+            return "#9e9e9e";
+
     }
  
 
