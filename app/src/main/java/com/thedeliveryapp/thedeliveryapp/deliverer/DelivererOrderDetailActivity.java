@@ -247,7 +247,6 @@ public class DelivererOrderDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.show();
-
             }
         });
 
