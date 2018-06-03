@@ -46,28 +46,20 @@ import java.util.List;
 public class OrderForm extends AppCompatActivity {
 
     TextView category ;
-    Button date_picker;
-    Button time_picker ;
+    Button date_picker, time_picker, user_location;
     Calendar calendar ;
-    EditText description ;
-    EditText min_int_range ;
-    EditText max_int_range ;
-    EditText delivery_charge;
+    EditText description, min_int_range, max_int_range, delivery_charge;
 
-    Button user_location;
-    private DatabaseReference root;
-    private DatabaseReference deliveryApp;
+    private DatabaseReference root, deliveryApp;
     private String userId;
-    private int OrderNumber;
+    private int OrderNumber, order_id;
     UserLocation userLocation = null;
     ExpiryTime expiryTime = null;
     ExpiryDate expiryDate = null;
     AcceptedBy acceptedBy = null;
     OrderData order;
-    int order_id;
 
     int PLACE_PICKER_REQUEST =1;
-
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -186,8 +178,9 @@ public class OrderForm extends AppCompatActivity {
             if(resultCode == RESULT_OK) {
                Place place = PlacePicker.getPlace(OrderForm.this,data);
                userLocation = new UserLocation(place.getName().toString(),place.getAddress().toString(),place.getPhoneNumber().toString());
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(OrderForm.this, toastMsg, Toast.LENGTH_LONG).show();
+                user_location.setText(userLocation.Location);
+               //String toastMsg = String.format("Place: %s", place.getName());
+               //Toast.makeText(OrderForm.this, toastMsg, Toast.LENGTH_LONG).show();
             }
         }
 
@@ -252,6 +245,10 @@ public class OrderForm extends AppCompatActivity {
                         .setMessage(getString(R.string.dialog_save))
                         .setPositiveButton(getString(R.string.dialog_ok), null)
                         .show();
+                return true;
+            }
+            if (Integer.parseInt(order_min_range) > Integer.parseInt(order_max_range)) {
+                Toast.makeText(getApplicationContext(), "Min value cannot be more than Max value!", Toast.LENGTH_SHORT).show();
                 return true;
             }
 

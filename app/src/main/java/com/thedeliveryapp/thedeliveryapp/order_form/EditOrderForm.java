@@ -252,6 +252,10 @@ public class EditOrderForm extends AppCompatActivity {
                         .show();
                 return true;
             }
+            if (Integer.parseInt(order_min_range) > Integer.parseInt(order_max_range)) {
+                Toast.makeText(getApplicationContext(), "Min value cannot be more than Max value!", Toast.LENGTH_SHORT).show();
+                return true;
+            }
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();

@@ -73,6 +73,7 @@
             <EditText
                 android:id="@+id/delivery_charge"
                 android:inputType="number"
+                android:maxLength="5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -93,6 +94,7 @@
                 <EditText
                     android:id="@+id/min_int"
                     android:inputType="number"
+                    android:maxLength="6"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -101,6 +103,7 @@
                 <EditText
                     android:id="@+id/max_int"
                     android:inputType="number"
+                    android:maxLength="6"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -167,6 +170,7 @@
                     android:paddingLeft="40dp"
                     android:paddingRight="40dp"
                     android:layout_marginTop="30dp"
+                    android:layout_marginBottom="20dp"
                     android:text="@string/btn_user_location"
                     android:textAllCaps="false"
                     android:textColor="@android:color/black"
