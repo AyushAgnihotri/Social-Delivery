@@ -1,6 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content" >
+
     <!-- swipe layout -->
     <include layout="@layout/swipe_row_item" />
     <!-- Regular layout -->
@@ -33,18 +34,49 @@
                 android:id="@+id/category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/imageView"
+                android:layout_toRightOf="@id/imageView"
+                android:layout_toLeftOf="@id/priceDisplay"
                 android:text="Category"
-                android:textSize="30sp" />
+                android:textSize="20sp"
+                android:textColor="@color/cardview_dark_background"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/category"
-                android:layout_toRightOf="@+id/imageView"
+                android:layout_below="@id/priceDisplay"
+                android:layout_toRightOf="@id/imageView"
+                android:layout_toLeftOf="@id/priceDisplay"
+                android:paddingRight="2dp"
+                android:textColor="@color/cardview_dark_background"
                 android:text="Description" />
+
+            <ImageView
+                android:id="@+id/priceDisplay"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@id/chargeDisplay"
+                 />
+
+            <ImageView
+                android:id="@+id/chargeDisplay"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="5dp"
+                android:paddingBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/expiryDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/chargeDisplay"
+                android:layout_toRightOf="@id/description"
+                android:textSize="40px"
+                android:textColor="@color/cardview_dark_background"
+                android:textStyle="bold"/>
 
         </RelativeLayout>
 

@@ -16,7 +16,10 @@ public class OrderViewHolder extends RecyclerView.ViewHolder {
     TextView category;
     TextView description;
     ImageView imageView;
+    ImageView displayPrice;
+    ImageView displayCharge;
     TextView undo;
+    TextView expiry;
     public boolean isClickable = true;
     
     OrderViewHolder(View itemView) {
@@ -27,5 +30,8 @@ public class OrderViewHolder extends RecyclerView.ViewHolder {
         category = itemView.findViewById(R.id.category);
         description = itemView.findViewById(R.id.description);
         imageView = itemView.findViewById(R.id.imageView);
+        displayCharge = itemView.findViewById(R.id.chargeDisplay);
+        displayPrice = itemView.findViewById(R.id.priceDisplay);
+        expiry = itemView.findViewById(R.id.expiryDisplay);
     }
 }

@@ -27,18 +27,27 @@ import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.deliverer.DelivererViewActivity;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
+import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
+import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryTime;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.CheckedOutputStream;
 
 public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHolder> {
 
     List<OrderData> list;
     Context context;
     String status;
+    String price;
+    String charge;
+    Calendar calendar = Calendar.getInstance();
     List<OrderData> pendingRemovalList;
+    ColorGenerator generator = ColorGenerator.MATERIAL;
 
     private static final int PENDING_REMOVAL_TIMEOUT = 3000; // 3sec
     private Handler handler = new Handler(); // handler for running delayed runnables
@@ -81,15 +90,42 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
             holder.cv.setVisibility(View.VISIBLE);
             holder.isClickable = true;
             holder.swipeLayout.setVisibility(View.GONE);
+            OrderData order = list.get(position);
             //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
-            status = String.valueOf(list.get(position).status.charAt(0));
-            holder.category.setText(list.get(position).category);
-            holder.description.setText(list.get(position).description);
-            TextDrawable drawable = TextDrawable.builder().beginConfig().withBorder(6).endConfig().buildRound(status,Color.parseColor(getColor(status)));
-            holder.imageView.setImageDrawable(drawable);
-        }
-        
+            status = String.valueOf(order.status.charAt(0));
+            price = Integer.toString(order.max_range);
+            charge = Integer.toString(order.deliveryCharge);
+            holder.category.setText(order.category);
+            setExpiry(order.expiryDate,order.expiryTime);
+            String date = DateFormat.getDateInstance(DateFormat.SHORT).format(calendar.getTime());
+            String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
 
+            holder.expiry.setText(date + " " + time);
+            if(order.description.length() > 40)
+                holder.description.setText(order.description.substring(0,39) + "...");
+            else
+                holder.description.setText(order.description);
+
+            TextDrawable drawable = TextDrawable.builder().buildRound(status,Color.parseColor(getColor(status)));
+            holder.imageView.setImageDrawable(drawable);
+            //primary color
+            drawable = TextDrawable.builder().buildRoundRect(price,Color.parseColor("#01AAD5"),20);
+            holder.displayPrice.setImageDrawable(drawable);
+            drawable = TextDrawable.builder().buildRound(charge,Color.parseColor("#01AAD5"));
+            holder.displayCharge.setImageDrawable(drawable);
+
+
+        }
+
+    }
+
+    void setExpiry(ExpiryDate expiryDate, ExpiryTime expiryTime) {
+
+        calendar.set(Calendar.YEAR, expiryDate.year);
+        calendar.set(Calendar.MONTH, expiryDate.month);
+        calendar.set(Calendar.DAY_OF_MONTH, expiryDate.day);
+        calendar.set(Calendar.HOUR_OF_DAY, expiryTime.hour);
+        calendar.set(Calendar.MINUTE, expiryTime.minute);
 
     }
     private void undoOpt(OrderData delOrder) {
@@ -200,6 +236,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
             return "#9e9e9e";
 
     }
+
  
 
 
