@@ -19,6 +19,7 @@ import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMai
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
 import com.thedeliveryapp.thedeliveryapp.deliverer.DelivererViewActivity;
 import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
+import com.pusher.pushnotifications.PushNotifications;
 
 public class MainActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
@@ -33,7 +34,8 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         setContentView(R.layout.activity_main);
 
         checkConnection();
-
+        PushNotifications.start(getApplicationContext(), "b7e634bb-8f6d-4775-9861-cc9f550ed9ce");
+        PushNotifications.subscribe("hello");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
