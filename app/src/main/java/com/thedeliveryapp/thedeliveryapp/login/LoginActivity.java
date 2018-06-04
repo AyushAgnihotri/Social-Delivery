@@ -50,10 +50,8 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
     private ProgressBar progressBar;
     private Button btnSignup, btnLogin, btnReset;
     public static GoogleApiClient mGoogleApiClient;
-    private String user_email, user_name;
-    private String userId;
-    private DatabaseReference root;
-    private DatabaseReference database_users;
+    private String user_email, user_name, userId;
+    private DatabaseReference root, database_users;
 
     private static final int RC_SIGN_IN = 101;
 
@@ -235,6 +233,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                             userId = user.getUid();
                             root = FirebaseDatabase.getInstance().getReference();
                             database_users = root.child("deliveryApp").child("users");
+                            database_users.keepSynced(true);
 
                             database_users.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override

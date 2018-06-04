@@ -149,9 +149,11 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                         root = FirebaseDatabase.getInstance().getReference();
                         allorders = root.child("deliveryApp").child("orders");
+                        allorders.keepSynced(true);
 
                         if (myOrder.status.equals("PENDING")) {
                             deliverer = root.child("deliveryApp").child("users").child(userId);
+                            deliverer.keepSynced(true);
                             deliverer.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {

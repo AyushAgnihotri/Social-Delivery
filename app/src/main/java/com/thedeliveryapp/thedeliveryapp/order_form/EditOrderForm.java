@@ -51,8 +51,7 @@ import java.util.List;
 public class EditOrderForm extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
 
-    private DatabaseReference root;
-    private DatabaseReference order;
+    private DatabaseReference root, order;
     private String userId;
     private int OrderNumber, i, i1, year, monthOfYear, dayOfMonth;
 
@@ -269,6 +268,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
             userId = user.getUid();
             root = FirebaseDatabase.getInstance().getReference();
             order = root.child("deliveryApp").child("orders").child(userId).child(OrderNumber+"");
+            order.keepSynced(true);
 
             order.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

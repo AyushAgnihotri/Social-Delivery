@@ -266,6 +266,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
 
             root = FirebaseDatabase.getInstance().getReference();
             deliveryApp = root.child("deliveryApp");
+            deliveryApp.keepSynced(true);
 
             deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

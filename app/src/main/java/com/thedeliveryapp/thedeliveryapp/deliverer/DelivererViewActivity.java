@@ -59,9 +59,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private DatabaseReference root= FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference forUserData;
-    private DatabaseReference users;
+    private DatabaseReference root = FirebaseDatabase.getInstance().getReference(), forUserData, users;
 
     private String userId;
     boolean isRefreshing  = false;
@@ -187,6 +185,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                     userId = user.getUid();
 
                     forUserData = root.child("deliveryApp").child("users").child(userId);
+                    forUserData.keepSynced(true);
                     forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -321,6 +320,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
         userId = user.getUid();
 
         DatabaseReference allorders = root.child("deliveryApp").child("orders");
+        allorders.keepSynced(true);
         allorders.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -165,6 +165,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
 
         final DatabaseReference root = FirebaseDatabase.getInstance().getReference();
         DatabaseReference stat_ref = root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(orderId)).child("status");
+        stat_ref.keepSynced(true);
         stat_ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
 

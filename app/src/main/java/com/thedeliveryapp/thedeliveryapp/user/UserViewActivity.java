@@ -65,8 +65,7 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private DatabaseReference root=FirebaseDatabase.getInstance().getReference();
-    private DatabaseReference deliveryApp, forUserData;
+    private DatabaseReference root = FirebaseDatabase.getInstance().getReference(), deliveryApp, forUserData;
 
     private String userId;
     boolean isRefreshing  = false;
@@ -76,7 +75,6 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
     View mHeaderView;
     TextView textViewUserName;
     TextView textViewEmail;
-
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -219,6 +217,7 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
                         userId = user.getUid();
 
                         forUserData = root.child("deliveryApp").child("users").child(userId);
+                        forUserData.keepSynced(true);
                         forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -428,6 +427,7 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
         isRefreshing = true;
         userId = user.getUid();
         deliveryApp = root.child("deliveryApp").child("orders").child(userId);
+        deliveryApp.keepSynced(true);
 
         deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
