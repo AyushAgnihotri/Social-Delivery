@@ -3,6 +3,8 @@ package com.thedeliveryapp.thedeliveryapp.order_form;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +33,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
+import com.thedeliveryapp.thedeliveryapp.login.ResetPasswordActivity;
 import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.AcceptedBy;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
@@ -43,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class OrderForm extends AppCompatActivity {
+public class OrderForm extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
     TextView category ;
     Button date_picker, time_picker, user_location;
@@ -71,6 +76,8 @@ public class OrderForm extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_form);
+
+        checkConnection();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         toolbar.setTitle("New Order");
@@ -300,4 +307,42 @@ public class OrderForm extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        if(!isConnected)
+            showSnack(isConnected);
+    }
+
+    // Showing the status in Snackbar
+    private void showSnack(boolean isConnected) {
+        String message;
+        int color;
+        if (isConnected) {
+            message = "Good! Connected to Internet";
+            color = Color.WHITE;
+        } else {
+            message = "Sorry! Not connected to internet";
+            color = Color.RED;
+        }
+
+        Snackbar snackbar = Snackbar
+                .make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(color);
+        snackbar.show();
+    }
+
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        showSnack(isConnected);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CheckConnectivityMain.getInstance().setConnectivityListener(OrderForm.this);
+    }
 }

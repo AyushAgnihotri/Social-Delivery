@@ -1,11 +1,13 @@
 package com.thedeliveryapp.thedeliveryapp.user;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -32,6 +34,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
 import com.thedeliveryapp.thedeliveryapp.deliverer.DelivererViewActivity;
 import com.thedeliveryapp.thedeliveryapp.login.LoginActivity;
 import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
@@ -56,7 +60,7 @@ import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiCl
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class UserViewActivity extends AppCompatActivity {
+public class UserViewActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
@@ -70,7 +74,6 @@ public class UserViewActivity extends AppCompatActivity {
 
     NavigationView navigationView;
     View mHeaderView;
-
     TextView textViewUserName;
     TextView textViewEmail;
 
@@ -92,6 +95,9 @@ public class UserViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
+
+        checkConnection();
+
         setUpToolBarAndActionBar();
         setUpNavigationView();
         setUpDrawerLayout();
@@ -298,10 +304,45 @@ public class UserViewActivity extends AppCompatActivity {
 
         });
     }
-   @Override
+
+    private void checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        if(!isConnected)
+            showSnack(isConnected);
+    }
+
+    // Showing the status in Snackbar
+    private void showSnack(boolean isConnected) {
+        String message;
+        int color;
+        if (isConnected) {
+            message = "Good! Connected to Internet";
+            color = Color.WHITE;
+        } else {
+            message = "Sorry! Not connected to internet";
+            color = Color.RED;
+        }
+
+        Snackbar snackbar = Snackbar
+                .make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(color);
+        snackbar.show();
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        showSnack(isConnected);
+    }
+
+
+    @Override
     protected void onResume() {
         super.onResume();
         refreshOrders();
+        CheckConnectivityMain.getInstance().setConnectivityListener(UserViewActivity.this);
     }
 
     void setUpRecyclerView() {

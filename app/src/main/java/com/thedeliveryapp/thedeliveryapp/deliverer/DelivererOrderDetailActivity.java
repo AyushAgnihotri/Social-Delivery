@@ -2,9 +2,11 @@ package com.thedeliveryapp.thedeliveryapp.deliverer;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Parcelable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,11 +25,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
 import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
 import com.thedeliveryapp.thedeliveryapp.user.UserOrderDetailActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
-public class DelivererOrderDetailActivity extends AppCompatActivity {
+public class DelivererOrderDetailActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
             userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
@@ -48,7 +52,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_deliverer_order_detail);
         Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-
+        checkConnection();
         category = findViewById(R.id.category);
         description = findViewById(R.id.description);
         orderId = findViewById(R.id.orderId);
@@ -261,4 +265,44 @@ public class DelivererOrderDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        if(!isConnected)
+            showSnack(isConnected);
+    }
+
+    // Showing the status in Snackbar
+    private void showSnack(boolean isConnected) {
+        String message;
+        int color;
+        if (isConnected) {
+            message = "Good! Connected to Internet";
+            color = Color.WHITE;
+        } else {
+            message = "Sorry! Not connected to internet";
+            color = Color.RED;
+        }
+
+        Snackbar snackbar = Snackbar
+                .make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(color);
+        snackbar.show();
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        showSnack(isConnected);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CheckConnectivityMain.getInstance().setConnectivityListener(DelivererOrderDetailActivity.this);
+    }
+
 }

@@ -199,7 +199,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
     private void checkConnection() {
         boolean isConnected = ConnectivityReceiver.isConnected();
         if(!isConnected)
-        showSnack(isConnected);
+            showSnack(isConnected);
     }
 
     // Showing the status in Snackbar

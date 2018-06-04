@@ -1,10 +1,12 @@
 package com.thedeliveryapp.thedeliveryapp.user;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -15,10 +17,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
-public class UserOrderDetailActivity extends AppCompatActivity {
+public class UserOrderDetailActivity extends AppCompatActivity  implements ConnectivityReceiver.ConnectivityReceiverListener{
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
             userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
@@ -36,6 +40,7 @@ public class UserOrderDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item_detail);
         Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
+        checkConnection();
 
         category = findViewById(R.id.category);
         description = findViewById(R.id.description);
@@ -143,5 +148,46 @@ public class UserOrderDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    private void checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        if(!isConnected)
+            showSnack(isConnected);
+    }
+
+    // Showing the status in Snackbar
+    private void showSnack(boolean isConnected) {
+        String message;
+        int color;
+        if (isConnected) {
+            message = "Good! Connected to Internet";
+            color = Color.WHITE;
+        } else {
+            message = "Sorry! Not connected to internet";
+            color = Color.RED;
+        }
+
+        Snackbar snackbar = Snackbar
+                .make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(color);
+        snackbar.show();
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        showSnack(isConnected);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CheckConnectivityMain.getInstance().setConnectivityListener(UserOrderDetailActivity.this);
+    }
+
 }
 

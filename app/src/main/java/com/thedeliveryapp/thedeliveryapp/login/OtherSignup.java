@@ -1,15 +1,18 @@
 package com.thedeliveryapp.thedeliveryapp.login;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -23,11 +26,13 @@ import com.thedeliveryapp.thedeliveryapp.R;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
 import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
 
 import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiClient;
 
-public class OtherSignup extends AppCompatActivity {
+public class OtherSignup extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
     private EditText inputName, inputMobile, inputAltMobile, inputEmail;
     private Button btnSignIn, btnSaveDetails;
@@ -36,9 +41,11 @@ public class OtherSignup extends AppCompatActivity {
     private String google_name, google_email;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_signup);
+
+        checkConnection();
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -104,6 +111,7 @@ public class OtherSignup extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         progressBar.setVisibility(View.GONE);
+        CheckConnectivityMain.getInstance().setConnectivityListener(OtherSignup.this);
     }
 
     @Override
@@ -124,6 +132,39 @@ public class OtherSignup extends AppCompatActivity {
         String userId=user.getUid();
 
         root.child("deliveryApp").child("users").child(userId).setValue(Details);
+    }
+
+    private void checkConnection() {
+        boolean isConnected = ConnectivityReceiver.isConnected();
+        if(!isConnected)
+            showSnack(isConnected);
+    }
+
+    // Showing the status in Snackbar
+    private void showSnack(boolean isConnected) {
+        String message;
+        int color;
+        if (isConnected) {
+            message = "Good! Connected to Internet";
+            color = Color.WHITE;
+        } else {
+            message = "Sorry! Not connected to internet";
+            color = Color.RED;
+        }
+
+        Snackbar snackbar = Snackbar
+                .make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(color);
+        snackbar.show();
+    }
+
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        showSnack(isConnected);
     }
 
 }
