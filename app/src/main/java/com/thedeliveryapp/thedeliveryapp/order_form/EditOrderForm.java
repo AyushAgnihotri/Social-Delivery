@@ -126,7 +126,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
         String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
         time_picker.setText(time);
 
-
+        user_location.setText(myOrder.userLocation.Location);
 
         /*
         userLocationName.setText(myOrder.userLocation.Name);
@@ -219,8 +219,9 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
             if(resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(EditOrderForm.this,data);
                 userLocation = new UserLocation(place.getName().toString(),place.getAddress().toString(),place.getPhoneNumber().toString());
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(EditOrderForm.this, toastMsg, Toast.LENGTH_LONG).show();
+                user_location.setText(userLocation.Location);
+                //String toastMsg = String.format("Place: %s", place.getName());
+                //Toast.makeText(EditOrderForm.this, toastMsg, Toast.LENGTH_LONG).show();
             }
         }
 

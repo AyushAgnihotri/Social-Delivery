@@ -55,6 +55,7 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         deliveryCharge = findViewById(R.id.delivery_charge);
         acceptedBy = findViewById(R.id.btn_accepted_by);
         status = findViewById(R.id.status);
+        FloatingActionButton fab = findViewById(R.id.fab);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -68,6 +69,11 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
             appBarLayout.setTitle(myOrder.category);
         }
 
+
+        if (myOrder.status.equals("PENDING")) {
+            fab.setVisibility(View.VISIBLE);
+        }
+
         if (myOrder.status.equals("PENDING") || myOrder.status.equals("CANCELLED") || myOrder.status.equals("EXPIRED")) {
             acceptedBy.setEnabled(false);
             acceptedBy.setVisibility(View.GONE);
@@ -75,7 +81,7 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
             acceptedBy.setText("Delivered By");
         }
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

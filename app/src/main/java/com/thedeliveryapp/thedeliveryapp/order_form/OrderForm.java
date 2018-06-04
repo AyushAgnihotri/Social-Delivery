@@ -185,7 +185,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
             if(resultCode == RESULT_OK) {
                Place place = PlacePicker.getPlace(OrderForm.this,data);
                userLocation = new UserLocation(place.getName().toString(),place.getAddress().toString(),place.getPhoneNumber().toString());
-                user_location.setText(userLocation.Location);
+               user_location.setText(userLocation.Location);
                //String toastMsg = String.format("Place: %s", place.getName());
                //Toast.makeText(OrderForm.this, toastMsg, Toast.LENGTH_LONG).show();
             }
