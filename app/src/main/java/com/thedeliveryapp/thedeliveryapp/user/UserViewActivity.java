@@ -62,6 +62,8 @@ import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiCl
  */
 public class UserViewActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
+
+    MenuItem mPreviousMenuItem=null;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -132,8 +134,12 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 // set item as selected to persist highlight
+                menuItem.setCheckable(true);
                 menuItem.setChecked(true);
-                // close drawer when item is tapped
+                if (mPreviousMenuItem != null) {
+                    mPreviousMenuItem.setChecked(false);
+                }
+                mPreviousMenuItem = menuItem;// close drawer when item is tapped
                 mDrawerLayout.closeDrawers();
 
                 int id = menuItem.getItemId();
