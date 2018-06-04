@@ -97,10 +97,10 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
             charge = Integer.toString(order.deliveryCharge);
             holder.category.setText(order.category);
             setExpiry(order.expiryDate,order.expiryTime);
-            String date = DateFormat.getDateInstance(DateFormat.SHORT).format(calendar.getTime());
+            String date = DateFormat.getDateInstance(DateFormat.MEDIUM).format(calendar.getTime());
             String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(calendar.getTime());
 
-            holder.expiry.setText(date + " " + time);
+            holder.expiry.setText(date.substring(0,date.length()-4) + " " + time);
             if(order.description.length() > 40)
                 holder.description.setText(order.description.substring(0,39) + "...");
             else
@@ -109,9 +109,9 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
             TextDrawable drawable = TextDrawable.builder().buildRound(status,Color.parseColor(getColor(status)));
             holder.imageView.setImageDrawable(drawable);
             //primary color
-            drawable = TextDrawable.builder().buildRoundRect(price,Color.parseColor("#01AAD5"),20);
+            drawable = TextDrawable.builder().buildRoundRect("₹"+price,Color.parseColor("#01AAD5"),20);
             holder.displayPrice.setImageDrawable(drawable);
-            drawable = TextDrawable.builder().buildRound(charge,Color.parseColor("#01AAD5"));
+            drawable = TextDrawable.builder().beginConfig().textColor(Color.WHITE).endConfig().buildRound("₹"+charge,Color.BLACK);
             holder.displayCharge.setImageDrawable(drawable);
 
 
