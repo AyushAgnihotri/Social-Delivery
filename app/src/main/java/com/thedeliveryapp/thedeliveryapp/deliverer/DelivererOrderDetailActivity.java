@@ -42,6 +42,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
     private Button btn_accept, btn_show_path, btn_mark_delivered;
     private DatabaseReference root, ref1, ref2, deliverer;
     private UserDetails deliverer_data;
+    public static OrderData myOrder;
     private int wallet;
 
     @Override
@@ -78,7 +79,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         Intent intent = getIntent();
-        final OrderData myOrder = intent.getParcelableExtra("MyOrder");
+        myOrder = intent.getParcelableExtra("MyOrder");
         CollapsingToolbarLayout appBarLayout = findViewById(R.id.toolbar_layout);
         if (appBarLayout != null) {
             appBarLayout.setTitle(myOrder.category);
