@@ -277,7 +277,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                     balance = wal_bal;
                     if (Integer.parseInt(order_max_range) > balance) {
                         Toast.makeText(getApplicationContext(), "Insufficient balance in your wallet to place this order!, Please ", Toast.LENGTH_SHORT).show();
-                        return true;
+                        flag = true;
                     }
                 }
 
