@@ -40,10 +40,10 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
     private String date, time, userId;
     private Button btn_accept, btn_show_path, btn_mark_delivered;
-    private DatabaseReference root, ref1, ref2, deliverer;
+    private DatabaseReference root, ref1, ref2, wallet_ref, deliverer;
     private UserDetails deliverer_data;
     public static OrderData myOrder;
-    private int wallet;
+    private int balance;
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -190,7 +190,21 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                             myOrder.status = "ACTIVE";
                             status.setText((myOrder.status));
 
+                            wallet_ref = root.child("deliveryApp").child("users").child(myOrder.userId).child("wallet");
+                            wallet_ref.keepSynced(true);
+                            wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Integer wal_bal = dataSnapshot.getValue(Integer.class);
+                                    balance = wal_bal;
+                                    wallet_ref.setValue(balance-myOrder.max_range);
+                                }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
 
                             btn_mark_delivered.setEnabled(true);
                             btn_mark_delivered.setVisibility(View.VISIBLE);
