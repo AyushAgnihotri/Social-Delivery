@@ -44,7 +44,6 @@ public class CheckConnectivityMain extends Application {
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .init();
-        OneSignal.setEmail(LoginActivity.user_email);
 
     }
 

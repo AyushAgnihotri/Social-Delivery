@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.onesignal.OSPermissionSubscriptionState;
+import com.onesignal.OneSignal;
 import com.thedeliveryapp.thedeliveryapp.R;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -199,7 +201,9 @@ public class SignupActivity extends AppCompatActivity implements ConnectivityRec
 
     //Method to upload details in database;
     void update_userdetails_database(String name, String Mobile, String Alt_Mobile, String Email) {
-        UserDetails Details = new UserDetails(name, Mobile, Alt_Mobile, Email, 5000);
+        OSPermissionSubscriptionState status = OneSignal.getPermissionSubscriptionState();
+        String playerId = status.getSubscriptionStatus().getUserId();
+        UserDetails Details = new UserDetails(name, Mobile, Alt_Mobile, Email, 5000,playerId);
         DatabaseReference root = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String userId=user.getUid();

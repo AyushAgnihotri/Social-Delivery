@@ -33,6 +33,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.onesignal.OSPermissionSubscriptionState;
+import com.onesignal.OneSignal;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
@@ -98,6 +100,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         max_int_range = findViewById(R.id.max_int);
         user_location = findViewById(R.id.user_location);
         delivery_charge = findViewById(R.id.delivery_charge);
+
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
