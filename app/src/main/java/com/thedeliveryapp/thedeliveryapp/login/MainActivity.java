@@ -15,13 +15,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.onesignal.OneSignal;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
 import com.thedeliveryapp.thedeliveryapp.deliverer.DelivererViewActivity;
 import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
-import com.thedeliveryapp.thedeliveryapp.login.LoginActivity;
 public class MainActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
     private Button use_as_user, use_as_deliverer;
@@ -35,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         setContentView(R.layout.activity_main);
 
         checkConnection();
-        setUpOneSignal();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
@@ -141,25 +138,6 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         showSnack(isConnected);
     }
 
-    void setUpOneSignal() {
 
-        OneSignal.startInit(this)
-                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                .unsubscribeWhenNotificationsAreDisabled(true)
-                .init();
-        OneSignal.setEmail(LoginActivity.user_email, new OneSignal.EmailUpdateHandler() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(getApplicationContext(), "success!", Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onFailure(OneSignal.EmailUpdateError error) {
-                Toast.makeText(getApplicationContext(), "failed!", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
 
 }
