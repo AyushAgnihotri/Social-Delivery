@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -55,9 +56,9 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
     Calendar calendar ;
     EditText description, min_int_range, max_int_range, delivery_charge;
 
-    private DatabaseReference root, deliveryApp;
+    private DatabaseReference root, deliveryApp, wallet_ref;
     private String userId;
-    private int OrderNumber, order_id;
+    private int OrderNumber, order_id, balance;
     UserLocation userLocation = null;
     ExpiryTime expiryTime = null;
     ExpiryDate expiryDate = null;
@@ -259,12 +260,31 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                 return true;
             }
 
-
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();
 
-
             root = FirebaseDatabase.getInstance().getReference();
+
+            wallet_ref = root.child("deliveryApp").child("users").child(userId).child("wallet");
+            wallet_ref.keepSynced(true);
+            wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Integer wal_bal = dataSnapshot.getValue(Integer.class);
+                    balance = wal_bal;
+                    if (Integer.parseInt(order_max_range) > balance) {
+                        Toast.makeText(getApplicationContext(), "Insufficient balance in your wallet to place this order!, Please ", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
             deliveryApp = root.child("deliveryApp");
             deliveryApp.keepSynced(true);
 
