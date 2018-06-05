@@ -26,6 +26,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.onesignal.OSPermissionSubscriptionState;
+import com.onesignal.OneSignal;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
@@ -33,6 +35,9 @@ import com.thedeliveryapp.thedeliveryapp.login.SignupActivity;
 import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
 import com.thedeliveryapp.thedeliveryapp.user.UserOrderDetailActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class DelivererOrderDetailActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
 
@@ -198,6 +203,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                                     Integer wal_bal = dataSnapshot.getValue(Integer.class);
                                     balance = wal_bal;
                                     wallet_ref.setValue(balance-myOrder.max_range);
+                                    setUpAcceptNotif(myOrder);
                                 }
 
                                 @Override
@@ -208,6 +214,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                             btn_mark_delivered.setEnabled(true);
                             btn_mark_delivered.setVisibility(View.VISIBLE);
+
 
                         } else if (myOrder.status.equals("ACTIVE")) {
 
@@ -257,7 +264,34 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         });
 
     }
+    public void setUpAcceptNotif(final OrderData order) {
+        String userId = order.userId;
+        root.child("deliveryApp").child("users").child(userId).child("playerId").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String player_id = dataSnapshot.getValue(String.class);
+                //TOAST
 
+                try {
+                    JSONObject notificationContent = new JSONObject("{'contents': {'en': '"+ order.description +"'}," +
+                            "'include_player_ids': ['" + player_id + "'], " +
+                            "'headings': {'en': 'woah ! your order just got accepted'}, " +
+                            "'big_picture': 'http://i.imgur.com/DKw1J2F.gif'}");
+                    OneSignal.postNotification(notificationContent, null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
         if (id == android.R.id.home) {
