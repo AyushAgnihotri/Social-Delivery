@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/chargeDisplay"
                 android:layout_toRightOf="@id/description"
-                android:textSize="40px"
+                android:textSize="13sp"
                 android:textColor="@color/cardview_dark_background"
                 android:textStyle="bold"/>
 
