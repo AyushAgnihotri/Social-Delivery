@@ -126,7 +126,7 @@ public class OtherSignup extends AppCompatActivity implements ConnectivityReceiv
 
     //Method to upload details in database;
     void update_userdetails_database(String name, String Mobile, String Alt_Mobile, String Email) {
-        UserDetails Details = new UserDetails(name, Mobile, Alt_Mobile, Email);
+        UserDetails Details = new UserDetails(name, Mobile, Alt_Mobile, Email, 5000);
         DatabaseReference root = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String userId=user.getUid();

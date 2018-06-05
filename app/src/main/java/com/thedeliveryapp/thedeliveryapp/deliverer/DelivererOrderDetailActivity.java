@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
+import com.thedeliveryapp.thedeliveryapp.login.SignupActivity;
 import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
 import com.thedeliveryapp.thedeliveryapp.user.UserOrderDetailActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
@@ -35,11 +38,11 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
             userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
-    private String date, time;
-    private Button btn_accept, btn_show_path;
-    private DatabaseReference root, allorders, ref1, ref2, deliverer;
+    private String date, time, userId, wal_bal;
+    private Button btn_accept, btn_show_path, btn_mark_delivered;
+    private DatabaseReference root, allorders, ref1, ref2, wallet_ref, deliverer;
     private UserDetails deliverer_data;
-    private String userId;
+    private int wallet;
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -67,6 +70,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         status = findViewById(R.id.status);
         btn_accept = (Button) findViewById(R.id.btn_accept);
         btn_show_path = (Button) findViewById(R.id.btn_show_path);
+        btn_mark_delivered = (Button) findViewById(R.id.btn_mark_delivered);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -85,8 +89,13 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             btn_accept.setVisibility(View.GONE);
             btn_show_path.setEnabled(false);
             btn_show_path.setVisibility(View.GONE);
+            btn_mark_delivered.setEnabled(false);
+            btn_mark_delivered.setVisibility(View.GONE);
         } else if (myOrder.status.equals("ACTIVE")) {
             btn_accept.setText("Reject");
+        } else {
+            btn_mark_delivered.setEnabled(false);
+            btn_mark_delivered.setVisibility(View.GONE);
         }
 
 
@@ -166,7 +175,6 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                                 }
                             });
 
-
                             allorders.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -175,14 +183,37 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                                             continue;
                                         }
                                         for (DataSnapshot orderdata : userdata.getChildren()) {
-                                            OrderData order = orderdata.getValue(OrderData.class);
+                                            final OrderData order = orderdata.getValue(OrderData.class);
                                             if (order.orderId == myOrder.orderId) {
+                                                final String user = userdata.getKey();
+
+                                                /*
+                                                wallet_ref = root.child("deliveryApp").child("users").child(user).child("wallet");
+                                                wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        Integer wallet_balance = dataSnapshot.getValue(Integer.class);
+                                                        //Toast.makeText(DelivererOrderDetailActivity.this, wallet_balance, Toast.LENGTH_SHORT).show();
+                                                        System.out.println("wallet_balance " + wallet_balance);
+                                                        wallet = wallet_balance;
+                                                        System.out.println("wallet1 " + wallet);
+                                                        root.child("deliveryApp").child("users").child(user).child("wallet").setValue(wallet-order.max_range);
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
+                                                */
+
                                                 ref1 = orderdata.getRef();
                                                 ref1.child("status").setValue("ACTIVE");
-
                                                 btn_accept.setText("Reject");
                                                 myOrder.status = "ACTIVE";
                                                 status.setText((myOrder.status));
+                                                btn_mark_delivered.setEnabled(true);
+                                                btn_mark_delivered.setVisibility(View.VISIBLE);
 
                                                 ref2 = ref1.child("acceptedBy");
                                                 ref2.child("name").setValue(deliverer_data.name);
@@ -218,6 +249,8 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                                                 btn_accept.setText("Accept");
                                                 myOrder.status = "PENDING";
                                                 status.setText((myOrder.status));
+                                                btn_mark_delivered.setEnabled(false);
+                                                btn_mark_delivered.setVisibility(View.GONE);
 
                                                 ref2 = ref1.child("acceptedBy");
                                                 ref2.child("name").setValue("-");
@@ -253,6 +286,17 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             @Override
             public void onClick(View v) {
                 alertDialog.show();
+            }
+        });
+
+        btn_mark_delivered.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn_accept.setEnabled(false);
+                btn_accept.setVisibility(View.GONE);
+                btn_mark_delivered.setText("Delivered");
+                btn_mark_delivered.setBackgroundColor(Color.GREEN);
+                btn_mark_delivered.setEnabled(false);
             }
         });
 

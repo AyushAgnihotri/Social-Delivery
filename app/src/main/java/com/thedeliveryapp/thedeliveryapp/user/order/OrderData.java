@@ -15,6 +15,7 @@ public class OrderData implements Parcelable {
     public String status;
     public AcceptedBy acceptedBy = new AcceptedBy();
     public int deliveryCharge;
+    public String userId;
 
     public OrderData() {
         //For DataSnapshot.getValue()
@@ -29,6 +30,7 @@ public class OrderData implements Parcelable {
         max_range = in.readInt();
         status = in.readString();
         deliveryCharge = in.readInt();
+        userId = in.readString();
 
         userLocation.Name = in.readString();
         userLocation.Location = in.readString();
@@ -62,6 +64,7 @@ public class OrderData implements Parcelable {
         dest.writeInt(max_range);
         dest.writeString(status);
         dest.writeInt(deliveryCharge);
+        dest.writeString(userId);
 
         dest.writeString(userLocation.Name);
         dest.writeString(userLocation.Location);
@@ -92,7 +95,7 @@ public class OrderData implements Parcelable {
     };
 
 
-    public OrderData(String category, String description, int orderId, int max_range, int min_range,UserLocation location,ExpiryDate expiryDate,ExpiryTime expiryTime,String status,int deliveryCharge, AcceptedBy acceptedBy) {
+    public OrderData(String category, String description, int orderId, int max_range, int min_range,UserLocation location,ExpiryDate expiryDate,ExpiryTime expiryTime,String status,int deliveryCharge, AcceptedBy acceptedBy,String userId) {
         this.category = category;
         this.description = description;
         this.orderId = orderId;
@@ -104,6 +107,7 @@ public class OrderData implements Parcelable {
         this.status = status;
         this.deliveryCharge = deliveryCharge;
         this.acceptedBy = acceptedBy;
+        this.userId = userId;
     }
 
 

@@ -429,6 +429,18 @@
                 android:background="@drawable/button_round_main"
                 android:textColor="@color/black" />
 
+            <Button
+                android:id="@+id/btn_mark_delivered"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_below="@id/btn_accept"
+                android:padding="20dp"
+                android:layout_centerInParent="true"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_mark_delivered"
+                android:background="@drawable/button_round_main_red"
+                android:textColor="@color/black" />
 
         </RelativeLayout>
 
