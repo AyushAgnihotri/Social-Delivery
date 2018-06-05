@@ -38,9 +38,9 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
             userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
-    private String date, time, userId, wal_bal;
+    private String date, time, userId;
     private Button btn_accept, btn_show_path, btn_mark_delivered;
-    private DatabaseReference root, allorders, ref1, ref2, wallet_ref, deliverer;
+    private DatabaseReference root, ref1, ref2, deliverer;
     private UserDetails deliverer_data;
     private int wallet;
 
@@ -147,6 +147,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             public void onShow(DialogInterface dialogInterface) {
                 Button yesButton = (alertDialog).getButton(android.app.AlertDialog.BUTTON_POSITIVE);
                 Button noButton = (alertDialog).getButton(android.app.AlertDialog.BUTTON_NEGATIVE);
+
                 yesButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -157,16 +158,24 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                         userId = user.getUid();
 
                         root = FirebaseDatabase.getInstance().getReference();
-                        allorders = root.child("deliveryApp").child("orders");
-                        allorders.keepSynced(true);
+                        ref1 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId));
+                        ref1.keepSynced(true);
+                        ref2 = ref1.child("acceptedBy");
+                        ref2.keepSynced(true);
 
                         if (myOrder.status.equals("PENDING")) {
                             deliverer = root.child("deliveryApp").child("users").child(userId);
                             deliverer.keepSynced(true);
+
                             deliverer.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     deliverer_data = dataSnapshot.getValue(UserDetails.class);
+                                    ref2.child("name").setValue(deliverer_data.name);
+                                    ref2.child("email").setValue(deliverer_data.Email);
+                                    ref2.child("mobile").setValue(deliverer_data.Mobile);
+                                    ref2.child("alt_mobile").setValue(deliverer_data.Alt_Mobile);
+                                    ref2.child("delivererID").setValue(userId);
                                 }
 
                                 @Override
@@ -175,100 +184,32 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                                 }
                             });
 
-                            allorders.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot userdata : dataSnapshot.getChildren()) {
-                                        if (userdata.getKey().equals(userId)) {
-                                            continue;
-                                        }
-                                        for (DataSnapshot orderdata : userdata.getChildren()) {
-                                            final OrderData order = orderdata.getValue(OrderData.class);
-                                            if (order.orderId == myOrder.orderId) {
-                                                final String user = userdata.getKey();
+                            ref1.child("status").setValue("ACTIVE");
+                            btn_accept.setText("Reject");
+                            myOrder.status = "ACTIVE";
+                            status.setText((myOrder.status));
 
-                                                /*
-                                                wallet_ref = root.child("deliveryApp").child("users").child(user).child("wallet");
-                                                wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                        Integer wallet_balance = dataSnapshot.getValue(Integer.class);
-                                                        //Toast.makeText(DelivererOrderDetailActivity.this, wallet_balance, Toast.LENGTH_SHORT).show();
-                                                        System.out.println("wallet_balance " + wallet_balance);
-                                                        wallet = wallet_balance;
-                                                        System.out.println("wallet1 " + wallet);
-                                                        root.child("deliveryApp").child("users").child(user).child("wallet").setValue(wallet-order.max_range);
-                                                    }
 
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                                    }
-                                                });
-                                                */
+                            btn_mark_delivered.setEnabled(true);
+                            btn_mark_delivered.setVisibility(View.VISIBLE);
 
-                                                ref1 = orderdata.getRef();
-                                                ref1.child("status").setValue("ACTIVE");
-                                                btn_accept.setText("Reject");
-                                                myOrder.status = "ACTIVE";
-                                                status.setText((myOrder.status));
-                                                btn_mark_delivered.setEnabled(true);
-                                                btn_mark_delivered.setVisibility(View.VISIBLE);
-
-                                                ref2 = ref1.child("acceptedBy");
-                                                ref2.child("name").setValue(deliverer_data.name);
-                                                ref2.child("email").setValue(deliverer_data.Email);
-                                                ref2.child("mobile").setValue(deliverer_data.Mobile);
-                                                ref2.child("alt_mobile").setValue(deliverer_data.Alt_Mobile);
-                                                ref2.child("delivererID").setValue(userId);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
                         } else if (myOrder.status.equals("ACTIVE")) {
 
-                            allorders.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot userdata : dataSnapshot.getChildren()) {
-                                        if (userdata.getKey().equals(userId)) {
-                                            continue;
-                                        }
-                                        for (DataSnapshot orderdata : userdata.getChildren()) {
-                                            OrderData order = orderdata.getValue(OrderData.class);
-                                            if (order.orderId == myOrder.orderId) {
-                                                ref1 = orderdata.getRef();
-                                                ref1.child("status").setValue("PENDING");
+                            ref1.child("status").setValue("PENDING");
 
-                                                btn_accept.setText("Accept");
-                                                myOrder.status = "PENDING";
-                                                status.setText((myOrder.status));
-                                                btn_mark_delivered.setEnabled(false);
-                                                btn_mark_delivered.setVisibility(View.GONE);
+                            btn_accept.setText("Accept");
+                            myOrder.status = "PENDING";
+                            status.setText((myOrder.status));
 
-                                                ref2 = ref1.child("acceptedBy");
-                                                ref2.child("name").setValue("-");
-                                                ref2.child("email").setValue("-");
-                                                ref2.child("mobile").setValue("-");
-                                                ref2.child("alt_mobile").setValue("-");
-                                                ref2.child("delivererID").setValue("-");
-                                            }
-                                        }
-                                    }
-                                }
+                            ref2.child("name").setValue("-");
+                            ref2.child("email").setValue("-");
+                            ref2.child("mobile").setValue("-");
+                            ref2.child("alt_mobile").setValue("-");
+                            ref2.child("delivererID").setValue("-");
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-
+                            btn_mark_delivered.setEnabled(false);
+                            btn_mark_delivered.setVisibility(View.GONE);
                         }
                     }
                 });
