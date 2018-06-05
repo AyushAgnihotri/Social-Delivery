@@ -84,7 +84,6 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
 
         Intent intent = getIntent();
         myOrder = intent.getParcelableExtra("MyOrder");
-
         description = findViewById(R.id.description_of_order);
         category = findViewById(R.id.btn_category);
         delivery_charge = findViewById(R.id.delivery_charge);

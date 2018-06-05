@@ -1,4 +1,4 @@
-package com.thedeliveryapp.thedeliveryapp.deliverer;
+package com.thedeliveryapp.thedeliveryapp;
 
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
