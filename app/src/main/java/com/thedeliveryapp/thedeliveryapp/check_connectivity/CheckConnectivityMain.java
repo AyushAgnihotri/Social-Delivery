@@ -3,9 +3,14 @@ package com.thedeliveryapp.thedeliveryapp.check_connectivity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.onesignal.OSNotification;
 import com.onesignal.OSNotificationAction;
 import com.onesignal.OSNotificationOpenResult;
@@ -13,10 +18,9 @@ import com.onesignal.OneSignal;
 import com.thedeliveryapp.thedeliveryapp.deliverer.DelivererOrderDetailActivity;
 import com.thedeliveryapp.thedeliveryapp.login.LoginActivity;
 import com.thedeliveryapp.thedeliveryapp.user.UserOrderDetailActivity;
+import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 import org.json.JSONObject;
-
-import static com.thedeliveryapp.thedeliveryapp.deliverer.DelivererOrderDetailActivity.myOrder;
 
 public class CheckConnectivityMain extends Application {
     private static CheckConnectivityMain mInstance;
@@ -84,37 +88,29 @@ public class CheckConnectivityMain extends Application {
         public void notificationOpened(OSNotificationOpenResult result) {
             OSNotificationAction.ActionType actionType = result.action.type;
             JSONObject data = result.notification.payload.additionalData;
-            String launchUrl = result.notification.payload.launchURL; // update docs launchUrl
-
-            String customKey;
-            String openURL = null;
-            Object activityToLaunch = UserOrderDetailActivity.class;
 
             if (data != null) {
-                customKey = data.optString("customkey", null);
+                String userId = data.optString("userId");
+                String orderId = data.optString("orderId");
+                DatabaseReference root = FirebaseDatabase.getInstance().getReference();
+                root.child("deliveryApp").child("orders").child(userId).child(orderId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        OrderData myOrder = dataSnapshot.getValue(OrderData.class);
+                        Intent intent = new Intent(getApplicationContext(),UserOrderDetailActivity.class);
+                        intent.putExtra("MyOrder",(Parcelable) myOrder);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
 
-                if (customKey != null) Log.i("OneSignalExample", "customkey set with value: " + customKey);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                    }
+                });
             }
 
-            if (actionType == OSNotificationAction.ActionType.ActionTaken) {
-                Log.i("OneSignalExample", "Button pressed with id: " + result.action.actionID);
 
-                if (result.action.actionID.equals("id1")) {
-                    Log.i("OneSignalExample", "button id called: " + result.action.actionID);
-                    activityToLaunch = UserOrderDetailActivity.class;
-                } else
-                    Log.i("OneSignalExample", "button id called: " + result.action.actionID);
-            }
-            // The following can be used to open an Activity of your choice.
-            // Replace - getApplicationContext() - with any Android Context.
-            // Intent intent = new Intent(getApplicationContext(), YourActivity.class);
-            Intent intent = new Intent(getApplicationContext(),(Class<?>) activityToLaunch);
-            intent.putExtra("MyOrder",(Parcelable) myOrder);
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            // intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
-            Log.i("OneSignalExample", "openURL = " + openURL);
             // Add the following to your AndroidManifest.xml to prevent the launching of your main Activity
             //   if you are calling startActivity above.
         /*
