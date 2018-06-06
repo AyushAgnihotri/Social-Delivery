@@ -20,10 +20,12 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -202,6 +204,10 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
 
                             textViewUserName = mHeaderView.findViewById(R.id.headerUserName);
                             textViewEmail = mHeaderView.findViewById(R.id.headerUserEmail);
+                            int wallet = userDetails.wallet;
+                            ImageView walletBalance =  mHeaderView.findViewById(R.id.walletBalance);
+                            TextDrawable drawable = TextDrawable.builder().beginConfig().textColor(Color.BLACK).bold().endConfig().buildRoundRect(Integer.toString(wallet),Color.WHITE,100);
+                            walletBalance.setImageDrawable(drawable);
 
                             textViewUserName.setText(userDetails.name);
                             textViewEmail.setText(userDetails.Email);
