@@ -85,6 +85,31 @@
                 android:textColor="@color/black" />
 
             <TextView
+                android:id="@+id/otp_h"
+                android:layout_alignRight="@id/category"
+                android:layout_marginRight="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/button_round"
+                android:padding="5dp"
+                android:textSize="14sp"
+                android:text="@string/otp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/otp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_round_main_gray"
+                android:padding="5dp"
+                android:textSize="16sp"
+                android:text=""
+                android:textColor="@color/black" />
+
+            <TextView
                 android:id="@+id/description_h"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -102,8 +102,14 @@
     <string name="btn_accept">Accept</string>
     <string name="btn_reject">Reject</string>
     <string name="btn_show_path">Show Path</string>
-    <string name="btn_mark_delivered">Mark Delivered</string>
+    <string name="btn_mark_delivered">"Mark   Delivered"</string>
     <string name="btn_send_otp">"Send   OTP"</string>
+    <string name="otp">"OTP :"</string>
+    <string name="enter_otp1">Enter OTP</string>
+    <string name="enter_otp2">(as recieved from Orderer) :</string>
+
+
+
 
 
     %userOrderDetails

@@ -133,7 +133,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                     active = false;
                     pending = false;
                     finished = true;
-                    toolbar.setTitle("Completed");
+                    toolbar.setTitle("Finished");
                     refreshOrders();
 
                 }
@@ -338,7 +338,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                         OrderData order = orderdata.getValue(OrderData.class);
                         if ((order.status.equals("PENDING") && pending) ||
                                 (order.status.equals("ACTIVE") && active && userId.equals(order.acceptedBy.delivererID)) ||
-                                (order.status.equals("COMPLETED") && finished && userId.equals(order.acceptedBy.delivererID)))
+                                (order.status.equals("FINISHED") && finished && userId.equals(order.acceptedBy.delivererID)))
                             adapter.insert(0, order);
                         //   Toast.makeText(ItemListActivity.this,Integer.toString(order.max_range), Toast.LENGTH_SHORT).show();
                         //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();

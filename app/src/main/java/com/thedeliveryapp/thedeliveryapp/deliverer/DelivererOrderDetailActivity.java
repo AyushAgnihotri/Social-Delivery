@@ -47,7 +47,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
     private String date, time, userId;
     private Button btn_accept, btn_show_path, btn_mark_delivered, btn_send_otp;
-    private DatabaseReference root, ref1, ref2, wallet_ref, deliverer;
+    private DatabaseReference root, ref1, ref2, ref3, wallet_ref, deliverer;
     private UserDetails deliverer_data;
     public static OrderData myOrder;
     private int balance;
@@ -258,8 +258,11 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                             ref2.child("alt_mobile").setValue("-");
                             ref2.child("delivererID").setValue("-");
 
+                            ref1.child("otp").setValue("");
+
                             btn_send_otp.setEnabled(false);
                             btn_send_otp.setVisibility(View.GONE);
+
                             //btn_mark_delivered.setEnabled(false);
                             //btn_mark_delivered.setVisibility(View.GONE);
                         }
@@ -286,14 +289,20 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             @Override
             public void onClick(View v) {
                 String secret = generateSecureRandomNumber();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                userId = user.getUid();
+                root = FirebaseDatabase.getInstance().getReference();
+                ref3 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId)).child("otp");
+                ref3.keepSynced(true);
+                ref3.setValue(secret);
 
-                ref1.child("otp").setValue(secret);
-
-                btn_send_otp.setText("Re-send OTP");
                 Intent intent = new Intent(DelivererOrderDetailActivity.this, Otp_screen.class);
                 intent.putExtra("OTP",(String) secret);
+                intent.putExtra("MyOrder",(Parcelable) myOrder);
                 startActivity(intent);
-                finish();
+                //finish();
+
+                //btn_send_otp.setText("Re-send OTP");
             }
         });
 

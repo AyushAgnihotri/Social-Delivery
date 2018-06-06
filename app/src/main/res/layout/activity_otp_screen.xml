@@ -1,9 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     tools:context=".deliverer.Otp_screen">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/enter_otp1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/enter_otp2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-143dp"
+        android:text="@string/enter_otp1"
+        android:textColor="@color/black"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/enter_otp2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="143dp"
+        android:text="@string/enter_otp2"
+        android:textColor="@color/black"
+        android:textSize="25sp" />
+
+
+    <EditText
+        android:id="@+id/f1"
+        android:nextFocusForward="@id/f2"
+        android:imeOptions="actionNext"
+        android:inputType="number"
+        android:layout_below="@id/enter_otp2"
+        android:textSize="40sp"
+        android:layout_marginTop="110dp"
+        android:layout_marginLeft="25dp"
+        android:maxLength="1"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/f2"
+        android:nextFocusForward="@id/f3"
+        android:imeOptions="actionNext"
+        android:inputType="number"
+        android:layout_below="@id/enter_otp2"
+        android:textSize="40sp"
+        android:layout_marginTop="110dp"
+        android:layout_marginLeft="85dp"
+        android:maxLength="1"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/f3"
+        android:nextFocusForward="@id/f4"
+        android:imeOptions="actionNext"
+        android:inputType="number"
+        android:layout_below="@id/enter_otp2"
+        android:textSize="40sp"
+        android:layout_marginTop="110dp"
+        android:layout_marginLeft="145dp"
+        android:maxLength="1"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/f4"
+        android:nextFocusForward="@id/f5"
+        android:imeOptions="actionNext"
+        android:inputType="number"
+        android:layout_below="@id/enter_otp2"
+        android:textSize="40sp"
+        android:layout_marginTop="110dp"
+        android:layout_marginLeft="205dp"
+        android:maxLength="1"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/f5"
+        android:inputType="number"
+        android:layout_below="@id/enter_otp2"
+        android:textSize="40sp"
+        android:layout_marginTop="110dp"
+        android:layout_marginLeft="265dp"
+        android:maxLength="1"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_mark_delivered"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="20dp"
+        android:layout_below="@id/f5"
+        android:padding="20dp"
+        android:layout_centerInParent="true"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_mark_delivered"
+        android:textSize="20sp"
+        android:background="@drawable/button_round_main_red"
+        android:textColor="@color/black" />
+
+
+</RelativeLayout>

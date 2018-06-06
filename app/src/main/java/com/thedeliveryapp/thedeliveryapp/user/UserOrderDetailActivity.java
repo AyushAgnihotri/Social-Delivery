@@ -25,7 +25,7 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 public class UserOrderDetailActivity extends AppCompatActivity  implements ConnectivityReceiver.ConnectivityReceiverListener{
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
-            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
+            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status, otp_h, otp;
     private String date, time, deliverer_details;
     Button acceptedBy;
 
@@ -55,6 +55,9 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         deliveryCharge = findViewById(R.id.delivery_charge);
         acceptedBy = findViewById(R.id.btn_accepted_by);
         status = findViewById(R.id.status);
+        otp_h = findViewById(R.id.otp_h);
+        otp = findViewById(R.id.otp);
+
         FloatingActionButton fab = findViewById(R.id.fab);
 
         // Show the Up button in the action bar.
@@ -69,6 +72,8 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
             appBarLayout.setTitle(myOrder.category);
         }
 
+        otp_h.setVisibility(View.GONE);
+        otp.setVisibility(View.GONE);
 
         if (myOrder.status.equals("PENDING")) {
             fab.setVisibility(View.VISIBLE);
@@ -81,6 +86,10 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
             acceptedBy.setText("Delivered By");
         }
 
+        if (!myOrder.otp.equals("")) {
+            otp_h.setVisibility(View.VISIBLE);
+            otp.setVisibility(View.VISIBLE);
+        }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +126,7 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         userLocationName.setText(myOrder.userLocation.Name);
         userLocationLocation.setText(myOrder.userLocation.Location);
         deliveryCharge.setText((myOrder.deliveryCharge+""));
+        otp.setText(myOrder.otp);
 
         if (myOrder.userLocation.PhoneNumber.equals("")) {
             userLocationPhoneNumber.setText("-");
