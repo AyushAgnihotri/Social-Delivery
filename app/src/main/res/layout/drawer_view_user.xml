@@ -8,7 +8,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/use_as_deliverer"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_deliverer"
             android:title="View as Deliverer"
             tools:ignore="HardcodedText" />
     </group>
