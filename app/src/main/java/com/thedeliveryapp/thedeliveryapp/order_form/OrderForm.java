@@ -333,8 +333,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                         root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
                     }
-                    UserViewActivity.adapter.insert(0,
-                            order);
+                    UserViewActivity.adapter.insert(0, order);
                 }
 
                 @Override

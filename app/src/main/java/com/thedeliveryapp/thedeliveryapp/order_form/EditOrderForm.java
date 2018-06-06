@@ -35,9 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
-import com.thedeliveryapp.thedeliveryapp.login.ResetPasswordActivity;
 import com.thedeliveryapp.thedeliveryapp.user.UserOrderDetailActivity;
-import com.thedeliveryapp.thedeliveryapp.user.order.AcceptedBy;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryTime;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
@@ -49,7 +47,6 @@ import java.util.Calendar;
 import java.util.List;
 
 public class EditOrderForm extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
-
 
     private DatabaseReference root, order;
     private String userId, otp;
@@ -63,7 +60,6 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
     UserLocation userLocation = null;
     ExpiryTime expiryTime = null;
     ExpiryDate expiryDate = null;
-    AcceptedBy acceptedBy = null;
 
     int PLACE_PICKER_REQUEST =1;
 
@@ -84,6 +80,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
 
         Intent intent = getIntent();
         myOrder = intent.getParcelableExtra("MyOrder");
+
         description = findViewById(R.id.description_of_order);
         category = findViewById(R.id.btn_category);
         delivery_charge = findViewById(R.id.delivery_charge);
@@ -274,7 +271,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
             order.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge), acceptedBy, userId, otp);
+                    updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge), myOrder.acceptedBy, userId, otp);
                     root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(updated_order);
                     Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
                     intent.putExtra("MyOrder",(Parcelable) updated_order);

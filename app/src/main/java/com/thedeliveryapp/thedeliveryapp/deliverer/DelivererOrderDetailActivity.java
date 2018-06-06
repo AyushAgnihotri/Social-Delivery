@@ -286,6 +286,9 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             @Override
             public void onClick(View v) {
                 String secret = generateSecureRandomNumber();
+
+                ref1.child("otp").setValue(secret);
+
                 btn_send_otp.setText("Re-send OTP");
                 Intent intent = new Intent(DelivererOrderDetailActivity.this, Otp_screen.class);
                 intent.putExtra("OTP",(String) secret);
