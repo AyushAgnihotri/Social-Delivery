@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -59,8 +60,9 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
     EditText description, min_int_range, max_int_range, delivery_charge;
 
     private DatabaseReference root, deliveryApp, wallet_ref;
-    private String userId;
+    private String userId, TAG;
     private int OrderNumber, order_id, balance;
+    int flag;
     UserLocation userLocation = null;
     ExpiryTime expiryTime = null;
     ExpiryDate expiryDate = null;
@@ -233,8 +235,6 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
             return R.drawable.ic_action_movie;
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -249,6 +249,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_save) {
+            flag = 0;
             //Default text for date_picker = "ExpiryDate"
             //Default text for time_picker = "ExpiryTime"
             if(userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")|| order_delivery_charge.equals("")) {
@@ -263,11 +264,14 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                 return true;
             }
 
+
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userId = user.getUid();
 
             root = FirebaseDatabase.getInstance().getReference();
 
+            /*
+            TAG = "hello";
             wallet_ref = root.child("deliveryApp").child("users").child(userId).child("wallet");
             wallet_ref.keepSynced(true);
             wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -275,9 +279,14 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Integer wal_bal = dataSnapshot.getValue(Integer.class);
                     balance = wal_bal;
+
                     if (Integer.parseInt(order_max_range) > balance) {
-                        Toast.makeText(getApplicationContext(), "Insufficient balance in your wallet to place this order!, Please ", Toast.LENGTH_SHORT).show();
-                        flag = true;
+                        Toast.makeText(getApplicationContext(), "Insufficient balance in your wallet to place this order!\nPlease put some money in your wallet", Toast.LENGTH_LONG).show();
+                        flag = 1;
+                        Log.d(TAG, "flag value1 " + flag);
+                    } else {
+                        flag = 2;
+                        Log.d(TAG, "flag value2 " + flag);
                     }
                 }
 
@@ -287,6 +296,20 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                 }
             });
 
+            Log.d(TAG, "flag value3 " + flag);
+            try {
+                if (flag == 0) {
+                    Thread.sleep(10000);
+                }
+            } catch (InterruptedException e) {
+                System.out.println("interrupted.");
+            }
+
+            Log.d(TAG, "flag value4 " + flag);
+            if (flag == 1) {
+                return true;
+            }
+            */
 
             deliveryApp = root.child("deliveryApp");
             deliveryApp.keepSynced(true);
