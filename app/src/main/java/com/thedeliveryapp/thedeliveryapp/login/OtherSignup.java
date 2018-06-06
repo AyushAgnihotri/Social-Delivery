@@ -130,7 +130,7 @@ public class OtherSignup extends AppCompatActivity implements ConnectivityReceiv
     void update_userdetails_database(String name, String Mobile, String Alt_Mobile, String Email) {
         OSPermissionSubscriptionState status = OneSignal.getPermissionSubscriptionState();
         String playerId = status.getSubscriptionStatus().getUserId();
-        UserDetails Details = new UserDetails(name, Mobile, Alt_Mobile, Email, 5000,playerId);
+        UserDetails Details = new UserDetails(name, Mobile, Alt_Mobile, Email, 10000,playerId);
         DatabaseReference root = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String userId=user.getUid();

@@ -39,12 +39,14 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.SecureRandom;
+
 public class DelivererOrderDetailActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
             userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
     private String date, time, userId;
-    private Button btn_accept, btn_show_path, btn_mark_delivered;
+    private Button btn_accept, btn_show_path, btn_mark_delivered, btn_send_otp;
     private DatabaseReference root, ref1, ref2, wallet_ref, deliverer;
     private UserDetails deliverer_data;
     public static OrderData myOrder;
@@ -55,6 +57,24 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         onBackPressed();
         return true;
     }
+
+    int range = 9;
+    int length = 5;
+
+    private String generateSecureRandomNumber() {
+        SecureRandom secureRandom = new SecureRandom();
+        String s = "";
+        for (int i = 0; i < length; i++) {
+            int number = secureRandom.nextInt(range);
+            if (number == 0 && i == 0) {
+                i = -1;
+                continue;
+            }
+            s = s + number;
+        }
+        return s;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +96,8 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         status = findViewById(R.id.status);
         btn_accept = (Button) findViewById(R.id.btn_accept);
         btn_show_path = (Button) findViewById(R.id.btn_show_path);
-        btn_mark_delivered = (Button) findViewById(R.id.btn_mark_delivered);
+        //btn_mark_delivered = (Button) findViewById(R.id.btn_mark_delivered);
+        btn_send_otp = (Button) findViewById(R.id.btn_send_otp);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -95,13 +116,17 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             btn_accept.setVisibility(View.GONE);
             btn_show_path.setEnabled(false);
             btn_show_path.setVisibility(View.GONE);
-            btn_mark_delivered.setEnabled(false);
-            btn_mark_delivered.setVisibility(View.GONE);
+            btn_send_otp.setEnabled(false);
+            btn_send_otp.setVisibility(View.GONE);
+            //btn_mark_delivered.setEnabled(false);
+            //btn_mark_delivered.setVisibility(View.GONE);
         } else if (myOrder.status.equals("ACTIVE")) {
             btn_accept.setText("Reject");
         } else {
-            btn_mark_delivered.setEnabled(false);
-            btn_mark_delivered.setVisibility(View.GONE);
+            btn_send_otp.setEnabled(false);
+            btn_send_otp.setVisibility(View.GONE);
+            //btn_mark_delivered.setEnabled(false);
+            //btn_mark_delivered.setVisibility(View.GONE);
         }
 
 
@@ -192,6 +217,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                             ref1.child("status").setValue("ACTIVE");
                             btn_accept.setText("Reject");
+
                             myOrder.status = "ACTIVE";
                             status.setText((myOrder.status));
 
@@ -212,8 +238,10 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                                 }
                             });
 
-                            btn_mark_delivered.setEnabled(true);
-                            btn_mark_delivered.setVisibility(View.VISIBLE);
+                            btn_send_otp.setEnabled(true);
+                            btn_send_otp.setVisibility(View.VISIBLE);
+                            //btn_mark_delivered.setEnabled(true);
+                            //btn_mark_delivered.setVisibility(View.VISIBLE);
 
 
                         } else if (myOrder.status.equals("ACTIVE")) {
@@ -230,8 +258,10 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                             ref2.child("alt_mobile").setValue("-");
                             ref2.child("delivererID").setValue("-");
 
-                            btn_mark_delivered.setEnabled(false);
-                            btn_mark_delivered.setVisibility(View.GONE);
+                            btn_send_otp.setEnabled(false);
+                            btn_send_otp.setVisibility(View.GONE);
+                            //btn_mark_delivered.setEnabled(false);
+                            //btn_mark_delivered.setVisibility(View.GONE);
                         }
                     }
                 });
@@ -252,6 +282,19 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             }
         });
 
+        btn_send_otp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String secret = generateSecureRandomNumber();
+                btn_send_otp.setText("Re-send OTP");
+                Intent intent = new Intent(DelivererOrderDetailActivity.this, Otp_screen.class);
+                intent.putExtra("OTP",(String) secret);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        /*
         btn_mark_delivered.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -262,6 +305,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                 btn_mark_delivered.setEnabled(false);
             }
         });
+        */
 
     }
     public void setUpAcceptNotif(final OrderData order) {

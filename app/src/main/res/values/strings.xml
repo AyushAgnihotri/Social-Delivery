@@ -103,6 +103,7 @@
     <string name="btn_reject">Reject</string>
     <string name="btn_show_path">Show Path</string>
     <string name="btn_mark_delivered">Mark Delivered</string>
+    <string name="btn_send_otp">"Send   OTP"</string>
 
 
     %userOrderDetails

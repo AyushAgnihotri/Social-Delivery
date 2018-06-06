@@ -10,13 +10,13 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="com.google.android.providers.gsf.permissions.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
 
     <application
         android:name=".check_connectivity.CheckConnectivityMain"
@@ -37,7 +37,6 @@
         <meta-data
             android:name="com.onesignal.NotificationOpened.DEFAULT"
             android:value="DISABLE" />
-
 
         <activity
             android:name=".login.LoginActivity"
@@ -87,7 +86,7 @@
         <activity
             android:name=".deliverer.DelivererViewActivity"
             android:label="@string/deliverer_all" />
-        <activity android:name=".deliverer.DelivererOrderDetailActivity"></activity>
+        <activity android:name=".deliverer.DelivererOrderDetailActivity" />
 
         <receiver
             android:name=".check_connectivity.ConnectivityReceiver"
@@ -99,12 +98,14 @@
 
         <service
             android:name=".MyNotificationExtender"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false">
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE">
             <intent-filter>
                 <action android:name="com.onesignal.NotificationExtender" />
             </intent-filter>
         </service>
+
+        <activity android:name=".deliverer.Otp_screen"></activity>
     </application>
 
 </manifest>

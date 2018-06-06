@@ -52,7 +52,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
 
 
     private DatabaseReference root, order;
-    private String userId;
+    private String userId, otp;
     private int OrderNumber, i, i1, year, monthOfYear, dayOfMonth;
 
     TextView category ;
@@ -92,6 +92,8 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
         date_picker = findViewById(R.id.btn_date_picker);
         time_picker = findViewById(R.id.btn_time_picker);
         user_location = findViewById(R.id.user_location);
+
+        otp = "";
 
         calendar = Calendar.getInstance();
         OrderNumber = myOrder.orderId;
@@ -272,7 +274,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
             order.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge),acceptedBy,userId);
+                    updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge), acceptedBy, userId, otp);
                     root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(updated_order);
                     Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
                     intent.putExtra("MyOrder",(Parcelable) updated_order);

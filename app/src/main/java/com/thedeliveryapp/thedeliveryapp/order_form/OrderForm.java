@@ -60,7 +60,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
     EditText description, min_int_range, max_int_range, delivery_charge;
 
     private DatabaseReference root, deliveryApp, wallet_ref;
-    private String userId, TAG;
+    private String userId, TAG, otp;
     private int OrderNumber, order_id, balance;
     int flag;
     UserLocation userLocation = null;
@@ -92,6 +92,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         ab.setDisplayHomeAsUpEnabled(true);
 
         acceptedBy = new AcceptedBy("-", "-", "-", "-", "-");
+        otp = "";
 
         category = findViewById(R.id.btn_category);
         date_picker = findViewById(R.id.btn_date_picker);
@@ -321,14 +322,14 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                         root.child("deliveryApp").child("totalOrders").setValue(1);
                         OrderNumber = 1;
                         order_id = OrderNumber;
-                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId);
+                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp);
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
                     }
                     else {
                         OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
                         OrderNumber++;
                         order_id = OrderNumber;
-                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId);
+                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp);
                         root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
                     }

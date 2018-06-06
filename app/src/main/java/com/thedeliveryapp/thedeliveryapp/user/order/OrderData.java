@@ -4,18 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class OrderData implements Parcelable {
-    public String category;
-    public String description;
-    public int orderId;
-    public int min_range;
-    public int max_range;
+    public String category, description, userId, status, otp;
+    public int orderId, min_range, max_range, deliveryCharge;
     public UserLocation userLocation = new UserLocation();
     public ExpiryDate expiryDate = new ExpiryDate();
     public ExpiryTime expiryTime = new ExpiryTime();
-    public String status;
     public AcceptedBy acceptedBy = new AcceptedBy();
-    public int deliveryCharge;
-    public String userId;
 
     public OrderData() {
         //For DataSnapshot.getValue()
@@ -48,6 +42,8 @@ public class OrderData implements Parcelable {
         acceptedBy.alt_mobile = in.readString();
         acceptedBy.email = in.readString();
         acceptedBy.delivererID = in.readString();
+
+        otp = in.readString();
     }
 
     @Override
@@ -82,6 +78,8 @@ public class OrderData implements Parcelable {
         dest.writeString(acceptedBy.alt_mobile);
         dest.writeString(acceptedBy.email);
         dest.writeString(acceptedBy.delivererID);
+
+        dest.writeString(otp);
     }
 
     public static  final Parcelable.Creator<OrderData> CREATOR = new Parcelable.Creator<OrderData>() {
@@ -95,7 +93,9 @@ public class OrderData implements Parcelable {
     };
 
 
-    public OrderData(String category, String description, int orderId, int max_range, int min_range,UserLocation location,ExpiryDate expiryDate,ExpiryTime expiryTime,String status,int deliveryCharge, AcceptedBy acceptedBy,String userId) {
+    public OrderData(String category, String description, int orderId, int max_range, int min_range,
+                     UserLocation location, ExpiryDate expiryDate, ExpiryTime expiryTime, String status,
+                     int deliveryCharge, AcceptedBy acceptedBy, String userId, String otp) {
         this.category = category;
         this.description = description;
         this.orderId = orderId;
@@ -108,7 +108,7 @@ public class OrderData implements Parcelable {
         this.deliveryCharge = deliveryCharge;
         this.acceptedBy = acceptedBy;
         this.userId = userId;
+        this.otp = otp;
     }
-
 
 }
