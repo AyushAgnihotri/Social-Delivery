@@ -76,6 +76,8 @@ public class Otp_screen extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() != 0) {
                     f3.requestFocus();
+                } else {
+                    f1.requestFocus();
                 }
             }
         });
@@ -92,6 +94,8 @@ public class Otp_screen extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() != 0) {
                     f4.requestFocus();
+                } else {
+                    f2.requestFocus();
                 }
             }
         });
@@ -108,6 +112,24 @@ public class Otp_screen extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() != 0) {
                     f5.requestFocus();
+                } else {
+                    f3.requestFocus();
+                }
+            }
+        });
+
+        f5.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() == 0) {
+                    f4.requestFocus();
                 }
             }
         });

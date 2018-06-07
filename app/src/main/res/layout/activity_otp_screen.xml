@@ -30,6 +30,28 @@
         android:textColor="@color/black"
         android:textSize="25sp" />
 
+    <TextView
+        android:id="@+id/ask_otp1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="190dp"
+        android:text="@string/ask_otp1"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/ask_otp2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="208dp"
+        android:text="@string/ask_otp2"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
+
 
     <EditText
         android:id="@+id/f1"
