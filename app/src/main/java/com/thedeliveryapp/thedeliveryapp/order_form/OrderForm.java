@@ -11,6 +11,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,9 +64,9 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
     EditText description, min_int_range, max_int_range, delivery_charge;
     RadioButton radio_wallet, radio_cash;
 
-    private DatabaseReference root, deliveryApp, wallet_ref;
-    private String userId, TAG, otp, mode_of_payment;
-    private int OrderNumber, order_id, balance, final_price = -1;
+    private DatabaseReference root, deliveryApp, ref1;
+    private String userId, otp, mode_of_payment;
+    private int OrderNumber, order_id, value, final_price = -1;
     int flag;
     UserLocation userLocation = null;
     ExpiryTime expiryTime = null;
@@ -110,6 +112,48 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         radio_cash = findViewById(R.id.radio_cash);
 
         mode_of_payment = "CASH ON DELIVERY";
+
+
+        max_int_range.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                value = Integer.parseInt(s.toString());
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                userId = user.getUid();
+                root = FirebaseDatabase.getInstance().getReference();
+
+                ref1 = root.child("deliveryApp").child("users").child(userId).child("wallet");
+                ref1.keepSynced(true);
+
+                ref1.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int balance = dataSnapshot.getValue(Integer.class);
+                        if (value > balance) {
+                            mode_of_payment = "CASH ON DELIVERY";
+                            radio_wallet.setChecked(false);
+                            radio_cash.setChecked(true);
+                            radio_wallet.setEnabled(false);
+                        } else {
+                            radio_wallet.setEnabled(true);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+        });
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
