@@ -222,6 +222,8 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                             myOrder.status = "ACTIVE";
                             status.setText((myOrder.status));
 
+                            /*
+                            // Deducts max_int money from orderer's wallet when order accepted
                             wallet_ref = root.child("deliveryApp").child("users").child(myOrder.userId).child("wallet");
                             wallet_ref.keepSynced(true);
                             wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -239,6 +241,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                                 }
                             });
+                            */
 
                             btn_send_otp.setEnabled(true);
                             btn_send_otp.setVisibility(View.VISIBLE);

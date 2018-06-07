@@ -6,12 +6,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -49,9 +53,9 @@ import java.util.List;
 
 public class EditOrderForm extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
-    private DatabaseReference root, order;
-    private String userId, otp;
-    private int OrderNumber, i, i1, year, monthOfYear, dayOfMonth;
+    private DatabaseReference root, order, ref1;
+    private String userId, otp, mode_of_payment;
+    private int OrderNumber, i, i1, year, monthOfYear, dayOfMonth, value;
 
     TextView category ;
     Button date_picker, time_picker, user_location;;
@@ -61,6 +65,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
     UserLocation userLocation = null;
     ExpiryTime expiryTime = null;
     ExpiryDate expiryDate = null;
+    RadioButton radio_wallet, radio_cash;
 
     int PLACE_PICKER_REQUEST =1;
 
@@ -90,6 +95,8 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
         date_picker = findViewById(R.id.btn_date_picker);
         time_picker = findViewById(R.id.btn_time_picker);
         user_location = findViewById(R.id.user_location);
+        radio_wallet = findViewById(R.id.radio_wallet);
+        radio_cash = findViewById(R.id.radio_cash);
 
         otp = "";
 
@@ -126,10 +133,62 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
 
         user_location.setText(myOrder.userLocation.Location);
 
+        mode_of_payment = myOrder.mode_of_payment;
+        if (mode_of_payment.equals("CASH ON DELIVERY")) {
+            radio_cash.setChecked(true);
+            radio_wallet.setChecked(false);
+        } else {
+            radio_wallet.setChecked(true);
+            radio_cash.setChecked(false);
+        }
+
         /*
         userLocationName.setText(myOrder.userLocation.Name);
         userLocationLocation.setText(myOrder.userLocation.Location);
         */
+
+        max_int_range.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                String S = s.toString();
+                if (!S.equals("")) {
+                    value = Integer.parseInt(S);
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    userId = user.getUid();
+                    root = FirebaseDatabase.getInstance().getReference();
+
+                    ref1 = root.child("deliveryApp").child("users").child(userId).child("wallet");
+                    ref1.keepSynced(true);
+
+                    ref1.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            int balance = dataSnapshot.getValue(Integer.class);
+                            if (value > balance) {
+                                mode_of_payment = "CASH ON DELIVERY";
+                                radio_wallet.setChecked(false);
+                                radio_cash.setChecked(true);
+                                radio_wallet.setEnabled(false);
+                            } else {
+                                radio_wallet.setEnabled(true);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+        });
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,7 +268,24 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
                 }
             }
         });
+    }
 
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+        switch(view.getId()) {
+            case R.id.radio_wallet:
+                if (checked) {
+                    mode_of_payment = "WALLET";
+                    radio_cash.setChecked(false);
+                }
+                break;
+            case R.id.radio_cash:
+                if (checked) {
+                    mode_of_payment = "CASH ON DELIVERY";
+                    radio_wallet.setChecked(false);
+                }
+                break;
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode,Intent data) {
@@ -272,9 +348,11 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
             order.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
                     OrderData current_order = dataSnapshot.getValue(OrderData.class);
+
                     if(current_order.status.equals("PENDING")) {
-                        updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge), myOrder.acceptedBy, userId, otp);
+                        updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge), myOrder.acceptedBy, userId, otp, mode_of_payment, myOrder.final_price);
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(updated_order);
                         Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
                         intent.putExtra("MyOrder", (Parcelable) updated_order);
@@ -282,9 +360,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
                         finish();
                     }
                     else {
-
                         Toast.makeText(EditOrderForm.this, "can't edit already accepted order", Toast.LENGTH_SHORT).show();
-
                     }
 
                 }

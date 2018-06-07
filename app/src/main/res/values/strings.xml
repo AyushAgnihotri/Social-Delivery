@@ -67,6 +67,10 @@
     <string name="main_dialog_time_picker">Time</string>
     <string name="dialog_save">Please fill all the details!</string>
     <string name="dialog_ok">OK</string>
+    <string name="mop">Mode of Payment</string>
+    <string name="radio_wallet">Wallet</string>
+    <string name="radio_cash">Cash on Delivery</string>
+
 
 
     %complete profile
@@ -107,9 +111,8 @@
     <string name="otp">"OTP :"</string>
     <string name="enter_otp1">Enter OTP</string>
     <string name="enter_otp2">(as recieved from Orderer) :</string>
-
-
-
+    <string name="ask_otp1">"Note:  Ask orderer to open order details for OTP"</string>
+    <string name="ask_otp2">"in case of no notification."</string>
 
 
     %userOrderDetails

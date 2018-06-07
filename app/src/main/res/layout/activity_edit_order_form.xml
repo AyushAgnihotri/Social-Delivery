@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
             android:orientation="vertical"
-            android:paddingTop="100dp">
+            android:paddingTop="65dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -110,6 +110,44 @@
                     android:hint="@string/max_int" />
             </LinearLayout>
 
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingLeft="3dp"
+                android:text="@string/mop"
+                android:textColor="@color/primary"
+                android:textSize="15sp" />
+
+            <RadioGroup
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radio_wallet"
+                        android:layout_marginLeft="30dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/radio_wallet"
+                        android:onClick="onRadioButtonClicked"/>
+                    <RadioButton
+                        android:id="@+id/radio_cash"
+                        android:layout_marginLeft="70dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/radio_cash"
+                        android:onClick="onRadioButtonClicked"/>
+                </LinearLayout>
+
+            </RadioGroup>
 
             <TextView
                 android:layout_width="fill_parent"
@@ -169,8 +207,8 @@
                     android:paddingBottom="10dp"
                     android:paddingLeft="40dp"
                     android:paddingRight="40dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
                     android:text="@string/btn_user_location"
                     android:textAllCaps="false"
                     android:textColor="@android:color/black"
