@@ -107,9 +107,7 @@
     <string name="otp">"OTP :"</string>
     <string name="enter_otp1">Enter OTP</string>
     <string name="enter_otp2">(as recieved from Orderer) :</string>
-
-
-
+    <string name="directionsApiKey">AIzaSyBAdaiCYxme3YurynEJqiNLNm-CxCTeEsA</string>
 
 
     %userOrderDetails
