@@ -34,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.android.PolyUtil;
+import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.TravelMode;
 import com.onesignal.OSPermissionSubscriptionState;
@@ -50,6 +51,7 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -299,12 +301,22 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             @Override
             public void onClick(View v) {
                 //TODO implement show path
+                String origin = "Boys Hostel-1 , IIIT Allahabad, Allahabad";
+                String destination = "Vinayak City Center, Allahabad";
                 DateTime now = new DateTime();
-                DirectionsResult result =
-                        DirectionsApi.newRequest(getGeoContext())
-                                .mode(TravelMode.DRIVING).origin(origin)
-                                .destination(destination).departureTime(now)
-                                .await();
+                try {
+                    DirectionsResult result =
+                            DirectionsApi.newRequest(getGeoContext())
+                                    .mode(TravelMode.DRIVING).origin(origin)
+                                    .destination(destination).departureTime(now)
+                                    .await();
+                } catch (ApiException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 
             }
@@ -514,8 +526,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
     private String getEndLocationTitle(DirectionsResult results){
         return "Time :"+
-                results.routes[0].legs[0].duration.humanReadable + " Distance
-:" + results.routes[0].legs[0].distance.humanReadable;
+                results.routes[0].legs[0].duration.humanReadable + " Distance:" + results.routes[0].legs[0].distance.humanReadable;
     }
 
     private void addPolyline(DirectionsResult results, GoogleMap
