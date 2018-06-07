@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -61,7 +62,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
     private Button btn_accept, btn_show_path, btn_mark_delivered, btn_send_otp;
     private DatabaseReference root, ref1, ref2, ref3, wallet_ref, deliverer;
     private UserDetails deliverer_data;
-    public static OrderData myOrder;
+    public OrderData myOrder;
     private int balance;
 
     @Override
@@ -233,6 +234,8 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                             myOrder.status = "ACTIVE";
                             status.setText((myOrder.status));
 
+                            /*
+                            // Deducts max_int money from orderer's wallet when order accepted
                             wallet_ref = root.child("deliveryApp").child("users").child(myOrder.userId).child("wallet");
                             wallet_ref.keepSynced(true);
                             wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -242,6 +245,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                                     balance = wal_bal;
                                     wallet_ref.setValue(balance-myOrder.max_range);
                                     setUpAcceptNotif(myOrder);
+
                                 }
 
                                 @Override
@@ -249,6 +253,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                                 }
                             });
+                            */
 
                             btn_send_otp.setEnabled(true);
                             btn_send_otp.setVisibility(View.VISIBLE);
@@ -274,7 +279,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                             btn_send_otp.setEnabled(false);
                             btn_send_otp.setVisibility(View.GONE);
-
+                            setUpRejectNotif(myOrder);
                             //btn_mark_delivered.setEnabled(false);
                             //btn_mark_delivered.setVisibility(View.GONE);
                         }
@@ -323,7 +328,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                 ref3 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId)).child("otp");
                 ref3.keepSynced(true);
                 ref3.setValue(secret);
-
+                setUpOTPNotif(myOrder,secret);
                 Intent intent = new Intent(DelivererOrderDetailActivity.this, Otp_screen.class);
                 intent.putExtra("OTP",(String) secret);
                 intent.putExtra("MyOrder",(Parcelable) myOrder);
@@ -348,6 +353,36 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         */
 
     }
+    public void setUpOTPNotif(final OrderData order, final String otp) {
+        String userId = order.userId;
+        root.child("deliveryApp").child("users").child(userId).child("playerId").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String player_id = dataSnapshot.getValue(String.class);
+                //TOAST
+                try {
+                    JSONObject notificationContent = new JSONObject("{'contents': {'en': '" + otp + "'}," +
+                            "'include_player_ids': ['" + player_id + "'], " +
+                            "'headings': {'en': 'Your OTP for order id   "+ order.orderId+"'} " +
+                            "}");
+                    JSONObject order = new JSONObject();
+                    order.put("userId", myOrder.userId);
+                    order.put("orderId", myOrder.orderId);
+                    notificationContent.putOpt("data", order);
+                    Log.i("JSONExample", "JSON parsed");
+                    OneSignal.postNotification(notificationContent, null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     public void setUpAcceptNotif(final OrderData order) {
         String userId = order.userId;
         root.child("deliveryApp").child("users").child(userId).child("playerId").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -355,12 +390,15 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String player_id = dataSnapshot.getValue(String.class);
                 //TOAST
-
                 try {
                     JSONObject notificationContent = new JSONObject("{'contents': {'en': '"+ order.description +"'}," +
                             "'include_player_ids': ['" + player_id + "'], " +
-                            "'headings': {'en': 'woah ! your order just got accepted'}, " +
-                            "'big_picture': 'http://i.imgur.com/DKw1J2F.gif'}");
+                            "'headings': {'en': 'woah ! your order just got accepted'} " +
+                            "}");
+                    JSONObject order = new JSONObject();
+                    order.put("userId",myOrder.userId);
+                    order.put("orderId",myOrder.orderId);
+                    notificationContent.putOpt("data",order);
                     OneSignal.postNotification(notificationContent, null);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -376,7 +414,36 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
 
     }
-    public boolean onOptionsItemSelected(MenuItem item){
+    public void setUpRejectNotif(final OrderData order) {
+        String userId = order.userId;
+        root.child("deliveryApp").child("users").child(userId).child("playerId").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String player_id = dataSnapshot.getValue(String.class);
+                //TOAST
+                try {
+                    JSONObject notificationContent = new JSONObject("{'contents': {'en': '" + order.description + "'}," +
+                            "'include_player_ids': ['" + player_id + "'], " +
+                            "'headings': {'en': 'oops ! your order got rejected , order id : "+order.orderId+"'} " +
+                            "}");
+                    JSONObject order = new JSONObject();
+                    order.put("userId", myOrder.userId);
+                    order.put("orderId", myOrder.orderId);
+                    notificationContent.putOpt("data", order);
+                    OneSignal.postNotification(notificationContent, null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+        public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
         if (id == android.R.id.home) {
 

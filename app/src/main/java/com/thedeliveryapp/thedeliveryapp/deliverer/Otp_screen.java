@@ -16,8 +16,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.onesignal.OneSignal;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Otp_screen extends AppCompatActivity {
 
@@ -72,6 +76,8 @@ public class Otp_screen extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() != 0) {
                     f3.requestFocus();
+                } else {
+                    f1.requestFocus();
                 }
             }
         });
@@ -88,6 +94,8 @@ public class Otp_screen extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() != 0) {
                     f4.requestFocus();
+                } else {
+                    f2.requestFocus();
                 }
             }
         });
@@ -104,6 +112,24 @@ public class Otp_screen extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() != 0) {
                     f5.requestFocus();
+                } else {
+                    f3.requestFocus();
+                }
+            }
+        });
+
+        f5.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() == 0) {
+                    f4.requestFocus();
                 }
             }
         });
@@ -163,7 +189,8 @@ public class Otp_screen extends AppCompatActivity {
                     });
 
                     Toast.makeText(Otp_screen.this, "Delivery Finished!!", Toast.LENGTH_LONG).show();
-
+                    //TODO display a congrats 'you just delivered a order screen'
+                    setUpDeliveredNotif(myOrder);
                     Intent intent = new Intent(Otp_screen.this, DelivererViewActivity.class);
                     startActivity(intent);
                     finish();
@@ -174,6 +201,37 @@ public class Otp_screen extends AppCompatActivity {
             }
         });
 
-    }                               
+
+    }
+
+    public void setUpDeliveredNotif(final OrderData order) {
+        String userId = order.userId;
+        root.child("deliveryApp").child("users").child(userId).child("playerId").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String player_id = dataSnapshot.getValue(String.class);
+                //TOAST
+                try {
+                    JSONObject notificationContent = new JSONObject("{'contents': {'en': '" + order.description + "'}," +
+                            "'include_player_ids': ['" + player_id + "'], " +
+                            "'headings': {'en': 'Congo !!\n Your order with order id "+order.orderId+" just got delivered .'} " +
+                            "}");
+                    JSONObject order = new JSONObject();
+                    order.put("userId", myOrder.userId);
+                    order.put("orderId", myOrder.orderId);
+                    notificationContent.putOpt("data", order);
+                    OneSignal.postNotification(notificationContent, null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 }

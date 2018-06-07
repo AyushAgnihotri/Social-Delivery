@@ -11,6 +11,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +20,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.view.View;
@@ -58,10 +62,11 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
     Button date_picker, time_picker, user_location;
     Calendar calendar ;
     EditText description, min_int_range, max_int_range, delivery_charge;
+    RadioButton radio_wallet, radio_cash;
 
-    private DatabaseReference root, deliveryApp, wallet_ref;
-    private String userId, TAG, otp;
-    private int OrderNumber, order_id, balance;
+    private DatabaseReference root, deliveryApp, ref1;
+    private String userId, otp, mode_of_payment;
+    private int OrderNumber, order_id, value, final_price = -1;
     int flag;
     UserLocation userLocation = null;
     ExpiryTime expiryTime = null;
@@ -103,7 +108,52 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         max_int_range = findViewById(R.id.max_int);
         user_location = findViewById(R.id.user_location);
         delivery_charge = findViewById(R.id.delivery_charge);
+        radio_wallet = findViewById(R.id.radio_wallet);
+        radio_cash = findViewById(R.id.radio_cash);
 
+        mode_of_payment = "CASH ON DELIVERY";
+
+
+        max_int_range.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                value = Integer.parseInt(s.toString());
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                userId = user.getUid();
+                root = FirebaseDatabase.getInstance().getReference();
+
+                ref1 = root.child("deliveryApp").child("users").child(userId).child("wallet");
+                ref1.keepSynced(true);
+
+                ref1.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int balance = dataSnapshot.getValue(Integer.class);
+                        if (value > balance) {
+                            mode_of_payment = "CASH ON DELIVERY";
+                            radio_wallet.setChecked(false);
+                            radio_cash.setChecked(true);
+                            radio_wallet.setEnabled(false);
+                        } else {
+                            radio_wallet.setEnabled(true);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+        });
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,7 +234,24 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                 }
             }
         });
+    }
 
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+        switch(view.getId()) {
+            case R.id.radio_wallet:
+                if (checked) {
+                    mode_of_payment = "WALLET";
+                    radio_cash.setChecked(false);
+                }
+                break;
+            case R.id.radio_cash:
+                if (checked) {
+                    mode_of_payment = "CASH ON DELIVERY";
+                    radio_wallet.setChecked(false);
+                }
+                break;
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode,Intent data) {
@@ -322,14 +389,14 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                         root.child("deliveryApp").child("totalOrders").setValue(1);
                         OrderNumber = 1;
                         order_id = OrderNumber;
-                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp);
+                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp, mode_of_payment, final_price);
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
                     }
                     else {
                         OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
                         OrderNumber++;
                         order_id = OrderNumber;
-                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp);
+                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp, mode_of_payment, final_price);
                         root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
                         root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
                     }

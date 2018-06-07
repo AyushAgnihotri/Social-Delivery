@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class OrderData implements Parcelable {
-    public String category, description, userId, status, otp;
-    public int orderId, min_range, max_range, deliveryCharge;
+    public String category, description, userId, status, otp, mode_of_payment;
+    public int orderId, min_range, max_range, deliveryCharge, final_price;
     public UserLocation userLocation = new UserLocation();
     public ExpiryDate expiryDate = new ExpiryDate();
     public ExpiryTime expiryTime = new ExpiryTime();
@@ -44,6 +44,10 @@ public class OrderData implements Parcelable {
         acceptedBy.delivererID = in.readString();
 
         otp = in.readString();
+
+        mode_of_payment = in.readString();
+
+        final_price = in.readInt();
     }
 
     @Override
@@ -80,6 +84,10 @@ public class OrderData implements Parcelable {
         dest.writeString(acceptedBy.delivererID);
 
         dest.writeString(otp);
+
+        dest.writeString(mode_of_payment);
+
+        dest.writeInt(final_price);
     }
 
     public static  final Parcelable.Creator<OrderData> CREATOR = new Parcelable.Creator<OrderData>() {
@@ -95,7 +103,7 @@ public class OrderData implements Parcelable {
 
     public OrderData(String category, String description, int orderId, int max_range, int min_range,
                      UserLocation location, ExpiryDate expiryDate, ExpiryTime expiryTime, String status,
-                     int deliveryCharge, AcceptedBy acceptedBy, String userId, String otp) {
+                     int deliveryCharge, AcceptedBy acceptedBy, String userId, String otp, String mode_of_payment, int final_price) {
         this.category = category;
         this.description = description;
         this.orderId = orderId;
@@ -109,6 +117,9 @@ public class OrderData implements Parcelable {
         this.acceptedBy = acceptedBy;
         this.userId = userId;
         this.otp = otp;
+        this.mode_of_payment = mode_of_payment;
+        this.final_price = final_price;
+
     }
 
 }
