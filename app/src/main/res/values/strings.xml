@@ -67,6 +67,10 @@
     <string name="main_dialog_time_picker">Time</string>
     <string name="dialog_save">Please fill all the details!</string>
     <string name="dialog_ok">OK</string>
+    <string name="mop">Mode of Payment</string>
+    <string name="radio_wallet">Wallet</string>
+    <string name="radio_cash">Cash on Delivery</string>
+
 
 
     %complete profile
