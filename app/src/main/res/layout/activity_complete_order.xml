@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    tools:context=".deliverer.Otp_screen">
+
+    <TextView
+        android:id="@+id/enter_actual_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rupee_price"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-143dp"
+        android:text="@string/enter_actual_price"
+        android:textColor="@color/black"
+        android:textSize="40sp" />
+
+    <LinearLayout
+        android:id="@+id/rupee_price"
+        android:layout_width="fill_parent"
+        android:layout_height="254dp"
+        android:layout_marginTop="150dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/rupee_sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="65dp"
+            android:layout_marginTop="112.5dp"
+            android:text="@string/Rs"
+            android:textColor="@color/black"
+            android:textSize="50sp" />
+
+        <EditText
+            android:id="@+id/actual_price"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="110dp"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="6"
+            android:textSize="40sp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_send_otp"
+        android:layout_below="@id/rupee_price"
+        android:layout_marginTop="70dp"
+        android:enabled="false"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="69dp"
+        android:background="@drawable/button_round_main_gray"
+        android:padding="20dp"
+        android:text="@string/btn_send_otp"
+        android:textColor="@color/black" />
+
+
+</RelativeLayout>

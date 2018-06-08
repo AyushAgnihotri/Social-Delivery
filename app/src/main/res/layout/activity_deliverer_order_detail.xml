@@ -137,12 +137,128 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/orderId_h"
+                android:id="@+id/mop_h"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/status"
+                android:layout_marginTop="20dp"
+                android:textSize="16sp"
+                android:background="@drawable/button_round"
+                android:padding="10dp"
+                android:text="@string/mop_h"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/mop"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/mop_h"
+                android:background="@drawable/button_round_main_gray"
+                android:padding="10dp"
+                android:text=""
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/final_order_charge_h"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/mop"
+                android:layout_marginTop="20dp"
+                android:textSize="16sp"
+                android:background="@drawable/button_round"
+                android:padding="10dp"
+                android:text="@string/final_order_charge"
+                android:textColor="@color/black" />
+
+            <LinearLayout
+                android:id="@+id/final_order_charge"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/final_order_charge_h"
+                android:background="@drawable/button_round_main_gray"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/final_item_price"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/final_item_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text=""
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/deliveryCharge"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/deliveryCharge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text=""
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/final_total"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/final_total"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text=""
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/orderId_h"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/final_order_charge"
                 android:layout_marginTop="20dp"
                 android:textSize="16sp"
                 android:background="@drawable/button_round"
@@ -328,6 +444,7 @@
             <LinearLayout
                 android:id="@+id/expiryTime"
                 android:layout_width="400dp"
+                android:layout_marginBottom="20dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -380,36 +497,9 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/delivery_charge_h"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/expiryTime"
-                android:layout_marginTop="20dp"
-                android:textSize="16sp"
-                android:background="@drawable/button_round"
-                android:padding="10dp"
-                android:text="@string/deliveryCharge"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/delivery_charge"
-                android:layout_width="400dp"
-                android:layout_marginBottom="20dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/delivery_charge_h"
-                android:background="@drawable/button_round_main_gray"
-                android:padding="10dp"
-                android:text=""
-                android:textColor="@color/black" />
-
             <Button
                 android:id="@+id/btn_show_path"
-                android:layout_below="@id/delivery_charge"
+                android:layout_below="@id/expiryTime"
                 android:layout_centerInParent="true"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
@@ -430,15 +520,15 @@
                 android:textColor="@color/black" />
 
             <Button
-                android:id="@+id/btn_send_otp"
+                android:id="@+id/btn_complete_order"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
                 android:layout_below="@id/btn_accept"
                 android:padding="20dp"
                 android:layout_centerInParent="true"
-                android:layout_width="170dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
-                android:text="@string/btn_send_otp"
+                android:text="@string/btn_complete_order"
                 android:background="@drawable/button_round_main_green"
                 android:textColor="@color/black" />
 

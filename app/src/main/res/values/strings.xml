@@ -72,7 +72,6 @@
     <string name="radio_cash">Cash on Delivery</string>
 
 
-
     %complete profile
     <string name="save_details">Save Details</string>
 
@@ -81,7 +80,7 @@
     <string name="description">Description</string>
     <string name="orderId">order ID</string>
     <string name="status">Status</string>
-    <string name="deliveryCharge">Delivery Charge</string>
+    <string name="deliveryCharge">Delivery Charge (incl. service charge):</string>
     <string name="acceptedBy">Accepted By</string>
     <string name="min_range">Min:</string>
     <string name="max_range">Max:</string>
@@ -92,6 +91,13 @@
     <string name="expiryTime">Order Expiry</string>
     <string name="expiryTimeDate">Date:</string>
     <string name="expiryTimeTime">Time:</string>
+    <string name="mop_h">Mode of Payment</string>
+    <string name="final_item_price">Final Item Price:</string>
+    <string name="final_total">Total (to pay):</string>
+    <string name="final_order_charge">Final Order Charge</string>
+
+
+
 
     %main
     <string name="choose_mode">Choose Mode of Usage</string>
@@ -113,6 +119,10 @@
     <string name="enter_otp2">(as recieved from Orderer) :</string>
     <string name="ask_otp1">"Note:  Ask orderer to open order details for OTP"</string>
     <string name="ask_otp2">"in case of no notification."</string>
+    <string name="btn_complete_order">"Complete  Order"</string>
+    <string name="enter_actual_price">Enter actual price of item bought</string>
+    <string name="Rs">\u20B9</string>
+
 
 
     %userOrderDetails

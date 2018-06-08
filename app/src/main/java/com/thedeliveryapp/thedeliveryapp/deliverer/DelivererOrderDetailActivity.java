@@ -45,9 +45,9 @@ import java.security.SecureRandom;
 public class DelivererOrderDetailActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
-            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status;
+            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status, mop;
     private String date, time, userId;
-    private Button btn_accept, btn_show_path, btn_mark_delivered, btn_send_otp;
+    private Button btn_accept, btn_show_path, btn_mark_delivered, btn_complete_order;
     private DatabaseReference root, ref1, ref2, ref3, wallet_ref, deliverer;
     private UserDetails deliverer_data;
     public OrderData myOrder;
@@ -57,23 +57,6 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
-    }
-
-    int range = 9;
-    int length = 5;
-
-    private String generateSecureRandomNumber() {
-        SecureRandom secureRandom = new SecureRandom();
-        String s = "";
-        for (int i = 0; i < length; i++) {
-            int number = secureRandom.nextInt(range);
-            if (number == 0 && i == 0) {
-                i = -1;
-                continue;
-            }
-            s = s + number;
-        }
-        return s;
     }
 
     @Override
@@ -93,12 +76,14 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         userLocationPhoneNumber = findViewById(R.id.userLocationPhoneNumber);
         expiryTime_Date = findViewById(R.id.expiryTime_Date);
         expiryTime_Time = findViewById(R.id.expiryTime_Time);
-        deliveryCharge = findViewById(R.id.delivery_charge);
+        final_item_price = findViewById(R.id.final_item_price);
+        deliveryCharge = findViewById(R.id.deliveryCharge);
+        final_total = findViewById(R.id.final_total);
         status = findViewById(R.id.status);
         btn_accept = (Button) findViewById(R.id.btn_accept);
         btn_show_path = (Button) findViewById(R.id.btn_show_path);
-        //btn_mark_delivered = (Button) findViewById(R.id.btn_mark_delivered);
-        btn_send_otp = (Button) findViewById(R.id.btn_send_otp);
+        btn_complete_order = (Button) findViewById(R.id.btn_complete_order);
+        mop = findViewById(R.id.mop);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -117,17 +102,13 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             btn_accept.setVisibility(View.GONE);
             btn_show_path.setEnabled(false);
             btn_show_path.setVisibility(View.GONE);
-            btn_send_otp.setEnabled(false);
-            btn_send_otp.setVisibility(View.GONE);
-            //btn_mark_delivered.setEnabled(false);
-            //btn_mark_delivered.setVisibility(View.GONE);
+            btn_complete_order.setEnabled(false);
+            btn_complete_order.setVisibility(View.GONE);
         } else if (myOrder.status.equals("ACTIVE")) {
             btn_accept.setText("Reject");
         } else {
-            btn_send_otp.setEnabled(false);
-            btn_send_otp.setVisibility(View.GONE);
-            //btn_mark_delivered.setEnabled(false);
-            //btn_mark_delivered.setVisibility(View.GONE);
+            btn_complete_order.setEnabled(false);
+            btn_complete_order.setVisibility(View.GONE);
         }
 
 
@@ -140,7 +121,15 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         userLocationName.setText(myOrder.userLocation.Name);
         userLocationLocation.setText(myOrder.userLocation.Location);
         deliveryCharge.setText((myOrder.deliveryCharge+""));
+        mop.setText(myOrder.mode_of_payment);
 
+        if (myOrder.final_price == -1) {
+            final_item_price.setText("- - - - -");
+            final_total.setText("- - - - -");
+        } else {
+            final_item_price.setText(myOrder.final_price+"");
+            final_total.setText((myOrder.deliveryCharge + myOrder.final_price)+"");
+        }
 
         if (myOrder.userLocation.PhoneNumber.equals("")) {
             userLocationPhoneNumber.setText("-");
@@ -208,6 +197,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                                     ref2.child("mobile").setValue(deliverer_data.Mobile);
                                     ref2.child("alt_mobile").setValue(deliverer_data.Alt_Mobile);
                                     ref2.child("delivererID").setValue(userId);
+
                                 }
 
                                 @Override
@@ -221,6 +211,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                             myOrder.status = "ACTIVE";
                             status.setText((myOrder.status));
+                            setUpAcceptNotif(myOrder);
 
                             /*
                             // Deducts max_int money from orderer's wallet when order accepted
@@ -243,10 +234,8 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                             });
                             */
 
-                            btn_send_otp.setEnabled(true);
-                            btn_send_otp.setVisibility(View.VISIBLE);
-                            //btn_mark_delivered.setEnabled(true);
-                            //btn_mark_delivered.setVisibility(View.VISIBLE);
+                            btn_complete_order.setEnabled(true);
+                            btn_complete_order.setVisibility(View.VISIBLE);
 
 
                         } else if (myOrder.status.equals("ACTIVE")) {
@@ -264,12 +253,11 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                             ref2.child("delivererID").setValue("-");
 
                             ref1.child("otp").setValue("");
+                            ref1.child("final_price").setValue(-1);
 
-                            btn_send_otp.setEnabled(false);
-                            btn_send_otp.setVisibility(View.GONE);
+                            btn_complete_order.setEnabled(false);
+                            btn_complete_order.setVisibility(View.GONE);
                             setUpRejectNotif(myOrder);
-                            //btn_mark_delivered.setEnabled(false);
-                            //btn_mark_delivered.setVisibility(View.GONE);
                         }
                     }
                 });
@@ -290,71 +278,17 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             }
         });
 
-        btn_send_otp.setOnClickListener(new View.OnClickListener() {
+        btn_complete_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String secret = generateSecureRandomNumber();
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                userId = user.getUid();
-                root = FirebaseDatabase.getInstance().getReference();
-                ref3 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId)).child("otp");
-                ref3.keepSynced(true);
-                ref3.setValue(secret);
-                setUpOTPNotif(myOrder,secret);
-                Intent intent = new Intent(DelivererOrderDetailActivity.this, Otp_screen.class);
-                intent.putExtra("OTP",(String) secret);
+                Intent intent = new Intent(DelivererOrderDetailActivity.this, CompleteOrder.class);
                 intent.putExtra("MyOrder",(Parcelable) myOrder);
                 startActivity(intent);
-                //finish();
-
-                //btn_send_otp.setText("Re-send OTP");
             }
         });
-
-        /*
-        btn_mark_delivered.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn_accept.setEnabled(false);
-                btn_accept.setVisibility(View.GONE);
-                btn_mark_delivered.setText("Delivered");
-                btn_mark_delivered.setBackgroundColor(Color.GREEN);
-                btn_mark_delivered.setEnabled(false);
-            }
-        });
-        */
 
     }
-    public void setUpOTPNotif(final OrderData order, final String otp) {
-        String userId = order.userId;
-        root.child("deliveryApp").child("users").child(userId).child("playerId").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String player_id = dataSnapshot.getValue(String.class);
-                //TOAST
-                try {
-                    JSONObject notificationContent = new JSONObject("{'contents': {'en': '" + otp + "'}," +
-                            "'include_player_ids': ['" + player_id + "'], " +
-                            "'headings': {'en': 'Your OTP for order id   "+ order.orderId+"'} " +
-                            "}");
-                    JSONObject order = new JSONObject();
-                    order.put("userId", myOrder.userId);
-                    order.put("orderId", myOrder.orderId);
-                    notificationContent.putOpt("data", order);
-                    Log.i("JSONExample", "JSON parsed");
-                    OneSignal.postNotification(notificationContent, null);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
     public void setUpAcceptNotif(final OrderData order) {
         String userId = order.userId;
         root.child("deliveryApp").child("users").child(userId).child("playerId").addListenerForSingleValueEvent(new ValueEventListener() {

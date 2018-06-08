@@ -105,7 +105,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".deliverer.Otp_screen"></activity>
+        <activity android:name=".deliverer.Otp_screen" />
+        <activity android:name=".deliverer.CompleteOrder"></activity>
     </application>
 
 </manifest>

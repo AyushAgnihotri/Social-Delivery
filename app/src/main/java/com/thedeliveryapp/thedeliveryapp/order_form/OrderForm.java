@@ -116,34 +116,36 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
 
         max_int_range.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
-                value = Integer.parseInt(s.toString());
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                userId = user.getUid();
-                root = FirebaseDatabase.getInstance().getReference();
+                String S = s.toString();
+                if (!S.equals("")) {
+                    value = Integer.parseInt(s.toString());
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    userId = user.getUid();
+                    root = FirebaseDatabase.getInstance().getReference();
 
-                ref1 = root.child("deliveryApp").child("users").child(userId).child("wallet");
-                ref1.keepSynced(true);
+                    ref1 = root.child("deliveryApp").child("users").child(userId).child("wallet");
+                    ref1.keepSynced(true);
 
-                ref1.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        int balance = dataSnapshot.getValue(Integer.class);
-                        if (value > balance) {
-                            mode_of_payment = "CASH ON DELIVERY";
-                            radio_wallet.setChecked(false);
-                            radio_cash.setChecked(true);
-                            radio_wallet.setEnabled(false);
-                        } else {
-                            radio_wallet.setEnabled(true);
+                    ref1.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            int balance = dataSnapshot.getValue(Integer.class);
+                            if (value > balance) {
+                                mode_of_payment = "CASH ON DELIVERY";
+                                radio_wallet.setChecked(false);
+                                radio_cash.setChecked(true);
+                                radio_wallet.setEnabled(false);
+                            } else {
+                                radio_wallet.setEnabled(true);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-
+                        }
+                    });
+                }
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

@@ -25,7 +25,7 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 public class UserOrderDetailActivity extends AppCompatActivity  implements ConnectivityReceiver.ConnectivityReceiverListener{
 
     private TextView category, description, orderId, min_range, max_range, userLocationName,
-            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, deliveryCharge, status, otp_h, otp;
+            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status, otp_h, otp, mop;
     private String date, time, deliverer_details;
     Button acceptedBy;
 
@@ -52,11 +52,14 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         userLocationPhoneNumber = findViewById(R.id.userLocationPhoneNumber);
         expiryTime_Date = findViewById(R.id.expiryTime_Date);
         expiryTime_Time = findViewById(R.id.expiryTime_Time);
-        deliveryCharge = findViewById(R.id.delivery_charge);
+        final_item_price = findViewById(R.id.final_item_price);
+        deliveryCharge = findViewById(R.id.deliveryCharge);
+        final_total = findViewById(R.id.final_total);
         acceptedBy = findViewById(R.id.btn_accepted_by);
         status = findViewById(R.id.status);
         otp_h = findViewById(R.id.otp_h);
         otp = findViewById(R.id.otp);
+        mop = findViewById(R.id.mop);
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
@@ -127,9 +130,18 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         userLocationLocation.setText(myOrder.userLocation.Location);
         deliveryCharge.setText((myOrder.deliveryCharge+""));
         otp.setText(myOrder.otp);
+        mop.setText(myOrder.mode_of_payment);
+
+        if (myOrder.final_price == -1) {
+            final_item_price.setText("- - - - -");
+            final_total.setText("- - - - -");
+        } else {
+            final_item_price.setText(myOrder.final_price+"");
+            final_total.setText((myOrder.deliveryCharge + myOrder.final_price)+"");
+        }
 
         if (myOrder.userLocation.PhoneNumber.equals("")) {
-            userLocationPhoneNumber.setText("-");
+            userLocationPhoneNumber.setText("- - - - -");
         } else {
             userLocationPhoneNumber.setText(myOrder.userLocation.PhoneNumber);
         }
