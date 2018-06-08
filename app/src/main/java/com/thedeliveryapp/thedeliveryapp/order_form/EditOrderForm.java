@@ -39,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
+import com.thedeliveryapp.thedeliveryapp.login.LoginActivity;
 import com.thedeliveryapp.thedeliveryapp.user.UserOrderDetailActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryTime;
@@ -347,12 +348,21 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
             order.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge), myOrder.acceptedBy, userId, otp, mode_of_payment, myOrder.final_price);
-                    root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(updated_order);
-                    Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
-                    intent.putExtra("MyOrder",(Parcelable) updated_order);
-                    startActivity(intent);
-                    finish();
+
+                    OrderData current_order = dataSnapshot.getValue(OrderData.class);
+
+                    if(current_order.status.equals("PENDING")) {
+                        updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge), myOrder.acceptedBy, userId, otp, mode_of_payment, myOrder.final_price);
+                        root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(updated_order);
+                        Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
+                        intent.putExtra("MyOrder", (Parcelable) updated_order);
+                        startActivity(intent);
+                        finish();
+                    }
+                    else {
+                        Toast.makeText(EditOrderForm.this, "can't edit already accepted order", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
 
                 @Override

@@ -117,6 +117,7 @@
     <string name="otp">"OTP :"</string>
     <string name="enter_otp1">Enter OTP</string>
     <string name="enter_otp2">(as recieved from Orderer) :</string>
+    <string name="directionsApiKey">AIzaSyBAdaiCYxme3YurynEJqiNLNm-CxCTeEsA</string>
     <string name="ask_otp1">"Note:  Ask orderer to open order details for OTP"</string>
     <string name="ask_otp2">"in case of no notification."</string>
     <string name="btn_complete_order">"Complete  Order"</string>
