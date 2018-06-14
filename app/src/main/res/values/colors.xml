@@ -18,6 +18,7 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="gray">#edeaea</color>
+    <color name="light_blue">#039be6</color>
     <color name="input_login">#222222</color>
     <color name="input_login_hint">#999999</color>
     <color name="input_register">#330808</color>

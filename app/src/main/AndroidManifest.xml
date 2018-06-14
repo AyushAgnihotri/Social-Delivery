@@ -107,7 +107,8 @@
         </service>
 
         <activity android:name=".deliverer.Otp_screen" />
-        <activity android:name=".deliverer.CompleteOrder"></activity>
+        <activity android:name=".deliverer.CompleteOrder" />
+        <activity android:name=".login.VerifyEmailScreen"></activity>
     </application>
 
 </manifest>

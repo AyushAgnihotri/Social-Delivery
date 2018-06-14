@@ -148,8 +148,13 @@ public class SignupActivity extends AppCompatActivity implements ConnectivityRec
                                     }
                                 } else {
                                     update_userdetails_database(name, mobile, alt_mobile, email);
-
-                                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    if (!user.isEmailVerified()) {
+                                        FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+                                        startActivity(new Intent(SignupActivity.this, VerifyEmailScreen.class));
+                                    } else {
+                                        startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                                    }
                                     finish();
                                 }
                             }

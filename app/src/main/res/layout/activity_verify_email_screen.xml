@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        tools:context=".login.VerifyEmailScreen">
+
+        <TextView
+            android:id="@+id/email_verify"
+            android:layout_marginTop="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/email_verify"
+            android:textColor="@color/black"
+            android:textSize="35sp" />
+
+        <TextView
+            android:id="@+id/email_sent"
+            android:layout_marginTop="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email_verify"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/email_sent"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/email_to_verify"
+            android:layout_below="@id/email_sent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/follow_instructions"
+            android:layout_marginTop="35dp"
+            android:layout_below="@id/email_to_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/follow_instructions"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/resend_email"
+            android:layout_below="@id/follow_instructions"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="@string/resend_email"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btn_resend_email"
+            android:layout_below="@id/resend_email"
+            android:padding="20dp"
+            android:layout_centerInParent="true"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_resend_email"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:background="@drawable/button_round_main"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/done_verify"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/btn_resend_email"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/done_verify"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btn_refresh"
+            android:layout_marginBottom="20dp"
+            android:layout_below="@id/done_verify"
+            android:padding="20dp"
+            android:layout_centerInParent="true"
+            android:layout_width="250dp"
+            android:textAllCaps="false"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_refresh"
+            android:textSize="15sp"
+            android:background="@drawable/button_round_main"
+            android:textColor="@color/black" />
+
+
+    </RelativeLayout>
+</ScrollView>
