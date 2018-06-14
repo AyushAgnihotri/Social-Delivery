@@ -9,16 +9,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.thedeliveryapp.thedeliveryapp.R;
 
+import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiClient;
+
 public class VerifyEmailScreen extends AppCompatActivity {
 
     TextView email_to_verify;
-    Button btn_resend_email, btn_refresh;
+    Button btn_resend_email, btn_refresh, btn_logout;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,7 @@ public class VerifyEmailScreen extends AppCompatActivity {
         email_to_verify = findViewById(R.id.email_to_verify);
         btn_resend_email = findViewById(R.id.btn_resend_email);
         btn_refresh = findViewById(R.id.btn_refresh);
+        btn_logout = findViewById(R.id.btn_logout);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         email_to_verify.setText(user.getEmail());
@@ -74,5 +79,26 @@ public class VerifyEmailScreen extends AppCompatActivity {
             }
         });
 
+
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(VerifyEmailScreen.this,"You have been successfully logged out.", Toast.LENGTH_LONG).show();
+                signOut();
+            }
+        });
+
+    }
+
+    public void signOut() {
+        auth = FirebaseAuth.getInstance();
+        auth.signOut();
+        sendToLogin();
+    }
+
+    public void sendToLogin() {
+        Intent loginIntent = new Intent(VerifyEmailScreen.this, LoginActivity.class);
+        startActivity(loginIntent);
+        finish();
     }
 }
