@@ -67,7 +67,14 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
         auth = FirebaseAuth.getInstance();
 
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user.isEmailVerified()) {
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(LoginActivity.this, VerifyEmailScreen.class);
+                startActivity(intent);
+            }
             finish();
         }
 
@@ -158,8 +165,14 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                                         Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(intent);
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    if (user.isEmailVerified()) {
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        Intent intent = new Intent(LoginActivity.this, VerifyEmailScreen.class);
+                                        startActivity(intent);
+                                    }
                                     finish();
                                 }
                             }
