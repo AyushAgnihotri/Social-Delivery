@@ -260,11 +260,15 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
         user_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(EditOrderForm.this), PLACE_PICKER_REQUEST);
-                } catch (Exception e) {
-                    // Log.e(TAG, e.getStackTrace().toString());
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                } else {
+                    PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                    try {
+                        startActivityForResult(builder.build(EditOrderForm.this), PLACE_PICKER_REQUEST);
+                    } catch (Exception e) {
+                        // Log.e(TAG, e.getStackTrace().toString());
+                    }
                 }
             }
         });
@@ -325,52 +329,56 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_save) {
-            //Default text for date_picker = "ExpiryDate"
-            //Default text for time_picker = "ExpiryTime"
-            if(order_description.equals("") || order_category.equals("None") || order_delivery_charge.equals("") || order_min_range.equals("") || order_max_range.equals("")) {
-                new AlertDialog.Builder(EditOrderForm.this)
-                        .setMessage(getString(R.string.dialog_save))
-                        .setPositiveButton(getString(R.string.dialog_ok), null)
-                        .show();
-                return true;
-            }
-            if (Integer.parseInt(order_min_range) > Integer.parseInt(order_max_range)) {
-                Toast.makeText(getApplicationContext(), "Min value cannot be more than Max value!", Toast.LENGTH_SHORT).show();
-                return true;
-            }
 
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            userId = user.getUid();
-            root = FirebaseDatabase.getInstance().getReference();
-            order = root.child("deliveryApp").child("orders").child(userId).child(OrderNumber+"");
-            order.keepSynced(true);
-
-            order.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    OrderData current_order = dataSnapshot.getValue(OrderData.class);
-
-                    if(current_order.status.equals("PENDING")) {
-                        updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge), myOrder.acceptedBy, userId, otp, mode_of_payment, myOrder.final_price);
-                        root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(updated_order);
-                        Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
-                        intent.putExtra("MyOrder", (Parcelable) updated_order);
-                        startActivity(intent);
-                        finish();
-                    }
-                    else {
-                        Toast.makeText(EditOrderForm.this, "can't edit already accepted order", Toast.LENGTH_SHORT).show();
-                    }
-
+            if(!ConnectivityReceiver.isConnected()) {
+                showSnack(false);
+            } else {
+                //Default text for date_picker = "ExpiryDate"
+                //Default text for time_picker = "ExpiryTime"
+                if(order_description.equals("") || order_category.equals("None") || order_delivery_charge.equals("") || order_min_range.equals("") || order_max_range.equals("")) {
+                    new AlertDialog.Builder(EditOrderForm.this)
+                            .setMessage(getString(R.string.dialog_save))
+                            .setPositiveButton(getString(R.string.dialog_ok), null)
+                            .show();
+                    return true;
+                }
+                if (Integer.parseInt(order_min_range) > Integer.parseInt(order_max_range)) {
+                    Toast.makeText(getApplicationContext(), "Min value cannot be more than Max value!", Toast.LENGTH_SHORT).show();
+                    return true;
                 }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                userId = user.getUid();
+                root = FirebaseDatabase.getInstance().getReference();
+                order = root.child("deliveryApp").child("orders").child(userId).child(OrderNumber+"");
+                order.keepSynced(true);
 
-                }
-            });
+                order.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
+                        OrderData current_order = dataSnapshot.getValue(OrderData.class);
+
+                        if(current_order.status.equals("PENDING")) {
+                            updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", Integer.parseInt(order_delivery_charge), myOrder.acceptedBy, userId, otp, mode_of_payment, myOrder.final_price);
+                            root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(updated_order);
+                            Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
+                            intent.putExtra("MyOrder", (Parcelable) updated_order);
+                            startActivity(intent);
+                            finish();
+                        }
+                        else {
+                            Toast.makeText(EditOrderForm.this, "can't edit already accepted order", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
         } else if (id==android.R.id.home) {
             Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
             intent.putExtra("MyOrder",(Parcelable) myOrder);

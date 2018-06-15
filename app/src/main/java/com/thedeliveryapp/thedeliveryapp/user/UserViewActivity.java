@@ -276,14 +276,12 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
 
     }
     void setUpToolBarAndActionBar() {
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         toolbar.setTitle(getTitle());
-
     }
 
     void setUpFloatingActionButton() {
@@ -291,11 +289,14 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO : improve OrderData
-                Intent intent = new Intent(UserViewActivity.this, OrderForm.class);
-                startActivity(intent);
-                //finish();
 
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                } else {
+                    Intent intent = new Intent(UserViewActivity.this, OrderForm.class);
+                    startActivity(intent);
+                    //finish();
+                }
             }
         });
     }

@@ -228,11 +228,15 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         user_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(OrderForm.this), PLACE_PICKER_REQUEST);
-                } catch (Exception e) {
-                   // Log.e(TAG, e.getStackTrace().toString());
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                } else {
+                    PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                    try {
+                        startActivityForResult(builder.build(OrderForm.this), PLACE_PICKER_REQUEST);
+                    } catch (Exception e) {
+                        // Log.e(TAG, e.getStackTrace().toString());
+                    }
                 }
             }
         });
@@ -319,101 +323,64 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_save) {
-            flag = 0;
-            //Default text for date_picker = "ExpiryDate"
-            //Default text for time_picker = "ExpiryTime"
-            if(userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")|| order_delivery_charge.equals("")) {
-                new AlertDialog.Builder(OrderForm.this)
-                        .setMessage(getString(R.string.dialog_save))
-                        .setPositiveButton(getString(R.string.dialog_ok), null)
-                        .show();
-                return true;
-            }
-            if (Integer.parseInt(order_min_range) > Integer.parseInt(order_max_range)) {
-                Toast.makeText(getApplicationContext(), "Min value cannot be more than Max value!", Toast.LENGTH_SHORT).show();
-                return true;
-            }
+
+            if(!ConnectivityReceiver.isConnected()) {
+                showSnack(false);
+            } else {
+                flag = 0;
+                //Default text for date_picker = "ExpiryDate"
+                //Default text for time_picker = "ExpiryTime"
+                if(userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")|| order_delivery_charge.equals("")) {
+                    new AlertDialog.Builder(OrderForm.this)
+                            .setMessage(getString(R.string.dialog_save))
+                            .setPositiveButton(getString(R.string.dialog_ok), null)
+                            .show();
+                    return true;
+                }
+                if (Integer.parseInt(order_min_range) > Integer.parseInt(order_max_range)) {
+                    Toast.makeText(getApplicationContext(), "Min value cannot be more than Max value!", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
 
 
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            userId = user.getUid();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                userId = user.getUid();
 
-            root = FirebaseDatabase.getInstance().getReference();
+                root = FirebaseDatabase.getInstance().getReference();
 
-            /*
-            TAG = "hello";
-            wallet_ref = root.child("deliveryApp").child("users").child(userId).child("wallet");
-            wallet_ref.keepSynced(true);
-            wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Integer wal_bal = dataSnapshot.getValue(Integer.class);
-                    balance = wal_bal;
+                deliveryApp = root.child("deliveryApp");
+                deliveryApp.keepSynced(true);
 
-                    if (Integer.parseInt(order_max_range) > balance) {
-                        Toast.makeText(getApplicationContext(), "Insufficient balance in your wallet to place this order!\nPlease put some money in your wallet", Toast.LENGTH_LONG).show();
-                        flag = 1;
-                        Log.d(TAG, "flag value1 " + flag);
-                    } else {
-                        flag = 2;
-                        Log.d(TAG, "flag value2 " + flag);
+                deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (!dataSnapshot.hasChild("totalOrders")) {
+                            root.child("deliveryApp").child("totalOrders").setValue(1);
+                            OrderNumber = 1;
+                            order_id = OrderNumber;
+                            order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp, mode_of_payment, final_price);
+                            root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
+                        }
+                        else {
+                            OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
+                            OrderNumber++;
+                            order_id = OrderNumber;
+                            order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp, mode_of_payment, final_price);
+                            root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
+                            root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
+                        }
+                        UserViewActivity.adapter.insert(0, order);
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
-
-            Log.d(TAG, "flag value3 " + flag);
-            try {
-                if (flag == 0) {
-                    Thread.sleep(10000);
-                }
-            } catch (InterruptedException e) {
-                System.out.println("interrupted.");
-            }
-
-            Log.d(TAG, "flag value4 " + flag);
-            if (flag == 1) {
-                return true;
-            }
-            */
-
-            deliveryApp = root.child("deliveryApp");
-            deliveryApp.keepSynced(true);
-
-            deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.hasChild("totalOrders")) {
-                        root.child("deliveryApp").child("totalOrders").setValue(1);
-                        OrderNumber = 1;
-                        order_id = OrderNumber;
-                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp, mode_of_payment, final_price);
-                        root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
                     }
-                    else {
-                        OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
-                        OrderNumber++;
-                        order_id = OrderNumber;
-                        order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp, mode_of_payment, final_price);
-                        root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
-                        root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
-                    }
-                    UserViewActivity.adapter.insert(0, order);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+                });
 
 
-          finish();
-
+                finish();
+            }
         }
 
         else if (id==android.R.id.home) {
