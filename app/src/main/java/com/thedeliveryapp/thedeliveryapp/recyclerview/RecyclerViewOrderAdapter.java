@@ -208,6 +208,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
 
     // Remove a RecyclerView item containing a specified OrderData object
     public void remove(OrderData OrderData) {
+
         int position = list.indexOf(OrderData);
         list.remove(position);
         notifyItemRemoved(position);

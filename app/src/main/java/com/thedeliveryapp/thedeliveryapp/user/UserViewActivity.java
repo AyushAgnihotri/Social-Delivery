@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,6 +33,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -70,7 +73,7 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private DatabaseReference root = FirebaseDatabase.getInstance().getReference(), deliveryApp, forUserData;
+    private DatabaseReference root = FirebaseDatabase.getInstance().getReference(), deliveryApp, forUserData,childOrders;
 
     private String userId;
     boolean isRefreshing  = false;
@@ -354,6 +357,45 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
     protected void onResume() {
         super.onResume();
         refreshOrders();
+        childOrders = root.child("deliveryApp").child("orders").child(userId = user.getUid());
+        childOrders.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+               // OrderData order = dataSnapshot.getValue(OrderData.class);
+                OrderData order = dataSnapshot.getValue(OrderData.class);
+                OrderData temp = null;
+                for(OrderData myOrder : orderList) {
+                    if(myOrder.orderId == order.orderId) {
+                        temp = myOrder;
+                        break;
+                    }
+                }
+                if(temp != null && orderList.contains(temp)) {
+                    adapter.remove(temp);
+                    adapter.insert(0, order);
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         CheckConnectivityMain.getInstance().setConnectivityListener(UserViewActivity.this);
     }
 
