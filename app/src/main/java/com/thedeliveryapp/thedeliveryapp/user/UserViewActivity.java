@@ -273,14 +273,12 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
 
     }
     void setUpToolBarAndActionBar() {
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         toolbar.setTitle(getTitle());
-
     }
 
     void setUpFloatingActionButton() {

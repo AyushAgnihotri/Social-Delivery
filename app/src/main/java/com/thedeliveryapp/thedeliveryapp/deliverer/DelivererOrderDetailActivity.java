@@ -303,9 +303,14 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         btn_complete_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DelivererOrderDetailActivity.this, CompleteOrder.class);
-                intent.putExtra("MyOrder",(Parcelable) myOrder);
-                startActivity(intent);
+
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                } else {
+                    Intent intent = new Intent(DelivererOrderDetailActivity.this, CompleteOrder.class);
+                    intent.putExtra("MyOrder",(Parcelable) myOrder);
+                    startActivity(intent);
+                }
             }
         });
 

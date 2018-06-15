@@ -330,7 +330,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
 
         DatabaseReference allorders = root.child("deliveryApp").child("orders");
         allorders.keepSynced(true);
-        allorders.addValueEventListener(new ValueEventListener() {
+        allorders.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

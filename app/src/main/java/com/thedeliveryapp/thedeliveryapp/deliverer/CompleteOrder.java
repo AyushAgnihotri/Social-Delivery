@@ -1,8 +1,10 @@
 package com.thedeliveryapp.thedeliveryapp.deliverer;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.onesignal.OneSignal;
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 import org.json.JSONException;
@@ -77,25 +81,51 @@ public class CompleteOrder extends AppCompatActivity {
         btn_send_otp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String secret = generateSecureRandomNumber();
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                userId = user.getUid();
-                root = FirebaseDatabase.getInstance().getReference();
-                ref1 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId)).child("otp");
-                ref1.keepSynced(true);
-                ref1.setValue(secret);
-                ref2 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId)).child("final_price");
-                ref2.keepSynced(true);
-                ref2.setValue(Integer.parseInt(actual_price.getText().toString()));
-                setUpOTPNotif(myOrder, secret);
-                Intent intent = new Intent(CompleteOrder.this, Otp_screen.class);
-                intent.putExtra("Final Price",(String) actual_price.getText().toString());
-                intent.putExtra("OTP",(String) secret);
-                intent.putExtra("MyOrder",(Parcelable) myOrder);
-                startActivity(intent);
+
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                } else {
+                    String secret = generateSecureRandomNumber();
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    userId = user.getUid();
+                    root = FirebaseDatabase.getInstance().getReference();
+                    ref1 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId)).child("otp");
+                    ref1.keepSynced(true);
+                    ref1.setValue(secret);
+                    ref2 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId)).child("final_price");
+                    ref2.keepSynced(true);
+                    ref2.setValue(Integer.parseInt(actual_price.getText().toString()));
+                    setUpOTPNotif(myOrder, secret);
+                    Intent intent = new Intent(CompleteOrder.this, Otp_screen.class);
+                    intent.putExtra("Final Price",(String) actual_price.getText().toString());
+                    intent.putExtra("OTP",(String) secret);
+                    intent.putExtra("MyOrder",(Parcelable) myOrder);
+                    startActivity(intent);
+                }
             }
         });
 
+    }
+
+    // Showing the status in Snackbar
+    private void showSnack(boolean isConnected) {
+        String message;
+        int color;
+        if (isConnected) {
+            message = "Good! Connected to Internet";
+            color = Color.WHITE;
+        } else {
+            message = "Sorry! Not connected to internet";
+            color = Color.RED;
+        }
+
+        Snackbar snackbar = Snackbar
+                .make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(color);
+        snackbar.show();
     }
 
     private String generateSecureRandomNumber() {
