@@ -402,9 +402,13 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
             @Override
             public int getSwipeDirs(RecyclerView tempRecyclerView,RecyclerView.ViewHolder viewHolder) {
                 int position = viewHolder.getAdapterPosition();
-
                 if(!orderList.get(position).status.equals("PENDING"))
                     return 0;
+                else if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                    return 0;
+                }
+
                 RecyclerViewOrderAdapter adapter = (RecyclerViewOrderAdapter) recyclerView.getAdapter();
                 if(adapter.isPendingRemoval(position)) {
                     return  0;
@@ -421,7 +425,14 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
         //set swipe background-Color
         swipeHelper.setLeftcolorCode(R.color.cardview_dark_background);
     }
+
     void refreshOrders() {
+        //TODO Add internet connectivity error
+
+        userId = user.getUid();
+        deliveryApp = root.child("deliveryApp").child("orders").child(userId);
+        deliveryApp.keepSynced(true);
+        isRefreshing = true;
         final int size = orderList.size();
         if (size>0) {
             for(int i = 0;i < size;i++) {
@@ -429,22 +440,12 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
                 adapter.notifyItemRemoved(0);
             }
         }
-        fill_with_data();
-    }
-
-
-    void fill_with_data() {
-        //TODO Add internet connectivity error
-        final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
-        progressBar.setVisibility(View.VISIBLE);
-        isRefreshing = true;
-        userId = user.getUid();
-        deliveryApp = root.child("deliveryApp").child("orders").child(userId);
-        deliveryApp.keepSynced(true);
-
         deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
+                progressBar.setVisibility(View.VISIBLE);
+                isRefreshing = true;
 
                 for(DataSnapshot orders: dataSnapshot.getChildren()) {
                     OrderData order = orders.getValue(OrderData.class);
@@ -453,7 +454,7 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
                             (order.status.equals("FINISHED") && finished) ||
                             (order.status.equals("CANCELLED") && cancelled) ||
                             (order.status.equals("EXPIRED") && expired))
-                    adapter.insert(0,order);
+                        adapter.insert(0,order);
                     //   Toast.makeText(ItemListActivity.this,Integer.toString(order.max_range), Toast.LENGTH_SHORT).show();
                     //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();
 
@@ -501,6 +502,3 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
         }
     }
 }
-
-
-

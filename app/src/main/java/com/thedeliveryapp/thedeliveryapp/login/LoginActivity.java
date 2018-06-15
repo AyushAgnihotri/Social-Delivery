@@ -109,8 +109,12 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                } else {
+                    Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                    startActivityForResult(signInIntent, RC_SIGN_IN);
+                }
             }
         });
 
@@ -132,51 +136,55 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = inputEmail.getText().toString();
-                final String password = inputPassword.getText().toString();
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                } else {
+                    String email = inputEmail.getText().toString();
+                    final String password = inputPassword.getText().toString();
 
 
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                    if (TextUtils.isEmpty(email)) {
+                        Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                    if (TextUtils.isEmpty(password)) {
+                        Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                progressBar.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
 
-                //authenticate com.thedeliveryapp.thedeliveryapp.user.user
-                auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                // If sign in fails, display a message to the com.thedeliveryapp.thedeliveryapp.user.user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in com.thedeliveryapp.thedeliveryapp.user.user can be handled in the listener.
-                                progressBar.setVisibility(View.GONE);
-                                if (!task.isSuccessful()) {
-                                    // there was an error
-                                    if (password.length() < 6) {
-                                        inputPassword.setError(getString(R.string.minimum_password));
+                    //authenticate com.thedeliveryapp.thedeliveryapp.user.user
+                    auth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    // If sign in fails, display a message to the com.thedeliveryapp.thedeliveryapp.user.user. If sign in succeeds
+                                    // the auth state listener will be notified and logic to handle the
+                                    // signed in com.thedeliveryapp.thedeliveryapp.user.user can be handled in the listener.
+                                    progressBar.setVisibility(View.GONE);
+                                    if (!task.isSuccessful()) {
+                                        // there was an error
+                                        if (password.length() < 6) {
+                                            inputPassword.setError(getString(R.string.minimum_password));
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+                                        }
                                     } else {
-                                        Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                        if (user.isEmailVerified()) {
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                        } else {
+                                            Intent intent = new Intent(LoginActivity.this, VerifyEmailScreen.class);
+                                            startActivity(intent);
+                                        }
+                                        finish();
                                     }
-                                } else {
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    if (user.isEmailVerified()) {
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                    } else {
-                                        Intent intent = new Intent(LoginActivity.this, VerifyEmailScreen.class);
-                                        startActivity(intent);
-                                    }
-                                    finish();
                                 }
-                            }
-                        });
+                            });
+                }
             }
         });
     }
@@ -273,9 +281,14 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                             });
                             Toast.makeText(LoginActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                         } else {
+                            progressBar.setVisibility(View.GONE);
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Failed to Log in!", Toast.LENGTH_SHORT).show();
-
+                            if(!ConnectivityReceiver.isConnected()) {
+                                showSnack(false);
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Failed to Log in!", Toast.LENGTH_SHORT).show();
+                            }
+                            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
                         }
 
                         // ...

@@ -2,6 +2,7 @@ package com.thedeliveryapp.thedeliveryapp.recyclerview;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.deliverer.DelivererViewActivity;
+import com.thedeliveryapp.thedeliveryapp.login.LoginActivity;
+import com.thedeliveryapp.thedeliveryapp.login.MainActivity;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
@@ -49,7 +52,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
     List<OrderData> pendingRemovalList;
     ColorGenerator generator = ColorGenerator.MATERIAL;
 
-    private static final int PENDING_REMOVAL_TIMEOUT = 3000; // 3sec
+    private static  int PENDING_REMOVAL_TIMEOUT = 1500; // 3sec
     private Handler handler = new Handler(); // handler for running delayed runnables
     private HashMap<OrderData, Runnable> pendingRunables = new HashMap<>(); // map of items to pending runnables, so we can cancel a removal if need be
 
@@ -173,6 +176,9 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
                 String curr_status = dataSnapshot.getValue(String.class);
                 if(curr_status.equals("PENDING"))
                     root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(orderId)).child("status").setValue("CANCELLED");
+                else {
+                    Toast.makeText(context, "Can not cancel , this order is active", Toast.LENGTH_LONG).show();
+                }
 
             }
 

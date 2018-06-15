@@ -312,7 +312,14 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
 
 
     }
+
     void refreshOrders() {
+        //TODO Add internet connectivity error
+        final ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
+        progressBar.setVisibility(View.VISIBLE);
+        isRefreshing = true;
+        userId = user.getUid();
+
         final int size = orderList.size();
         if (size>0) {
             for(int i = 0;i < size;i++) {
@@ -320,26 +327,19 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                 adapter.notifyItemRemoved(0);
             }
         }
-        fill_with_data();
-    }
-
-
-    void fill_with_data() {
-        //TODO Add internet connectivity error
-        final ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
-        progressBar.setVisibility(View.VISIBLE);
-        isRefreshing = true;
-        userId = user.getUid();
 
         DatabaseReference allorders = root.child("deliveryApp").child("orders");
         allorders.keepSynced(true);
-        allorders.addListenerForSingleValueEvent(new ValueEventListener() {
+        allorders.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                isRefreshing = true;
                 for (DataSnapshot userdata : dataSnapshot.getChildren()) {
                     if (userdata.getKey().equals(userId)) {
                         continue;
                     }
+
                     for (DataSnapshot orderdata : userdata.getChildren()) {
                         OrderData order = orderdata.getValue(OrderData.class);
                         if ((order.status.equals("PENDING") && pending) ||

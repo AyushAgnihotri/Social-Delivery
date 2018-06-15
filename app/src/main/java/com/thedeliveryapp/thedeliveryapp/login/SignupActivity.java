@@ -70,95 +70,99 @@ public class SignupActivity extends AppCompatActivity implements ConnectivityRec
             @Override
             public void onClick(View v) {
 
-                final String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
-                final String name = inputName.getText().toString().trim();
-                final String mobile = inputMobile.getText().toString().trim();
-                final String alt_mobile = inputAltMobile.getText().toString().trim();
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                } else {
+                    final String email = inputEmail.getText().toString().trim();
+                    String password = inputPassword.getText().toString().trim();
+                    final String name = inputName.getText().toString().trim();
+                    final String mobile = inputMobile.getText().toString().trim();
+                    final String alt_mobile = inputAltMobile.getText().toString().trim();
 
-                if (TextUtils.isEmpty(name)) {
-                    Toast.makeText(getApplicationContext(), "Enter your Name!", Toast.LENGTH_SHORT).show();
-                    inputName.requestFocus();
-                    return;
-                }
+                    if (TextUtils.isEmpty(name)) {
+                        Toast.makeText(getApplicationContext(), "Enter your Name!", Toast.LENGTH_SHORT).show();
+                        inputName.requestFocus();
+                        return;
+                    }
 
-                if (TextUtils.isEmpty(mobile)) {
-                    Toast.makeText(getApplicationContext(), "Enter your Mobile No.!", Toast.LENGTH_SHORT).show();
-                    inputMobile.requestFocus();
-                    return;
-                }
-                if (mobile.length() != 10) {
-                    Toast.makeText(getApplicationContext(), "Enter 10-digit Mobile No.!", Toast.LENGTH_SHORT).show();
-                    inputMobile.requestFocus();
-                    return;
-                }
+                    if (TextUtils.isEmpty(mobile)) {
+                        Toast.makeText(getApplicationContext(), "Enter your Mobile No.!", Toast.LENGTH_SHORT).show();
+                        inputMobile.requestFocus();
+                        return;
+                    }
+                    if (mobile.length() != 10) {
+                        Toast.makeText(getApplicationContext(), "Enter 10-digit Mobile No.!", Toast.LENGTH_SHORT).show();
+                        inputMobile.requestFocus();
+                        return;
+                    }
 
-                if ((alt_mobile.length() != 0) && (alt_mobile.length() != 10)) {
-                    Toast.makeText(getApplicationContext(), "Enter 10-digit Alt. Mobile No.!", Toast.LENGTH_SHORT).show();
-                    inputAltMobile.requestFocus();
-                    return;
-                }
+                    if ((alt_mobile.length() != 0) && (alt_mobile.length() != 10)) {
+                        Toast.makeText(getApplicationContext(), "Enter 10-digit Alt. Mobile No.!", Toast.LENGTH_SHORT).show();
+                        inputAltMobile.requestFocus();
+                        return;
+                    }
 
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
-                    inputEmail.requestFocus();
-                    return;
-                }
+                    if (TextUtils.isEmpty(email)) {
+                        Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
+                        inputEmail.requestFocus();
+                        return;
+                    }
 
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
-                    inputPassword.requestFocus();
-                    return;
-                }
-                progressBar.setVisibility(View.VISIBLE);
-                //create com.thedeliveryapp.thedeliveryapp.user.user
-                auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "Successfully Registered.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(SignupActivity.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
-                                }
-
-                                progressBar.setVisibility(View.GONE);
-                                // If sign in fails, display a message to the com.thedeliveryapp.thedeliveryapp.user.user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in com.thedeliveryapp.thedeliveryapp.user.user can be handled in the listener.
-                                if(!task.isSuccessful()) {
-                                    String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
-
-                                    switch (errorCode) {
-
-                                        case "ERROR_INVALID_EMAIL":
-                                            inputEmail.requestFocus();
-                                            Toast.makeText(SignupActivity.this, "The email address is badly formatted.", Toast.LENGTH_SHORT).show();
-                                            break;
-
-                                        case "ERROR_EMAIL_ALREADY_IN_USE":
-                                            inputEmail.requestFocus();
-                                            Toast.makeText(SignupActivity.this, "The email address is already in use by another account.", Toast.LENGTH_SHORT).show();
-                                            break;
-
-                                        case "ERROR_WEAK_PASSWORD":
-                                            inputPassword.requestFocus();
-                                            Toast.makeText(SignupActivity.this, "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
-                                            break;
-                                    }
-                                } else {
-                                    update_userdetails_database(name, mobile, alt_mobile, email);
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    if (!user.isEmailVerified()) {
-                                        FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
-                                        startActivity(new Intent(SignupActivity.this, VerifyEmailScreen.class));
+                    if (TextUtils.isEmpty(password)) {
+                        Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
+                        inputPassword.requestFocus();
+                        return;
+                    }
+                    progressBar.setVisibility(View.VISIBLE);
+                    //create com.thedeliveryapp.thedeliveryapp.user.user
+                    auth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(SignupActivity.this, "Successfully Registered.", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                                        Toast.makeText(SignupActivity.this, "Registration Failed!", Toast.LENGTH_SHORT).show();
                                     }
-                                    finish();
+
+                                    progressBar.setVisibility(View.GONE);
+                                    // If sign in fails, display a message to the com.thedeliveryapp.thedeliveryapp.user.user. If sign in succeeds
+                                    // the auth state listener will be notified and logic to handle the
+                                    // signed in com.thedeliveryapp.thedeliveryapp.user.user can be handled in the listener.
+                                    if(!task.isSuccessful()) {
+                                        String errorCode = ((FirebaseAuthException) task.getException()).getErrorCode();
+
+                                        switch (errorCode) {
+
+                                            case "ERROR_INVALID_EMAIL":
+                                                inputEmail.requestFocus();
+                                                Toast.makeText(SignupActivity.this, "The email address is badly formatted.", Toast.LENGTH_SHORT).show();
+                                                break;
+
+                                            case "ERROR_EMAIL_ALREADY_IN_USE":
+                                                inputEmail.requestFocus();
+                                                Toast.makeText(SignupActivity.this, "The email address is already in use by another account.", Toast.LENGTH_SHORT).show();
+                                                break;
+
+                                            case "ERROR_WEAK_PASSWORD":
+                                                inputPassword.requestFocus();
+                                                Toast.makeText(SignupActivity.this, "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
+                                                break;
+                                        }
+                                    } else {
+                                        update_userdetails_database(name, mobile, alt_mobile, email);
+                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                        if (!user.isEmailVerified()) {
+                                            FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+                                            startActivity(new Intent(SignupActivity.this, VerifyEmailScreen.class));
+                                        } else {
+                                            startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                                        }
+                                        finish();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
             }
         });
     }
