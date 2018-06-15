@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
+import com.thedeliveryapp.thedeliveryapp.order_form.EditOrderForm;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
@@ -97,10 +98,14 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(UserOrderDetailActivity.this,com.thedeliveryapp.thedeliveryapp.order_form.EditOrderForm.class);
-                intent.putExtra("MyOrder",(Parcelable) myOrder);
-                startActivity(intent);
-                finish();
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                } else {
+                    Intent intent = new Intent(UserOrderDetailActivity.this, EditOrderForm.class);
+                    intent.putExtra("MyOrder",(Parcelable) myOrder);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 
