@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 public class OrderData implements Parcelable {
     public String category, description, userId, status, otp, mode_of_payment;
-    public int orderId, min_range, max_range, deliveryCharge, final_price;
+    public int orderId, min_range, max_range, final_price;
+    public float deliveryCharge;
     public UserLocation userLocation = new UserLocation();
     public ExpiryDate expiryDate = new ExpiryDate();
     public ExpiryTime expiryTime = new ExpiryTime();
@@ -23,7 +24,7 @@ public class OrderData implements Parcelable {
         min_range = in.readInt();
         max_range = in.readInt();
         status = in.readString();
-        deliveryCharge = in.readInt();
+        deliveryCharge = in.readFloat();
         userId = in.readString();
 
         userLocation.Name = in.readString();
@@ -63,7 +64,7 @@ public class OrderData implements Parcelable {
         dest.writeInt(min_range);
         dest.writeInt(max_range);
         dest.writeString(status);
-        dest.writeInt(deliveryCharge);
+        dest.writeFloat(deliveryCharge);
         dest.writeString(userId);
 
         dest.writeString(userLocation.Name);
@@ -103,7 +104,7 @@ public class OrderData implements Parcelable {
 
     public OrderData(String category, String description, int orderId, int max_range, int min_range,
                      UserLocation location, ExpiryDate expiryDate, ExpiryTime expiryTime, String status,
-                     int deliveryCharge, AcceptedBy acceptedBy, String userId, String otp, String mode_of_payment, int final_price) {
+                     Float deliveryCharge, AcceptedBy acceptedBy, String userId, String otp, String mode_of_payment, int final_price) {
         this.category = category;
         this.description = description;
         this.orderId = orderId;

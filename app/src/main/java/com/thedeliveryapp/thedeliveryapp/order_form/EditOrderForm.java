@@ -383,7 +383,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
 
                             if(current_order.status.equals("PENDING")) {
                                 DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
-                                updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING",(int) calc.deliveryCharge, myOrder.acceptedBy, userId, otp, mode_of_payment, myOrder.final_price);
+                                updated_order = new OrderData(order_category, order_description, OrderNumber, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING",calc.deliveryCharge, myOrder.acceptedBy, userId, otp, mode_of_payment, myOrder.final_price);
                                 root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(updated_order);
                                 Intent intent = new Intent(EditOrderForm.this, UserOrderDetailActivity.class);
                                 intent.putExtra("MyOrder", (Parcelable) updated_order);

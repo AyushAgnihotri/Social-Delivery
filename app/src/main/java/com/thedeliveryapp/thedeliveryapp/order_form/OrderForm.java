@@ -321,13 +321,13 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                                 root.child("deliveryApp").child("totalOrders").setValue(1);
                                 OrderNumber = 1;
                                 order_id = OrderNumber;
-                                order = new OrderData(order_category, order_description, order_id, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", (int) calc.deliveryCharge, acceptedBy, userId, otp, mode_of_payment, final_price);
+                                order = new OrderData(order_category, order_description, order_id, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", calc.deliveryCharge, acceptedBy, userId, otp, mode_of_payment, final_price);
                                 root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
                             } else {
                                 OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
                                 OrderNumber++;
                                 order_id = OrderNumber;
-                                order = new OrderData(order_category, order_description, order_id, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", (int)calc.deliveryCharge, acceptedBy, userId, otp, mode_of_payment, final_price);
+                                order = new OrderData(order_category, order_description, order_id, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", calc.deliveryCharge, acceptedBy, userId, otp, mode_of_payment, final_price);
                                 root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
                                 root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
                             }
