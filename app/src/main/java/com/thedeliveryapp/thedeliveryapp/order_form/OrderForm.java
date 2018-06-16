@@ -4,8 +4,10 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -101,6 +104,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         acceptedBy = new AcceptedBy("-", "-", "-", "-", "-");
         otp = "";
 
+
         category = findViewById(R.id.btn_category);
         date_picker = findViewById(R.id.btn_date_picker);
         time_picker = findViewById(R.id.btn_time_picker);
@@ -162,7 +166,6 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 List<String> mcategories = new ArrayList<String>();
                 mcategories.add("Food");
                 mcategories.add("Medicine");
@@ -246,20 +249,106 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
 
         View bottomSheet = findViewById(R.id.confirmation_dialog);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-
-        Button btn_proceed = (Button) findViewById(R.id.btn_proceed);
+        Button btn_proceed = findViewById(R.id.btn_proceed);
         mBottomSheetBehavior.setPeekHeight(0);
         mBottomSheetBehavior.setHideable(true);
+
+
         btn_proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String order_description = description.getText().toString();
+                final String order_category = category.getText().toString();
+                final String order_min_range = min_int_range.getText().toString();
+                final String order_max_range = max_int_range.getText().toString();
+
+
+                if(userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")) {
+                    new AlertDialog.Builder(OrderForm.this)
+                            .setMessage(getString(R.string.dialog_save))
+                            .setPositiveButton(getString(R.string.dialog_ok), null)
+                            .show();
+                    return;
+                }
+                else if (Integer.parseInt(order_min_range) > Integer.parseInt(order_max_range)) {
+                    Toast.makeText(getApplicationContext(), "Min value cannot be more than Max value!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                }
+                else {
+                    DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
+                    delivery_charge.setText("₹"+Float.toString(calc.deliveryCharge));
                     mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
             }
         });
+
+
+        Button btn_confirm = findViewById(R.id.btn_confirm);
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
+                }
+                else {
+
+                    final String order_description = description.getText().toString();
+                    final String order_category = category.getText().toString();
+                    final String order_min_range = min_int_range.getText().toString();
+                    final String order_max_range = max_int_range.getText().toString();
+                    final DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
+                    flag = 0;
+                    //Default text for date_picker = "ExpiryDate"
+                    //Default text for time_picker = "ExpiryTime"
+
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    userId = user.getUid();
+
+                    root = FirebaseDatabase.getInstance().getReference();
+
+                    deliveryApp = root.child("deliveryApp");
+                    deliveryApp.keepSynced(true);
+
+                    deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (!dataSnapshot.hasChild("totalOrders")) {
+                                root.child("deliveryApp").child("totalOrders").setValue(1);
+                                OrderNumber = 1;
+                                order_id = OrderNumber;
+                                order = new OrderData(order_category, order_description, order_id, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", (int) calc.deliveryCharge, acceptedBy, userId, otp, mode_of_payment, final_price);
+                                root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
+                            } else {
+                                OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
+                                OrderNumber++;
+                                order_id = OrderNumber;
+                                order = new OrderData(order_category, order_description, order_id, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", (int)calc.deliveryCharge, acceptedBy, userId, otp, mode_of_payment, final_price);
+                                root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
+                                root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
+                            }
+                            UserViewActivity.adapter.insert(0, order);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                    finish();
+                }
+            }
+        });
+
     }
 
     public void onRadioButtonClicked(View view) {
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         boolean checked = ((RadioButton) view).isChecked();
         switch(view.getId()) {
             case R.id.radio_wallet:
@@ -288,6 +377,21 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
             }
         }
 
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent (MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                Rect outRect = new Rect() ;
+                View bottomSheet=findViewById(R.id.confirmation_dialog);
+                bottomSheet.getGlobalVisibleRect(outRect);
+                if(!outRect.contains((int) event.getRawX(), (int) event.getRawY()))
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+        }
+        return super.dispatchTouchEvent(event);
     }
 
 
@@ -338,72 +442,9 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         final String order_max_range = max_int_range.getText().toString();
         final String order_delivery_charge = delivery_charge.getText().toString();
         //noinspection SimplifiableIfStatement
-
-        if (id == R.id.action_save) {
-
-            if(!ConnectivityReceiver.isConnected()) {
-                showSnack(false);
-            } else {
-                flag = 0;
-                //Default text for date_picker = "ExpiryDate"
-                //Default text for time_picker = "ExpiryTime"
-                if(userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")|| order_delivery_charge.equals("")) {
-                    new AlertDialog.Builder(OrderForm.this)
-                            .setMessage(getString(R.string.dialog_save))
-                            .setPositiveButton(getString(R.string.dialog_ok), null)
-                            .show();
-                    return true;
-                }
-                if (Integer.parseInt(order_min_range) > Integer.parseInt(order_max_range)) {
-                    Toast.makeText(getApplicationContext(), "Min value cannot be more than Max value!", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                userId = user.getUid();
-
-                root = FirebaseDatabase.getInstance().getReference();
-
-                deliveryApp = root.child("deliveryApp");
-                deliveryApp.keepSynced(true);
-
-                deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (!dataSnapshot.hasChild("totalOrders")) {
-                            root.child("deliveryApp").child("totalOrders").setValue(1);
-                            OrderNumber = 1;
-                            order_id = OrderNumber;
-                            order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp, mode_of_payment, final_price);
-                            root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
-                        }
-                        else {
-                            OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
-                            OrderNumber++;
-                            order_id = OrderNumber;
-                            order = new OrderData(order_category,order_description , order_id,Integer.parseInt(order_max_range), Integer.parseInt(order_min_range),userLocation,expiryDate,expiryTime,"PENDING",Integer.parseInt(order_delivery_charge), acceptedBy,userId, otp, mode_of_payment, final_price);
-                            root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
-                            root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
-                        }
-                        UserViewActivity.adapter.insert(0, order);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
-                finish();
-            }
-        }
-
-        else if (id==android.R.id.home) {
+        if (id==android.R.id.home) {
 
         }
-
         return super.onOptionsItemSelected(item);
     }
 

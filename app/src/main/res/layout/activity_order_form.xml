@@ -232,8 +232,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/button_round_main"
                     android:paddingBottom="10dp"
                     android:paddingLeft="40dp"
@@ -264,7 +264,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginTop="20dp"
                     android:text="@string/deliveryChargeDialog"
                     android:textColor="@color/black"
@@ -277,8 +277,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="30sp"
                     android:text="" />
 
                 <Button
@@ -300,5 +301,11 @@
 
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
+        <View
+            android:id="@+id/shadow"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:background="@drawable/shape_gradient_top_shadow"
+            app:layout_anchor="@id/confirmation_dialog"/>
     </android.support.design.widget.CoordinatorLayout>
 </ScrollView>
