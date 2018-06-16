@@ -1,7 +1,9 @@
 package com.thedeliveryapp.thedeliveryapp.deliverer;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -18,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.onesignal.OneSignal;
 import com.thedeliveryapp.thedeliveryapp.R;
+import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 import org.json.JSONException;
@@ -139,104 +143,128 @@ public class Otp_screen extends AppCompatActivity {
         btn_mark_delivered.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String secret = f1.getText().toString() + f2.getText().toString() + f3.getText().toString()
-                        + f4.getText().toString() + f5.getText().toString();
-                if (secret.equals(otp)) {
-                    root = FirebaseDatabase.getInstance().getReference();
-                    root.child("deliveryApp").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (!dataSnapshot.hasChild("our_wallet")) {
-                                root.child("deliveryApp").child("our_wallet").setValue(0);
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    ref1 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId));
-                    ref1.keepSynced(true);
-                    ref1.child("status").setValue("FINISHED");
-
-                    if (myOrder.mode_of_payment.equals("WALLET")) {
-                        ref4 = ref1.child("userId");
-                        ref4.keepSynced(true);
-                        ref4.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String userID = dataSnapshot.getValue(String.class);
-                                ref5 = root.child("deliveryApp").child("users").child(userID);
-                                ref5.keepSynced(true);
-                                ref5.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        Integer wal_bal_user = dataSnapshot.getValue(Integer.class);
-                                        int balance_user = wal_bal_user;
-                                        ref5.child("wallet").setValue(balance_user - final_price_int);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        ref2 = ref1.child("acceptedBy").child("delivererID");
-                        ref2.keepSynced(true);
-                        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String delivererID = dataSnapshot.getValue(String.class);
-                                ref3 = root.child("deliveryApp").child("users").child(delivererID);
-                                ref3.keepSynced(true);
-                                ref3.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        Integer wal_bal_deliverer = dataSnapshot.getValue(Integer.class);
-                                        int balance_deliverer = wal_bal_deliverer;
-                                        ref3.child("wallet").setValue(balance_deliverer + final_price_int);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-
-
-
-                    Toast.makeText(Otp_screen.this, "Delivery Finished!!", Toast.LENGTH_LONG).show();
-                    //TODO display a congrats 'you just delivered a order screen'
-                    setUpDeliveredNotif(myOrder);
-                    Intent intent = new Intent(Otp_screen.this, DelivererViewActivity.class);
-                    startActivity(intent);
-                    finish();
-
+                if(!ConnectivityReceiver.isConnected()) {
+                    showSnack(false);
                 } else {
-                    Toast.makeText(Otp_screen.this, "Wrong OTP! Enter correct OTP", Toast.LENGTH_LONG).show();
+                    String secret = f1.getText().toString() + f2.getText().toString() + f3.getText().toString()
+                            + f4.getText().toString() + f5.getText().toString();
+                    if (secret.equals(otp)) {
+                        root = FirebaseDatabase.getInstance().getReference();
+                        root.child("deliveryApp").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (!dataSnapshot.hasChild("our_wallet")) {
+                                    root.child("deliveryApp").child("our_wallet").setValue(0);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        ref1 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId));
+                        ref1.keepSynced(true);
+                        ref1.child("status").setValue("FINISHED");
+
+                        if (myOrder.mode_of_payment.equals("WALLET")) {
+                            ref4 = ref1.child("userId");
+                            ref4.keepSynced(true);
+                            ref4.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String userID = dataSnapshot.getValue(String.class);
+                                    ref5 = root.child("deliveryApp").child("users").child(userID);
+                                    ref5.keepSynced(true);
+                                    ref5.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Integer wal_bal_user = dataSnapshot.getValue(Integer.class);
+                                            int balance_user = wal_bal_user;
+                                            ref5.child("wallet").setValue(balance_user - final_price_int);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                            ref2 = ref1.child("acceptedBy").child("delivererID");
+                            ref2.keepSynced(true);
+                            ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String delivererID = dataSnapshot.getValue(String.class);
+                                    ref3 = root.child("deliveryApp").child("users").child(delivererID);
+                                    ref3.keepSynced(true);
+                                    ref3.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Integer wal_bal_deliverer = dataSnapshot.getValue(Integer.class);
+                                            int balance_deliverer = wal_bal_deliverer;
+                                            ref3.child("wallet").setValue(balance_deliverer + final_price_int);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+
+                        Toast.makeText(Otp_screen.this, "Delivery Finished!!", Toast.LENGTH_LONG).show();
+                        //TODO display a congrats 'you just delivered a order screen'
+                        setUpDeliveredNotif(myOrder);
+                        Intent intent = new Intent(Otp_screen.this, DelivererViewActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    } else {
+                        Toast.makeText(Otp_screen.this, "Wrong OTP! Enter correct OTP", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
 
 
+    }
+
+    // Showing the status in Snackbar
+    private void showSnack(boolean isConnected) {
+        String message;
+        int color;
+        if (isConnected) {
+            message = "Good! Connected to Internet";
+            color = Color.WHITE;
+        } else {
+            message = "Sorry! Not connected to internet";
+            color = Color.RED;
+        }
+
+        Snackbar snackbar = Snackbar
+                .make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(color);
+        snackbar.show();
     }
 
     public void setUpDeliveredNotif(final OrderData order) {

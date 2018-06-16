@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -29,6 +30,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -63,7 +65,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private DatabaseReference root = FirebaseDatabase.getInstance().getReference(), forUserData, users;
+    private DatabaseReference root = FirebaseDatabase.getInstance().getReference(), forUserData,childOrders;
 
     private String userId;
     boolean isRefreshing  = false;
@@ -324,13 +326,12 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
         if (size>0) {
             for(int i = 0;i < size;i++) {
                 adapter.remove(0);
-                adapter.notifyItemRemoved(0);
             }
         }
 
         DatabaseReference allorders = root.child("deliveryApp").child("orders");
         allorders.keepSynced(true);
-        allorders.addValueEventListener(new ValueEventListener() {
+        allorders.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
