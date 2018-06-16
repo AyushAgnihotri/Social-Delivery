@@ -394,7 +394,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         return super.dispatchTouchEvent(event);
     }
 
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -402,6 +402,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         menuInflater.inflate(R.menu.menu_main, menu);
         return true;
     }
+    */
 
     public static int getImageId(String category) {
         if(category.equals("None"))
