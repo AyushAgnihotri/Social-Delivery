@@ -135,7 +135,9 @@
     <string name="done_verify">Done Verification?</string>
     <string name="btn_refresh">Refresh</string>
     <string name="btn_logout">Log out</string>
-
+    <string name="btn_proceed">Proceed</string>
+    <string name="confirmation">Confirm</string>
+    <string name="deliveryChargeDialog">The delivery charge applicable over this order is :</string>
 
 
 </resources>

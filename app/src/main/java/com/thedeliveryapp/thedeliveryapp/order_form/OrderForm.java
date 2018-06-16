@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -58,10 +59,11 @@ import java.util.List;
 
 public class OrderForm extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
-    TextView category ;
+    private BottomSheetBehavior mBottomSheetBehavior;
+    TextView category,delivery_charge ;
     Button date_picker, time_picker, user_location;
     Calendar calendar ;
-    EditText description, min_int_range, max_int_range, delivery_charge;
+    EditText description, min_int_range, max_int_range;
     RadioButton radio_wallet, radio_cash;
 
     private DatabaseReference root, deliveryApp, ref1;
@@ -89,7 +91,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
 
         checkConnection();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+                Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         toolbar.setTitle("New Order");
         setSupportActionBar(toolbar);
 
@@ -160,6 +162,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 List<String> mcategories = new ArrayList<String>();
                 mcategories.add("Food");
                 mcategories.add("Medicine");
@@ -236,9 +239,23 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                 }
             }
         });
+
+        View bottomSheet = findViewById(R.id.confirmation_dialog);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        Button btn_proceed = (Button) findViewById(R.id.btn_proceed);
+        mBottomSheetBehavior.setPeekHeight(0);
+        mBottomSheetBehavior.setHideable(true);
+        btn_proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
     }
 
     public void onRadioButtonClicked(View view) {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         boolean checked = ((RadioButton) view).isChecked();
         switch(view.getId()) {
             case R.id.radio_wallet:
