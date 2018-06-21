@@ -7,7 +7,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/use_as_user"
-            android:icon="@drawable/ic_orderer"
+            android:icon="@drawable/ic_orderer_new"
             android:title="View as Orderer"
             tools:ignore="HardcodedText" />
     </group>
@@ -17,19 +17,19 @@
         <menu>
             <item
                 android:id="@+id/all_orders_deliverer"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_all_orders"
                 android:title="All orders" />
             <item
                 android:id="@+id/active_deliverer"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_active"
                 android:title="Active" />
             <item
                 android:id="@+id/pending_deliverer"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_pending"
                 android:title="Pending" />
             <item
                 android:id="@+id/completed_deliverer"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_finished"
                 android:title="Finished" />
         </menu>
     </item>
