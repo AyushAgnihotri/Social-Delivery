@@ -210,8 +210,10 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
     public void remove(OrderData OrderData) {
 
         int position = list.indexOf(OrderData);
-        list.remove(position);
-        notifyItemRemoved(position);
+        if(position != -1) {
+            list.remove(position);
+            notifyItemRemoved(position);
+        }
     }
 
     public void remove(int position) {

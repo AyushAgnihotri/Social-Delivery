@@ -51,9 +51,12 @@ import com.thedeliveryapp.thedeliveryapp.recyclerview.UserOrderItemClickListener
 import com.thedeliveryapp.thedeliveryapp.recyclerview.UserOrderTouchListener;
 import com.thedeliveryapp.thedeliveryapp.user.UserOrderDetailActivity;
 import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
+import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
+import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryTime;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiClient;
@@ -314,7 +317,15 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
 
 
     }
+    void setExpiry(Calendar calendar, ExpiryDate expiryDate, ExpiryTime expiryTime) {
 
+        calendar.set(Calendar.YEAR, expiryDate.year);
+        calendar.set(Calendar.MONTH, expiryDate.month);
+        calendar.set(Calendar.DAY_OF_MONTH, expiryDate.day);
+        calendar.set(Calendar.HOUR_OF_DAY, expiryTime.hour);
+        calendar.set(Calendar.MINUTE, expiryTime.minute);
+
+    }
     void refreshOrders() {
         //TODO Add internet connectivity error
         final ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
@@ -329,13 +340,15 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
             }
         }
 
-        DatabaseReference allorders = root.child("deliveryApp").child("orders");
+        final DatabaseReference allorders = root.child("deliveryApp").child("orders");
         allorders.keepSynced(true);
         allorders.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 isRefreshing = true;
+                Calendar curr = Calendar.getInstance();
+                Calendar exp = Calendar.getInstance();
                 for (DataSnapshot userdata : dataSnapshot.getChildren()) {
                     if (userdata.getKey().equals(userId)) {
                         continue;
@@ -343,12 +356,19 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
 
                     for (DataSnapshot orderdata : userdata.getChildren()) {
                         OrderData order = orderdata.getValue(OrderData.class);
+                        if(order.status.equals("PENDING")) {
+                            setExpiry(exp, order.expiryDate, order.expiryTime);
+                            boolean isExpired = curr.after(exp);
+                            if(isExpired) {
+                                order.status = "EXPIRED";
+                                Toast.makeText(DelivererViewActivity.this, "Some orders expired", Toast.LENGTH_LONG).show();
+                                allorders.child(userdata.getKey()).child(Integer.toString(order.orderId)).child("status").setValue("EXPIRED");
+                            }
+                        }
                         if ((order.status.equals("PENDING") && pending) ||
                                 (order.status.equals("ACTIVE") && active && userId.equals(order.acceptedBy.delivererID)) ||
                                 (order.status.equals("FINISHED") && finished && userId.equals(order.acceptedBy.delivererID)))
                             adapter.insert(0, order);
-                        //   Toast.makeText(ItemListActivity.this,Integer.toString(order.max_range), Toast.LENGTH_SHORT).show();
-                        //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();
                     }
                 }
 

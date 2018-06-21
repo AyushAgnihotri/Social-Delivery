@@ -51,9 +51,12 @@ import com.thedeliveryapp.thedeliveryapp.recyclerview.RecyclerViewOrderAdapter;
 import com.thedeliveryapp.thedeliveryapp.recyclerview.SwipeOrderUtil;
 import com.thedeliveryapp.thedeliveryapp.recyclerview.UserOrderItemClickListener;
 import com.thedeliveryapp.thedeliveryapp.recyclerview.UserOrderTouchListener;
+import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
+import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryTime;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiClient;
@@ -468,7 +471,15 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
         //set swipe background-Color
         swipeHelper.setLeftcolorCode(R.color.cardview_dark_background);
     }
+    void setExpiry(Calendar calendar,ExpiryDate expiryDate, ExpiryTime expiryTime) {
 
+        calendar.set(Calendar.YEAR, expiryDate.year);
+        calendar.set(Calendar.MONTH, expiryDate.month);
+        calendar.set(Calendar.DAY_OF_MONTH, expiryDate.day);
+        calendar.set(Calendar.HOUR_OF_DAY, expiryTime.hour);
+        calendar.set(Calendar.MINUTE, expiryTime.minute);
+
+    }
     void refreshOrders() {
         //TODO Add internet connectivity error
 
@@ -489,9 +500,19 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
                 final  ProgressBar progressBar = findViewById(R.id.progressBarUserOrder);
                 progressBar.setVisibility(View.VISIBLE);
                 isRefreshing = true;
-
+                Calendar curr = Calendar.getInstance();
+                Calendar exp = Calendar.getInstance();
                 for(DataSnapshot orders: dataSnapshot.getChildren()) {
                     OrderData order = orders.getValue(OrderData.class);
+                    if(order.status.equals("PENDING")) {
+                        setExpiry(exp, order.expiryDate, order.expiryTime);
+                        boolean isExpired = curr.after(exp);
+                        if(isExpired) {
+                            order.status = "EXPIRED";
+                            Toast.makeText(UserViewActivity.this, "Your some orders expired", Toast.LENGTH_LONG).show();
+                            deliveryApp.child(Integer.toString(order.orderId)).child("status").setValue("EXPIRED");
+                        }
+                    }
                     if( (order.status.equals("PENDING") && pending) ||
                             (order.status.equals("ACTIVE") && active) ||
                             (order.status.equals("FINISHED") && finished) ||
