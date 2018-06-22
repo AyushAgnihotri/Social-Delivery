@@ -44,10 +44,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.onesignal.OSPermissionSubscriptionState;
 import com.onesignal.OneSignal;
+import com.paytm.pgsdk.PaytmOrder;
+import com.paytm.pgsdk.PaytmPGService;
+import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
 import com.thedeliveryapp.thedeliveryapp.login.ResetPasswordActivity;
+import com.thedeliveryapp.thedeliveryapp.paytm.Api;
+import com.thedeliveryapp.thedeliveryapp.paytm.Checksum;
+import com.thedeliveryapp.thedeliveryapp.paytm.Constants;
+import com.thedeliveryapp.thedeliveryapp.paytm.Paytm;
 import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
 import com.thedeliveryapp.thedeliveryapp.user.order.AcceptedBy;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
@@ -58,9 +65,18 @@ import com.thedeliveryapp.thedeliveryapp.user.order.UserLocation;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class OrderForm extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+
+public class OrderForm extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener, PaytmPaymentTransactionCallback {
 
     private BottomSheetBehavior mBottomSheetBehavior;
     TextView category,delivery_charge ;
@@ -340,7 +356,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                         }
                     });
 
-
+                    generateCheckSum();
                     finish();
                 }
             }
@@ -393,6 +409,12 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         }
         return super.dispatchTouchEvent(event);
     }
+
+    /*
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }*/
 
 /*
     @Override
@@ -487,4 +509,161 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         super.onResume();
         CheckConnectivityMain.getInstance().setConnectivityListener(OrderForm.this);
     }
+
+
+
+    //PAYTM
+
+    private void generateCheckSum() {
+
+        //getting the tax amount first.
+        String txnAmount = max_int_range.getText().toString().trim();
+
+        //creating a retrofit object.
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        //creating the retrofit api service
+        Api apiService = retrofit.create(Api.class);
+
+        //creating paytm object
+        //containing all the values required
+        final Paytm paytm = new Paytm(
+                Constants.M_ID,
+                Constants.CHANNEL_ID,
+                txnAmount,
+                Constants.WEBSITE,
+                Constants.CALLBACK_URL,
+                Constants.INDUSTRY_TYPE_ID
+        );
+
+        //creating a call object from the apiService
+        Call<Checksum> call = apiService.getChecksum(
+                paytm.getmId(),
+                paytm.getOrderId(),
+                paytm.getCustId(),
+                paytm.getChannelId(),
+                paytm.getTxnAmount(),
+                paytm.getWebsite(),
+                paytm.getCallBackUrl(),
+                paytm.getIndustryTypeId()
+        );
+
+        //making the call to generate checksum
+        call.enqueue(new Callback<Checksum>() {
+            @Override
+            public void onResponse(Call<Checksum> call, Response<Checksum> response) {
+
+                //once we get the checksum we will initiailize the payment.
+                //the method is taking the checksum we got and the paytm object as the parameter
+                initializePaytmPayment(response.body().getChecksumHash(), paytm);
+            }
+
+            @Override
+            public void onFailure(Call<Checksum> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void initializePaytmPayment(String checksumHash, Paytm paytm) {
+
+        //getting paytm service
+        PaytmPGService Service = PaytmPGService.getStagingService();
+
+        //use this when using for production
+        //PaytmPGService Service = PaytmPGService.getProductionService();
+
+        //creating a hashmap and adding all the values required
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("MID", Constants.M_ID);
+        paramMap.put("ORDER_ID", paytm.getOrderId());
+        paramMap.put("CUST_ID", paytm.getCustId());
+        paramMap.put("CHANNEL_ID", paytm.getChannelId());
+        paramMap.put("TXN_AMOUNT", paytm.getTxnAmount());
+        paramMap.put("WEBSITE", paytm.getWebsite());
+        paramMap.put("CALLBACK_URL", paytm.getCallBackUrl());
+        paramMap.put("CHECKSUMHASH", checksumHash);
+        paramMap.put("INDUSTRY_TYPE_ID", paytm.getIndustryTypeId());
+
+
+        //creating a paytm order object using the hashmap
+        PaytmOrder order = new PaytmOrder(paramMap);
+
+        //intializing the paytm service
+        Service.initialize(order, null);
+
+        //finally starting the payment transaction
+        Service.startPaymentTransaction(this, true, true, this);
+
+    }
+
+    //all these overriden method is to detect the payment result accordingly
+    public void someUIErrorOccurred(String inErrorMessage) {
+
+        Log.d("LOG", "UI Error Occur.");
+
+        Toast.makeText(getApplicationContext(), " UI Error Occur. ", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+
+    public void onTransactionResponse(Bundle inResponse) {
+
+        Log.d("LOG", "Payment Transaction : " + inResponse);
+
+        Toast.makeText(getApplicationContext(), "Payment Transaction response "+inResponse.toString(), Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+
+    public void networkNotAvailable() {
+
+        Log.d("LOG", "UI Error Occur.");
+
+        Toast.makeText(getApplicationContext(), " UI Error Occur. ", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+
+    public void clientAuthenticationFailed(String inErrorMessage) {
+
+        Log.d("LOG", "UI Error Occur.");
+
+        Toast.makeText(getApplicationContext(), " Severside Error "+ inErrorMessage, Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+
+    public void onErrorLoadingWebPage(int iniErrorCode,
+
+                                      String inErrorMessage, String inFailingUrl) {
+
+    }
+
+    @Override
+
+    public void onBackPressedCancelTransaction() {
+
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+
+    public void onTransactionCancel(String inErrorMessage, Bundle inResponse) {
+
+        Log.d("LOG", "Payment Transaction Failed " + inErrorMessage);
+
+        Toast.makeText(getBaseContext(), "Payment Transaction Failed ", Toast.LENGTH_LONG).show();
+
+    }
+
+
 }
