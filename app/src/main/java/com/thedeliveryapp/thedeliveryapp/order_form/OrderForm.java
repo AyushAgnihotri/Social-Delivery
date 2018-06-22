@@ -311,53 +311,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                     showSnack(false);
                 }
                 else {
-
-                    final String order_description = description.getText().toString();
-                    final String order_category = category.getText().toString();
-                    final String order_min_range = min_int_range.getText().toString();
-                    final String order_max_range = max_int_range.getText().toString();
-                    final DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
-                    flag = 0;
-                    //Default text for date_picker = "ExpiryDate"
-                    //Default text for time_picker = "ExpiryTime"
-
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    userId = user.getUid();
-
-                    root = FirebaseDatabase.getInstance().getReference();
-
-                    deliveryApp = root.child("deliveryApp");
-                    deliveryApp.keepSynced(true);
-
-                    deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (!dataSnapshot.hasChild("totalOrders")) {
-                                root.child("deliveryApp").child("totalOrders").setValue(1);
-                                OrderNumber = 1;
-                                order_id = OrderNumber;
-                                order = new OrderData(order_category, order_description, order_id, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", calc.deliveryCharge, acceptedBy, userId, otp, mode_of_payment, final_price);
-                                root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
-                            } else {
-                                OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
-                                OrderNumber++;
-                                order_id = OrderNumber;
-                                order = new OrderData(order_category, order_description, order_id, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", calc.deliveryCharge, acceptedBy, userId, otp, mode_of_payment, final_price);
-                                root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
-                                root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
-                            }
-                            UserViewActivity.adapter.insert(0, order);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
                     generateCheckSum();
-                    finish();
                 }
             }
         });
@@ -424,7 +378,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         menuInflater.inflate(R.menu.menu_main, menu);
         return true;
     }
-    */
+
 
     public static int getImageId(String category) {
         if(category.equals("None"))
@@ -451,7 +405,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
             return R.drawable.ic_action_movie;
         else
             return R.drawable.ic_action_movie;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -615,8 +569,53 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
 
         Log.d("LOG", "Payment Transaction : " + inResponse);
 
-        Toast.makeText(getApplicationContext(), "Payment Transaction response "+inResponse.toString(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), "Payment Transaction response "+inResponse.toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Payment Transaction Successful ", Toast.LENGTH_LONG).show();
+        final String order_description = description.getText().toString();
+        final String order_category = category.getText().toString();
+        final String order_min_range = min_int_range.getText().toString();
+        final String order_max_range = max_int_range.getText().toString();
+        final DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
+        flag = 0;
+        //Default text for date_picker = "ExpiryDate"
+        //Default text for time_picker = "ExpiryTime"
 
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        userId = user.getUid();
+
+        root = FirebaseDatabase.getInstance().getReference();
+
+        deliveryApp = root.child("deliveryApp");
+        deliveryApp.keepSynced(true);
+
+        deliveryApp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.hasChild("totalOrders")) {
+                    root.child("deliveryApp").child("totalOrders").setValue(1);
+                    OrderNumber = 1;
+                    order_id = OrderNumber;
+                    order = new OrderData(order_category, order_description, order_id, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", calc.deliveryCharge, acceptedBy, userId, otp, mode_of_payment, final_price);
+                    root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
+                } else {
+                    OrderNumber = dataSnapshot.child("totalOrders").getValue(Integer.class);
+                    OrderNumber++;
+                    order_id = OrderNumber;
+                    order = new OrderData(order_category, order_description, order_id, Integer.parseInt(order_max_range), Integer.parseInt(order_min_range), userLocation, expiryDate, expiryTime, "PENDING", calc.deliveryCharge, acceptedBy, userId, otp, mode_of_payment, final_price);
+                    root.child("deliveryApp").child("totalOrders").setValue(OrderNumber);
+                    root.child("deliveryApp").child("orders").child(userId).child(Integer.toString(OrderNumber)).setValue(order);
+                }
+                UserViewActivity.adapter.insert(0, order);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        finish();
+        Toast.makeText(getApplicationContext(), "Payment Transaction Successful ", Toast.LENGTH_LONG).show();
     }
 
     @Override
