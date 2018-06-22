@@ -2,6 +2,7 @@ package com.thedeliveryapp.thedeliveryapp.order_form;
 
 public class DeliveryChargeCalculater {
     public float deliveryCharge;
+    public float max_price, total_price;
 
     DeliveryChargeCalculater(int max_range) {
         deliveryCharge= (float) 50.0;
@@ -15,5 +16,8 @@ public class DeliveryChargeCalculater {
             deliveryCharge += 0.20*max_range;
         else if (max_range>=5000)
             deliveryCharge +=1200.00;
+
+        max_price = (float) max_range;
+        total_price = max_price + deliveryCharge;
     }
 }

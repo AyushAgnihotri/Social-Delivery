@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -79,12 +80,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class OrderForm extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener, PaytmPaymentTransactionCallback {
 
     private BottomSheetBehavior mBottomSheetBehavior;
-    TextView category,delivery_charge ;
+    TextView category,delivery_charge, price, total_charge ;
     Button date_picker, time_picker, user_location;
     Calendar calendar ;
     EditText description, min_int_range, max_int_range;
     RadioButton radio_wallet, radio_cash;
 
+    private ProgressBar progressBar;
     private DatabaseReference root, deliveryApp, ref1;
     private String userId, otp, mode_of_payment;
     private int OrderNumber, order_id, value, final_price = -1;
@@ -121,6 +123,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         otp = "";
 
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         category = findViewById(R.id.btn_category);
         date_picker = findViewById(R.id.btn_date_picker);
         time_picker = findViewById(R.id.btn_time_picker);
@@ -132,7 +135,8 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         delivery_charge = findViewById(R.id.delivery_charge);
         radio_wallet = findViewById(R.id.radio_wallet);
         radio_cash = findViewById(R.id.radio_cash);
-
+        price = findViewById(R.id.max_price);
+        total_charge = findViewById(R.id.total_amount);
         mode_of_payment = "CASH ON DELIVERY";
 
 
@@ -296,6 +300,8 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                 else {
                     DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
                     delivery_charge.setText("₹"+Float.toString(calc.deliveryCharge));
+                    price.setText("₹"+Float.toString(calc.max_price));
+                    total_charge.setText("₹"+Float.toString(calc.total_price));
                     mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
             }
@@ -311,6 +317,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                     showSnack(false);
                 }
                 else {
+                    progressBar.setVisibility(View.VISIBLE);
                     generateCheckSum();
                 }
             }
@@ -469,9 +476,11 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
     //PAYTM
 
     private void generateCheckSum() {
+        final String order_max_range = max_int_range.getText().toString();
+        DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
 
         //getting the tax amount first.
-        String txnAmount = max_int_range.getText().toString().trim();
+        String txnAmount = Float.toString(calc.total_price).trim();
 
         //creating a retrofit object.
         Retrofit retrofit = new Retrofit.Builder()
@@ -523,7 +532,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
     }
 
     private void initializePaytmPayment(String checksumHash, Paytm paytm) {
-
+        progressBar.setVisibility(View.GONE);
         //getting paytm service
         PaytmPGService Service = PaytmPGService.getStagingService();
 

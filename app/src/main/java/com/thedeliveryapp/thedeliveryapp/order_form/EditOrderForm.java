@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -62,8 +63,10 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
     private String userId, otp, mode_of_payment;
     private int OrderNumber, i, i1, year, monthOfYear, dayOfMonth, value;
 
+    private ProgressBar progressBar;
+
     private BottomSheetBehavior mBottomSheetBehavior;
-    TextView category,delivery_charge ;
+    TextView category,delivery_charge,price, total_charge ;
     Button date_picker, time_picker, user_location;;
     Calendar calendar ;
     EditText description, min_int_range, max_int_range;
@@ -98,6 +101,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
         Intent intent = getIntent();
         myOrder = intent.getParcelableExtra("MyOrder");
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         description = findViewById(R.id.description_of_order);
         category = findViewById(R.id.btn_category);
         delivery_charge = findViewById(R.id.delivery_charge);
@@ -108,6 +112,9 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
         user_location = findViewById(R.id.user_location);
         radio_wallet = findViewById(R.id.radio_wallet);
         radio_cash = findViewById(R.id.radio_cash);
+        price = findViewById(R.id.max_price);
+        total_charge = findViewById(R.id.total_amount);
+
 
         otp = "";
 
@@ -330,6 +337,8 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
                             if(current_order.status.equals("PENDING")) {
                                 DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
                                 delivery_charge.setText("₹"+Float.toString(calc.deliveryCharge));
+                                price.setText("₹"+Float.toString(calc.max_price));
+                                total_charge.setText("₹"+Float.toString(calc.total_price));
                                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                             }
                             else {
@@ -358,6 +367,8 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
                     showSnack(false);
                 }
                 else {
+                    progressBar.setVisibility(View.VISIBLE);
+
                     flag=0;
                     final String order_description = description.getText().toString();
                     final String order_category = category.getText().toString();
@@ -401,6 +412,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
                         }
                     });
 
+                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
