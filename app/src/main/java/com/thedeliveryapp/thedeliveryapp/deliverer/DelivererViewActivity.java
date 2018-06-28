@@ -1,12 +1,20 @@
 package com.thedeliveryapp.thedeliveryapp.deliverer;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Parcelable;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,6 +36,26 @@ import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -55,13 +83,15 @@ import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryDate;
 import com.thedeliveryapp.thedeliveryapp.user.order.ExpiryTime;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import static com.thedeliveryapp.thedeliveryapp.login.LoginActivity.mGoogleApiClient;
 
-public class DelivererViewActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
+public class DelivererViewActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
 
     MenuItem mPreviousMenuItem=null;
@@ -84,6 +114,8 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     boolean pending ;
     boolean active ;
     boolean finished ;
+    boolean havelocation;
+    double latitude, longitude;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -91,12 +123,20 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     public static RecyclerViewOrderAdapter adapter;
     public List<OrderData> orderList;
 
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationCallback mLocationCallback;
+    private Address address;
+
+    public static final int REQUEST_LOCATION_PERMISSION = 10;
+    public static final int  REQUEST_CHECK_SETTINGS = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deliverer_view);
         checkConnection();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        getLatAndLong();
         setUpToolBarAndActionBar();
         setUpNavigationView();
         setUpDrawerLayout();
@@ -104,7 +144,160 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
         setUpSwipeRefresh();
         setUpRecyclerView();
 
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Location location = locationResult.getLastLocation();
+                if (location != null) {
+                    System.out.println("returnLatAndLong ke onSuccess ke andar, location not null");
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    Toast.makeText(DelivererViewActivity.this, "Latitude = " + latitude + "\nLongitude = " + longitude, Toast.LENGTH_SHORT).show();
+                    getAddressFromLatAndLong(latitude, longitude);
+                    // Logic to handle location object
+                } else {
+                    System.out.println("returnLatAndLong ke onSuccess ke andar, location NULL");
+                    Toast.makeText(DelivererViewActivity.this, "location has NULL value", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
+
+
+
+    void checkLocation() {
+        String s = "prefix/dir1/dir2/dir3/dir4";
+        String[] tokens = s.split("/");
+    }
+
+    void getAddressFromLatAndLong(double lat, double lng) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            address = geocoder.getFromLocation(lat, lng, 1).get(0);
+            havelocation = true;
+            refreshOrders();
+            String add = "";
+            /*
+            add = add + address.getAddressLine(0);
+            add = add + "\n" + address.getCountryName();
+            add = add + "\n" + address.getCountryCode();
+            add = add + "\n" + address.getAdminArea();
+            add = add + "\n" + address.getPostalCode();
+            add = add + "\n" + address.getSubAdminArea();
+            */
+            add = add + address.getLocality(); //City
+            //add = add + "\n" + address.getSubThoroughfare();
+            Toast.makeText(DelivererViewActivity.this, add, Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    void getLatAndLong() {
+        System.out.println("Inside getLatAndLong");
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            System.out.println("Permission lerha");
+            ActivityCompat.requestPermissions(this, new String[]
+                            {Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_LOCATION_PERMISSION);
+        } else {
+            System.out.println("Permission pehle se hai");
+            //Toast.makeText(DelivererViewActivity.this, "Location permission granted", Toast.LENGTH_SHORT).show();
+            setGpsOn();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        System.out.println("Inside onRequestPermissionsResult");
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSION:
+                // If the permission is granted, get the location,
+                // otherwise, show a Toast
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    System.out.println("onRequestPermissionsResult ki if condition ke andar");
+                    setGpsOn();
+                } else {
+                    Toast.makeText(DelivererViewActivity.this, "Location permission Denied", Toast.LENGTH_LONG).show();
+                }
+                return;
+        }
+    }
+
+    private LocationRequest getLocationRequest() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(60 * 1000);
+        locationRequest.setFastestInterval(30 * 1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return locationRequest;
+    }
+
+    void setGpsOn() {
+        System.out.println("Inside setGpsOn");
+        LocationRequest mLocationRequest = getLocationRequest();
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+
+        SettingsClient client = LocationServices.getSettingsClient(this);
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+
+        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                System.out.println("task ke OnSuccess mai hoon");
+                mFusedLocationClient.requestLocationUpdates
+                        (getLocationRequest(), mLocationCallback,
+                                null /* Looper */);
+                // All location settings are satisfied. The client can initialize
+                // location requests here.
+                // ...
+            }
+        });
+
+        task.addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("task ke onFailure mai hoon");
+                if (e instanceof ResolvableApiException) {
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        ResolvableApiException resolvable = (ResolvableApiException) e;
+                        resolvable.startResolutionForResult(DelivererViewActivity.this,
+                                REQUEST_CHECK_SETTINGS);
+                    } catch (IntentSender.SendIntentException sendEx) {
+                        // Ignore the error.
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println("Inside onActivityResult");
+        //super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            System.out.println("onActivityResult ke if mai hoon");
+            mFusedLocationClient.requestLocationUpdates
+                    (getLocationRequest(), mLocationCallback,
+                            null /* Looper */);
+        } else {
+            Toast.makeText(DelivererViewActivity.this, "GPS permission Denied", Toast.LENGTH_LONG).show();
+        }
+    }
+
     void setDefaultFlags() {
         finished = false;
         active = true;
@@ -191,56 +384,56 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
         toggle.syncState();
 
         mDrawerLayout.addDrawerListener(
-            new DrawerLayout.DrawerListener() {
-                @Override
-                public void onDrawerSlide(View drawerView, float slideOffset) {
-                    // Respond when the drawer's position changes
-                    userId = user.getUid();
+                new DrawerLayout.DrawerListener() {
+                    @Override
+                    public void onDrawerSlide(View drawerView, float slideOffset) {
+                        // Respond when the drawer's position changes
+                        userId = user.getUid();
 
-                    forUserData = root.child("deliveryApp").child("users").child(userId);
-                    forUserData.keepSynced(true);
-                    forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        forUserData = root.child("deliveryApp").child("users").child(userId);
+                        forUserData.keepSynced(true);
+                        forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
 
 
-                            userDetails = dataSnapshot.getValue(UserDetails.class);
-                            mHeaderView = navigationView.getHeaderView(0);
+                                userDetails = dataSnapshot.getValue(UserDetails.class);
+                                mHeaderView = navigationView.getHeaderView(0);
 
-                            textViewUserName = mHeaderView.findViewById(R.id.headerUserName);
-                            textViewEmail = mHeaderView.findViewById(R.id.headerUserEmail);
-                            int wallet = userDetails.wallet;
-                            ImageView walletBalance =  mHeaderView.findViewById(R.id.walletBalance);
-                            TextDrawable drawable = TextDrawable.builder().beginConfig().textColor(Color.BLACK).bold().endConfig().buildRoundRect(Integer.toString(wallet),Color.WHITE,100);
-                            walletBalance.setImageDrawable(drawable);
+                                textViewUserName = mHeaderView.findViewById(R.id.headerUserName);
+                                textViewEmail = mHeaderView.findViewById(R.id.headerUserEmail);
+                                int wallet = userDetails.wallet;
+                                ImageView walletBalance =  mHeaderView.findViewById(R.id.walletBalance);
+                                TextDrawable drawable = TextDrawable.builder().beginConfig().textColor(Color.BLACK).bold().endConfig().buildRoundRect(Integer.toString(wallet),Color.WHITE,100);
+                                walletBalance.setImageDrawable(drawable);
 
-                            textViewUserName.setText(userDetails.name);
-                            textViewEmail.setText(userDetails.Email);
-                        }
+                                textViewUserName.setText(userDetails.name);
+                                textViewEmail.setText(userDetails.Email);
+                            }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
 
+                    }
+
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        // Respond when the drawer is opened
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                        // Respond when the drawer is closed
+                    }
+
+                    @Override
+                    public void onDrawerStateChanged(int newState) {
+                        // Respond when the drawer motion state changes
+                    }
                 }
-
-                @Override
-                public void onDrawerOpened(View drawerView) {
-                    // Respond when the drawer is opened
-                }
-
-                @Override
-                public void onDrawerClosed(View drawerView) {
-                    // Respond when the drawer is closed
-                }
-
-                @Override
-                public void onDrawerStateChanged(int newState) {
-                    // Respond when the drawer motion state changes
-                }
-            }
         );
 
     }
@@ -265,7 +458,12 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                     swipeRefreshLayout.setRefreshing(false);
                     return;
                 }
-                refreshOrders();
+                if (havelocation) {
+                    refreshOrders();
+                } else {
+                    getLatAndLong();
+                }
+
                 if(swipeRefreshLayout.isRefreshing())
                     swipeRefreshLayout.setRefreshing(false);
 
@@ -277,7 +475,9 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     @Override
     protected void onResume() {
         super.onResume();
-        refreshOrders();
+        if (havelocation) {
+            refreshOrders();
+        }
         CheckConnectivityMain.getInstance().setConnectivityListener(DelivererViewActivity.this);
     }
 
@@ -365,9 +565,14 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                                 allorders.child(userdata.getKey()).child(Integer.toString(order.orderId)).child("status").setValue("EXPIRED");
                             }
                         }
-                        if ((order.status.equals("PENDING") && pending) ||
+                        String order_address = order.userLocation.Location;
+                        String[] tokens = order_address.split(",");
+                        int size = tokens.length;
+                        String city = tokens[size-3];
+                        city = city.substring(1);
+                        if ((city.equals(address.getLocality())) && ((order.status.equals("PENDING") && pending) ||
                                 (order.status.equals("ACTIVE") && active && userId.equals(order.acceptedBy.delivererID)) ||
-                                (order.status.equals("FINISHED") && finished && userId.equals(order.acceptedBy.delivererID)))
+                                (order.status.equals("FINISHED") && finished && userId.equals(order.acceptedBy.delivererID))))
                             adapter.insert(0, order);
                     }
                 }
@@ -382,7 +587,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
             public void onCancelled(DatabaseError databaseError) {
 
             }
-    });
+        });
 
 
 
@@ -452,4 +657,18 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     }
 
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }
