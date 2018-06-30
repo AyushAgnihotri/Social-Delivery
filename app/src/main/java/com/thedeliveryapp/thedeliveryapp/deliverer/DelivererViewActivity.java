@@ -162,8 +162,6 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                 }
             }
         };
-
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
 
@@ -481,6 +479,11 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     @Override
     protected void onResume() {
         super.onResume();
+        if (havelocation && resumed) { //this if needs to be thought upon
+            mFusedLocationClient.requestLocationUpdates
+                    (getLocationRequest(), mLocationCallback,
+                            null /* Looper */);
+        }
         if(havelocation && !resumed) {
             resumed = true;
             refreshOrders();
