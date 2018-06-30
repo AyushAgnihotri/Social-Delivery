@@ -421,6 +421,12 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                             }
                         });
 
+                        if (havelocation) {
+                            mHeaderView = navigationView.getHeaderView(0);
+                            ImageView currentLocation =  mHeaderView.findViewById(R.id.currentLocation);
+                            TextDrawable drawable = TextDrawable.builder().beginConfig().textColor(Color.BLACK).bold().endConfig().buildRoundRect(address.getLocality(),Color.WHITE,100);
+                            currentLocation.setImageDrawable(drawable);
+                        }
                     }
 
                     @Override

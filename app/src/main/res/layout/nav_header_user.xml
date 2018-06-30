@@ -12,34 +12,48 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
-
-    <ImageView
-        android:id="@+id/imageViewUserImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/nav_header_desc"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:paddingRight="60dp"
-        app:srcCompat="@mipmap/ic_orderer_round" />
+        android:padding="10dp">
 
         <ImageView
-            android:id="@+id/walletIcon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:id="@+id/imageViewUserImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/nav_header_desc"
-            android:paddingRight="5dp"
-            app:srcCompat="@drawable/ic_wallet" />
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:paddingRight="20dp"
+            app:srcCompat="@mipmap/ic_orderer_round" />
 
-        <ImageView
-            android:id="@+id/walletBalance"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <ImageView
+                    android:id="@+id/walletIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:contentDescription="@string/nav_header_desc"
+                    android:paddingRight="5dp"
+                    app:srcCompat="@drawable/ic_wallet" />
+
+                <ImageView
+                    android:id="@+id/walletBalance"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
