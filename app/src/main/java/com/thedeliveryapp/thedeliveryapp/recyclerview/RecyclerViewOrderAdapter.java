@@ -217,6 +217,8 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
     }
 
     public void remove(int position) {
+        if(list.isEmpty())
+            return;
         OrderData data = list.get(position);
         if (pendingRemovalList.contains(data)) {
             pendingRemovalList.remove(data);

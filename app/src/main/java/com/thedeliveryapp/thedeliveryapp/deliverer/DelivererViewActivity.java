@@ -115,6 +115,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     boolean active ;
     boolean finished ;
     boolean havelocation;
+    boolean resumed;
     double latitude, longitude;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -177,7 +178,12 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
         try {
             address = geocoder.getFromLocation(lat, lng, 1).get(0);
             havelocation = true;
-            refreshOrders();
+            if(!resumed) {
+                resumed = true;
+                refreshOrders();
+            }
+
+
             String add = "";
             /*
             add = add + address.getAddressLine(0);
@@ -234,8 +240,8 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
 
     private LocationRequest getLocationRequest() {
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(60 * 1000);
-        locationRequest.setFastestInterval(30 * 1000);
+        locationRequest.setInterval(60* 1000);
+        locationRequest.setFastestInterval(30*1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return locationRequest;
     }
@@ -475,7 +481,8 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     @Override
     protected void onResume() {
         super.onResume();
-        if (havelocation) {
+        if(havelocation && !resumed) {
+            resumed = true;
             refreshOrders();
         }
         CheckConnectivityMain.getInstance().setConnectivityListener(DelivererViewActivity.this);
@@ -566,6 +573,8 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                             }
                         }
                         String order_address = order.userLocation.Location;
+                        if(order_address == null) continue;
+
                         String[] tokens = order_address.split(",");
                         int size = tokens.length;
                         String city = tokens[size-3];
@@ -593,8 +602,13 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
 
 
     }
-
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mFusedLocationClient != null) {
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        }
+    }
     @Override
     protected void onStart() {
         super.onStart();
