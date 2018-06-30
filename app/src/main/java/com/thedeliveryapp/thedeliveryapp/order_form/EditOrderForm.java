@@ -126,6 +126,7 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
         delivery_charge.setText(myOrder.deliveryCharge + "");
         min_int_range.setText(myOrder.min_range + "");
         max_int_range.setText(myOrder.max_range + "");
+        max_int_range.setEnabled(false);
 
         userLocation = new UserLocation(myOrder.userLocation.Name, myOrder.userLocation.Location, myOrder.userLocation.PhoneNumber);
 
@@ -164,49 +165,6 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
         userLocationName.setText(myOrder.userLocation.Name);
         userLocationLocation.setText(myOrder.userLocation.Location);
         */
-
-        max_int_range.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                String S = s.toString();
-                if (!S.equals("")) {
-                    value = Integer.parseInt(S);
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    userId = user.getUid();
-                    root = FirebaseDatabase.getInstance().getReference();
-
-                    ref1 = root.child("deliveryApp").child("users").child(userId).child("wallet");
-                    ref1.keepSynced(true);
-
-                    ref1.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            int balance = dataSnapshot.getValue(Integer.class);
-                            if (value > balance) {
-                                mode_of_payment = "CASH ON DELIVERY";
-                                radio_wallet.setChecked(false);
-                                radio_cash.setChecked(true);
-                                radio_wallet.setEnabled(false);
-                            } else {
-                                radio_wallet.setEnabled(true);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-        });
 
         category.setOnClickListener(new View.OnClickListener() {
             @Override
