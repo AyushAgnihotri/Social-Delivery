@@ -74,16 +74,11 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
     GoogleSignInClient mGoogleSignInClient;
     SignInButton signInButton;
 
-    private FusedLocationProviderClient mFusedLocationClient;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         checkConnection();
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        //getLocationAndGpsPerissions();
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -211,93 +206,9 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
         });
     }
 
-    void getLocationAndGpsPerissions() {
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            System.out.println("Permission lerha");
-            ActivityCompat.requestPermissions(this, new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_LOCATION_PERMISSION);
-        } else {
-            System.out.println("Permission pehle se hai");
-            //Toast.makeText(DelivererViewActivity.this, "Location permission granted", Toast.LENGTH_SHORT).show();
-            setGpsOn();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        System.out.println("Inside onRequestPermissionsResult");
-        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_LOCATION_PERMISSION:
-                // If the permission is granted, get the location,
-                // otherwise, show a Toast
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    System.out.println("onRequestPermissionsResult ki if condition ke andar");
-                    setGpsOn();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Location permission Denied", Toast.LENGTH_LONG).show();
-                }
-                return;
-        }
-    }
-
-    private LocationRequest getLocationRequest() {
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(30 * 1000);
-        locationRequest.setFastestInterval(5 * 1000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return locationRequest;
-    }
-
-    void setGpsOn() {
-        System.out.println("setGpsOn mai hoon");
-        LocationRequest mLocationRequest = getLocationRequest();
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(mLocationRequest);
-
-        SettingsClient client = LocationServices.getSettingsClient(this);
-        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-
-        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
-            @Override
-            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                System.out.println("task ke OnSuccess mai hoon");
-                // All location settings are satisfied. The client can initialize
-                // location requests here.
-                // ...
-            }
-        });
-
-        task.addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                System.out.println("task ke onFailure mai hoon");
-                if (e instanceof ResolvableApiException) {
-                    // Location settings are not satisfied, but this can be fixed
-                    // by showing the user a dialog.
-                    try {
-                        // Show the dialog by calling startResolutionForResult(),
-                        // and check the result in onActivityResult().
-                        ResolvableApiException resolvable = (ResolvableApiException) e;
-                        resolvable.startResolutionForResult(LoginActivity.this,
-                                REQUEST_CHECK_SETTINGS);
-                    } catch (IntentSender.SendIntentException sendEx) {
-                        // Ignore the error.
-                    }
-                }
-            }
-        });
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -318,10 +229,6 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                 // Google Sign In failed, update UI appropriately
                 // ...
             }
-        }
-
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
-            System.out.println("onActivityResult ke if mai hoon");
         }
     }
 
