@@ -233,6 +233,7 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
                     @Override
                     public void onDrawerSlide(View drawerView, float slideOffset) {
                         // Respond when the drawer's position changes
+
                         userId = user.getUid();
 
                         forUserData = root.child("deliveryApp").child("users").child(userId);
@@ -261,7 +262,6 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
 
                             }
                         });
-
                     }
 
                     @Override

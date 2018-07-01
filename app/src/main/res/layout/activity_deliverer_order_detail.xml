@@ -338,7 +338,7 @@
 
 
             <TextView
-                android:id="@+id/userLocation_h"
+                android:id="@+id/userDetails_h"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -348,18 +348,62 @@
                 android:textSize="16sp"
                 android:background="@drawable/button_round"
                 android:padding="10dp"
-                android:text="@string/userLocation"
+                android:text="@string/userDetails"
                 android:textColor="@color/black" />
 
             <LinearLayout
-                android:id="@+id/userLocation"
+                android:id="@+id/userDetails"
                 android:layout_width="400dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/userLocation_h"
+                android:layout_below="@id/userDetails_h"
                 android:background="@drawable/button_round_main_gray"
                 android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/userName_h"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/userName"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/userName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text=""
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/userPhoneNumber"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/userPhoneNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text=""
+                        android:textColor="@color/black" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -375,13 +419,12 @@
 
                     <TextView
                         android:id="@+id/userLocationName"
-                        android:layout_width="wrap_content"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
                         android:text=""
                         android:textColor="@color/black" />
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -397,27 +440,6 @@
 
                     <TextView
                         android:id="@+id/userLocationLocation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:text=""
-                        android:textColor="@color/black" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:text="@string/userLocationPhoneNumber"
-                        android:textColor="@color/black" />
-
-                    <TextView
-                        android:id="@+id/userLocationPhoneNumber"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
@@ -433,7 +455,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/userLocation"
+                android:layout_below="@id/userDetails"
                 android:layout_marginTop="20dp"
                 android:textSize="16sp"
                 android:background="@drawable/button_round"

@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,16 +51,18 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class DelivererOrderDetailActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
-
-    private TextView category, description, orderId, min_range, max_range, userLocationName,
-            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status, mop;
+    private LinearLayout userName_h;
+    private TextView category, description, orderId, min_range, max_range, userName, userPhoneNumber, userLocationName,
+            userLocationLocation, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status, mop;
     private String date, time, userId;
     private Button btn_accept, btn_show_path, btn_mark_delivered, btn_complete_order;
-    private DatabaseReference root, ref1, ref2, ref3, wallet_ref, deliverer;
+    private DatabaseReference root, ref1, ref2, ref3, wallet_ref, deliverer, forUserData;
     private UserDetails deliverer_data;
     public OrderData myOrder;
     private int balance;
     private GoogleMap googleMap;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private UserDetails userDetails = new UserDetails();
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -74,14 +77,17 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
         checkConnection();
+        root = FirebaseDatabase.getInstance().getReference();
         category = findViewById(R.id.category);
         description = findViewById(R.id.description);
         orderId = findViewById(R.id.orderId);
         min_range = findViewById(R.id.price_range_min);
         max_range = findViewById(R.id.price_range_max);
+        userName_h = (LinearLayout) findViewById(R.id.userName_h);
+        userName = findViewById(R.id.userName);
+        userPhoneNumber = findViewById(R.id.userPhoneNumber);
         userLocationName = findViewById(R.id.userLocationName);
         userLocationLocation = findViewById(R.id.userLocationLocation);
-        userLocationPhoneNumber = findViewById(R.id.userLocationPhoneNumber);
         expiryTime_Date = findViewById(R.id.expiryTime_Date);
         expiryTime_Time = findViewById(R.id.expiryTime_Time);
         final_item_price = findViewById(R.id.final_item_price);
@@ -119,6 +125,10 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             btn_complete_order.setVisibility(View.GONE);
         }
 
+        if (myOrder.status.equals("PENDING")) {
+            userName_h.setVisibility(View.GONE);
+        }
+
 
         category.setText(myOrder.category);
         description.setText(myOrder.description);
@@ -126,6 +136,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         orderId.setText(myOrder.orderId + "");
         min_range.setText(myOrder.min_range + "");
         max_range.setText(myOrder.max_range + "");
+        fetchUserDetails();
         userLocationName.setText(myOrder.userLocation.Name);
         userLocationLocation.setText(myOrder.userLocation.Location);
         deliveryCharge.setText((myOrder.deliveryCharge+""));
@@ -139,12 +150,6 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             final_total.setText((myOrder.deliveryCharge + myOrder.final_price)+"");
         }
 
-        if (myOrder.userLocation.PhoneNumber.equals("")) {
-            userLocationPhoneNumber.setText("-");
-        } else {
-            userLocationPhoneNumber.setText(myOrder.userLocation.PhoneNumber);
-        }
-
         if (myOrder.expiryDate.day == 0) {
             date = "-";
         } else {
@@ -156,10 +161,22 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         if (myOrder.expiryTime.hour == -1) {
             time = "-";
         } else {
-            if (myOrder.expiryTime.hour < 12) {
-                time = myOrder.expiryTime.hour + ":" + myOrder.expiryTime.minute + " AM";
+            if ((Integer.toString(myOrder.expiryTime.hour)).length() == 1) {
+                time = "0" + myOrder.expiryTime.hour;
             } else {
-                time = myOrder.expiryTime.hour + ":" + myOrder.expiryTime.minute + " PM";
+                time = myOrder.expiryTime.hour+"";
+            }
+            time += ":";
+            if ((Integer.toString(myOrder.expiryTime.minute)).length() == 1) {
+                time += "0" + (Integer.toString(myOrder.expiryTime.minute));
+            } else {
+                time += myOrder.expiryTime.minute+"";
+            }
+
+            if (myOrder.expiryTime.hour < 12) {
+                time += " AM";
+            } else {
+                time += " PM";
             }
         }
         expiryTime_Time.setText(time);
@@ -182,11 +199,8 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                     public void onClick(View view) {
                         //Now Background Class To Update Operator State
                         alertDialog.dismiss();
-
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         userId = user.getUid();
 
-                        root = FirebaseDatabase.getInstance().getReference();
                         ref1 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId));
                         ref1.keepSynced(true);
                         ref2 = ref1.child("acceptedBy");
@@ -205,7 +219,6 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                                     ref2.child("mobile").setValue(deliverer_data.Mobile);
                                     ref2.child("alt_mobile").setValue(deliverer_data.Alt_Mobile);
                                     ref2.child("delivererID").setValue(userId);
-
                                 }
 
                                 @Override
@@ -244,6 +257,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                             btn_complete_order.setEnabled(true);
                             btn_complete_order.setVisibility(View.VISIBLE);
+                            userName_h.setVisibility(View.VISIBLE);
 
 
                         } else if (myOrder.status.equals("ACTIVE")) {
@@ -265,6 +279,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                             btn_complete_order.setEnabled(false);
                             btn_complete_order.setVisibility(View.GONE);
+                            userName_h.setVisibility(View.GONE);
                             setUpRejectNotif(myOrder);
                         }
                     }
@@ -314,6 +329,24 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             }
         });
 
+    }
+
+    void fetchUserDetails() {
+        forUserData = root.child("deliveryApp").child("users").child(myOrder.userId);
+        forUserData.keepSynced(true);
+        forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userDetails = dataSnapshot.getValue(UserDetails.class);
+                userName.setText(userDetails.name);
+                userPhoneNumber.setText(userDetails.Mobile);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void setUpAcceptNotif(final OrderData order) {

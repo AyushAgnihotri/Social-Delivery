@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,19 +17,29 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.thedeliveryapp.thedeliveryapp.R;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.CheckConnectivityMain;
 import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver;
+import com.thedeliveryapp.thedeliveryapp.login.user_details.UserDetails;
 import com.thedeliveryapp.thedeliveryapp.order_form.EditOrderForm;
 import com.thedeliveryapp.thedeliveryapp.order_form.OrderForm;
 import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 
 public class UserOrderDetailActivity extends AppCompatActivity  implements ConnectivityReceiver.ConnectivityReceiverListener{
 
-    private TextView category, description, orderId, min_range, max_range, userLocationName,
-            userLocationLocation, userLocationPhoneNumber, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status, otp_h, otp, mop;
-    private String date, time, deliverer_details;
+    private TextView category, description, orderId, min_range, max_range, userName, userPhoneNumber, userLocationName,
+            userLocationLocation, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status, otp_h, otp, mop;
+    private String date, time, deliverer_details, userID;
     Button acceptedBy;
+    private DatabaseReference root, forUserData;
+    private UserDetails userDetails = new UserDetails();
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -48,9 +59,10 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         orderId = findViewById(R.id.orderId);
         min_range = findViewById(R.id.price_range_min);
         max_range = findViewById(R.id.price_range_max);
+        userName = findViewById(R.id.userName);
+        userPhoneNumber = findViewById(R.id.userPhoneNumber);
         userLocationName = findViewById(R.id.userLocationName);
         userLocationLocation = findViewById(R.id.userLocationLocation);
-        userLocationPhoneNumber = findViewById(R.id.userLocationPhoneNumber);
         expiryTime_Date = findViewById(R.id.expiryTime_Date);
         expiryTime_Time = findViewById(R.id.expiryTime_Time);
         final_item_price = findViewById(R.id.final_item_price);
@@ -131,6 +143,7 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         orderId.setText(myOrder.orderId + "");
         min_range.setText(myOrder.min_range + "");
         max_range.setText(myOrder.max_range + "");
+        fetchUserDetails();
         userLocationName.setText(myOrder.userLocation.Name);
         userLocationLocation.setText(myOrder.userLocation.Location);
         deliveryCharge.setText((myOrder.deliveryCharge+""));
@@ -145,12 +158,6 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
             final_total.setText((myOrder.deliveryCharge + myOrder.final_price)+"");
         }
 
-        if (myOrder.userLocation.PhoneNumber.equals("")) {
-            userLocationPhoneNumber.setText("- - - - -");
-        } else {
-            userLocationPhoneNumber.setText(myOrder.userLocation.PhoneNumber);
-        }
-
         if (myOrder.expiryDate.day == 0) {
             date = "-";
         } else {
@@ -162,14 +169,47 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         if (myOrder.expiryTime.hour == -1) {
             time = "-";
         } else {
-            if (myOrder.expiryTime.hour < 12) {
-                time = myOrder.expiryTime.hour + ":" + myOrder.expiryTime.minute + " AM";
+            if ((Integer.toString(myOrder.expiryTime.hour)).length() == 1) {
+                time = "0" + myOrder.expiryTime.hour;
             } else {
-                time = myOrder.expiryTime.hour + ":" + myOrder.expiryTime.minute + " PM";
+                time = myOrder.expiryTime.hour+"";
+            }
+            time += ":";
+            if ((Integer.toString(myOrder.expiryTime.minute)).length() == 1) {
+                time += "0" + (Integer.toString(myOrder.expiryTime.minute));
+            } else {
+                time += myOrder.expiryTime.minute+"";
+            }
+
+            if (myOrder.expiryTime.hour < 12) {
+                time += " AM";
+            } else {
+                time += " PM";
             }
         }
         expiryTime_Time.setText(time);
 
+    }
+
+    void fetchUserDetails() {
+        root = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        userID = user.getUid();
+        forUserData = root.child("deliveryApp").child("users").child(userID);
+        forUserData.keepSynced(true);
+        forUserData.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userDetails = dataSnapshot.getValue(UserDetails.class);
+                userName.setText(userDetails.name);
+                userPhoneNumber.setText(userDetails.Mobile);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
