@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
@@ -29,7 +28,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -79,11 +77,9 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
     private String userId, otp, mode_of_payment;
     private int OrderNumber, i, i1, year, monthOfYear, dayOfMonth, value;
 
-    private ProgressBar progressBar;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
 
-    private BottomSheetBehavior mBottomSheetBehavior;
     TextView category,delivery_charge,price, total_charge ;
     Button date_picker, time_picker, user_location;;
     Calendar calendar ;
@@ -123,7 +119,6 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
         Intent intent = getIntent();
         myOrder = intent.getParcelableExtra("MyOrder");
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         description = findViewById(R.id.description_of_order);
         category = findViewById(R.id.btn_category);
         delivery_charge = findViewById(R.id.delivery_charge);
@@ -145,7 +140,6 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
 
         description.setText(myOrder.description);
         category.setText(myOrder.category);
-        delivery_charge.setText(myOrder.deliveryCharge + "");
         min_int_range.setText(myOrder.min_range + "");
         max_int_range.setText(myOrder.max_range + "");
         max_int_range.setEnabled(false);
@@ -271,13 +265,8 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
             }
         });
 
-        View bottomSheet = findViewById(R.id.confirmation_dialog);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         Button btn_proceed = findViewById(R.id.btn_proceed);
-        mBottomSheetBehavior.setPeekHeight(0);
-        mBottomSheetBehavior.setHideable(true);
-
-
+/*
         btn_proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -319,7 +308,11 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
                                 delivery_charge.setText("₹"+Float.toString(calc.deliveryCharge));
                                 price.setText("₹"+Float.toString(calc.max_price));
                                 total_charge.setText("₹"+Float.toString(calc.total_price));
-                                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+
+
+
+
                             }
                             else {
                                 Toast.makeText(EditOrderForm.this, "can't edit already accepted order", Toast.LENGTH_SHORT).show();
@@ -336,33 +329,64 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
             }
         });
 
+*/
 
-
-        Button btn_confirm = findViewById(R.id.btn_confirm);
-        btn_confirm.setOnClickListener(new View.OnClickListener() {
+        btn_proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String order_description = description.getText().toString();
+                final String order_category = category.getText().toString();
+                final String order_min_range = min_int_range.getText().toString();
+                final String order_max_range = max_int_range.getText().toString();
 
                 if(!ConnectivityReceiver.isConnected()) {
                     showSnack(false);
                 }
                 else {
-                    progressBar.setVisibility(View.VISIBLE);
+
+                    if(order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")) {
+                        new AlertDialog.Builder(EditOrderForm.this)
+                                .setMessage(getString(R.string.dialog_save))
+                                .setPositiveButton(getString(R.string.dialog_ok), null)
+                                .show();
+                    }
+                    else if (Integer.parseInt(order_min_range) > Integer.parseInt(order_max_range)) {
+                        Toast.makeText(getApplicationContext(), "Min value cannot be more than Max value!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    userId = user.getUid();
+                    root = FirebaseDatabase.getInstance().getReference();
+                    root.child("deliveryApp").child("orders").child(userId).child(OrderNumber+"").keepSynced(true);
+
+                    root.child("deliveryApp").child("orders").child(userId).child(OrderNumber+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            OrderData current_order = dataSnapshot.getValue(OrderData.class);
+
+                            if(current_order.status.equals("PENDING")) {
+                                DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
+                            }
+                            else {
+                                Toast.makeText(EditOrderForm.this, "can't edit already accepted order", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
 
                     flag=0;
-                    final String order_description = description.getText().toString();
-                    final String order_category = category.getText().toString();
-                    final String order_min_range = min_int_range.getText().toString();
-                    final String order_max_range = max_int_range.getText().toString();
 
                     //Default text for date_picker = "ExpiryDate"
                     //Default text for time_picker = "ExpiryTime"
 
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    userId = user.getUid();
-
-                    root = FirebaseDatabase.getInstance().getReference();
 
                     deliveryApp = root.child("deliveryApp").child("orders").child(userId).child(OrderNumber+"");
                     deliveryApp.keepSynced(true);
@@ -391,8 +415,6 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
 
                         }
                     });
-
-                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -530,20 +552,6 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
     }
 
 
-
-    @Override
-    public boolean dispatchTouchEvent (MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                Rect outRect = new Rect() ;
-                View bottomSheet=findViewById(R.id.confirmation_dialog);
-                bottomSheet.getGlobalVisibleRect(outRect);
-                if(!outRect.contains((int) event.getRawX(), (int) event.getRawY()))
-                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            }
-        }
-        return super.dispatchTouchEvent(event);
-    }
 
 
 /*
