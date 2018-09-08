@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#01AAD5</color>
-    <color name="primary_dark">#0188A5</color>
-    <color name="primary_light">#C5CAE9</color>
+    <color name="primary">#795548</color>
+    <color name="primary_dark">#5D4037</color>
+    <color name="primary_light">#D7CCC8</color>
     <color name="accent">#607D8B</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
@@ -41,4 +41,12 @@
     <color name="red">#ff0000</color>
     <color name="green">#00ff00</color>
 
+
+    %login effect colors
+    <color name="purple_500">#9C27B0</color>
+    <color name="deep_purple_500">#673AB7</color>
+    <color name="indigo_500">#3F51B5</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="cyan_500">#00BCD4</color>
+    <color name="light_blue_500">#03A9F4</color>
 </resources>

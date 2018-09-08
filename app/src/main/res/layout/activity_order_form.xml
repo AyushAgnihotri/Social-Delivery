@@ -178,7 +178,7 @@
                     android:paddingTop="10dp"
                     android:text="@string/main_dialog_date_picker"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/btn_time_picker"
@@ -192,7 +192,7 @@
                     android:paddingTop="10dp"
                     android:text="@string/main_dialog_time_picker"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/white" />
 
             </LinearLayout>
 
@@ -217,7 +217,7 @@
                     android:paddingTop="10dp"
                     android:text="@string/btn_user_location"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/white" />
             </LinearLayout>
 
 
@@ -241,7 +241,7 @@
                     android:paddingTop="10dp"
                     android:text="@string/btn_proceed"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/white" />
             </LinearLayout>
 
 
@@ -404,7 +404,7 @@
                     android:text="@string/confirmation"
                     android:textAllCaps="false"
                     android:textSize="20sp"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/white" />
 
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>

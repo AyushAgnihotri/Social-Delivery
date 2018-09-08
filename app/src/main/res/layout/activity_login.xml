@@ -15,9 +15,10 @@
     tools:context="com.thedeliveryapp.thedeliveryapp.login.LoginActivity">
 
     <LinearLayout
+        android:id = "@+id/loginLinear"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/primary"
+        android:background="@drawable/animation_list"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">

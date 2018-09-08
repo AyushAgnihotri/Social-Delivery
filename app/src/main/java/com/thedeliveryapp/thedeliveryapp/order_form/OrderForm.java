@@ -546,11 +546,11 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        final String order_description = description.getText().toString();
-        final String order_category = category.getText().toString();
-        final String order_min_range = min_int_range.getText().toString();
-        final String order_max_range = max_int_range.getText().toString();
-        final String order_delivery_charge = delivery_charge.getText().toString();
+       // final String order_description = description.getText().toString();
+        //final String order_category = category.getText().toString();
+        //final String order_min_range = min_int_range.getText().toString();
+        //final String order_max_range = max_int_range.getText().toString();
+        //final String order_delivery_charge = delivery_charge.getText().toString();
         //noinspection SimplifiableIfStatement
         if (id==android.R.id.home) {
 

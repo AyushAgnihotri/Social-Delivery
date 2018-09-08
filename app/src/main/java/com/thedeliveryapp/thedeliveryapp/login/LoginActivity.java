@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -14,9 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,16 +73,17 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
     private DatabaseReference root, database_users;
 
     private static final int RC_SIGN_IN = 101;
-
+    AnimationDrawable animationDrawable;
     GoogleSignInClient mGoogleSignInClient;
     SignInButton signInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         checkConnection();
-
+        animation();
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
@@ -312,10 +316,19 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                     }
                 });
     }
+    void animation() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.activity_login,null);
+        LinearLayout linearLayout = view.findViewById(R.id.loginLinear);
+        animationDrawable = (AnimationDrawable)linearLayout.getBackground();
+        animationDrawable.setEnterFadeDuration(5000);
+        animationDrawable.setExitFadeDuration(2000);
 
+    }
     @Override
     protected void onResume() {
         super.onResume();
+        animationDrawable.start();
         CheckConnectivityMain.getInstance().setConnectivityListener(LoginActivity.this);
     }
     @Override

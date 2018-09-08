@@ -70,7 +70,7 @@
                 android:padding="10dp"
                 android:textSize="16sp"
                 android:text="@string/category"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/category"
@@ -95,7 +95,7 @@
                 android:padding="5dp"
                 android:textSize="14sp"
                 android:text="@string/otp"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/otp"
@@ -121,7 +121,7 @@
                 android:background="@drawable/button_round"
                 android:padding="10dp"
                 android:text="@string/description"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/description"
@@ -147,7 +147,7 @@
                 android:background="@drawable/button_round"
                 android:padding="10dp"
                 android:text="@string/status"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/status"
@@ -173,7 +173,7 @@
                 android:background="@drawable/button_round"
                 android:padding="10dp"
                 android:text="@string/mop_h"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/mop"
@@ -199,7 +199,7 @@
                 android:background="@drawable/button_round"
                 android:padding="10dp"
                 android:text="@string/final_order_charge"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:id="@+id/final_order_charge"
@@ -289,7 +289,7 @@
                 android:background="@drawable/button_round"
                 android:padding="10dp"
                 android:text="@string/orderId"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/orderId"
@@ -315,7 +315,7 @@
                 android:background="@drawable/button_round"
                 android:padding="10dp"
                 android:text="@string/price_range"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:id="@+id/price_range"
@@ -374,7 +374,7 @@
                 android:background="@drawable/button_round"
                 android:padding="10dp"
                 android:text="@string/userDetails"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:id="@+id/userDetails"
@@ -485,7 +485,7 @@
                 android:background="@drawable/button_round"
                 android:padding="10dp"
                 android:text="@string/expiryTime"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:id="@+id/expiryTime"
@@ -552,7 +552,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/btn_accepted_by"
                 android:background="@drawable/button_round_main"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
 
         </RelativeLayout>
@@ -566,10 +566,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
+        android:visibility="invisible"
         app:backgroundTint="@color/primary"
         app:layout_anchor="@+id/item_detail_container"
         app:layout_anchorGravity="top|end"
-        android:visibility="invisible"
-        app:srcCompat="@app:drawable/round_edit_24" />
+        app:srcCompat="@android:drawable/ic_menu_edit" />
 
 </android.support.design.widget.CoordinatorLayout>
