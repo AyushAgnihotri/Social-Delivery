@@ -62,6 +62,7 @@ import com.thedeliveryapp.thedeliveryapp.check_connectivity.ConnectivityReceiver
 import static com.thedeliveryapp.thedeliveryapp.deliverer.DelivererViewActivity.REQUEST_CHECK_SETTINGS;
 import static com.thedeliveryapp.thedeliveryapp.deliverer.DelivererViewActivity.REQUEST_LOCATION_PERMISSION;
 
+
 public class LoginActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
 
     private EditText inputEmail, inputPassword;

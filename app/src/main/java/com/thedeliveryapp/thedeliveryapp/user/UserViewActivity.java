@@ -377,6 +377,8 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
                // OrderData order = dataSnapshot.getValue(OrderData.class);
                 OrderData order = dataSnapshot.getValue(OrderData.class);
                 OrderData temp = null;
+                if(order.status == "CANCELLED")
+                    return;
                 for(OrderData myOrder : orderList) {
                     if(myOrder.orderId == order.orderId) {
                         temp = myOrder;
