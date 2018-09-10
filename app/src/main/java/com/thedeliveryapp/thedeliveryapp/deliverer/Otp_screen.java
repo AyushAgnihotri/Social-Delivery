@@ -169,65 +169,63 @@ public class Otp_screen extends AppCompatActivity {
                         ref1.keepSynced(true);
                         ref1.child("status").setValue("FINISHED");
 
-                        if (myOrder.mode_of_payment.equals("WALLET")) {
-                            ref4 = ref1.child("userId");
-                            ref4.keepSynced(true);
-                            ref4.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    String userID = dataSnapshot.getValue(String.class);
-                                    ref5 = root.child("deliveryApp").child("users").child(userID);
-                                    ref5.keepSynced(true);
-                                    ref5.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            Integer wal_bal_user = dataSnapshot.getValue(Integer.class);
-                                            int balance_user = wal_bal_user;
-                                            ref5.child("wallet").setValue(balance_user - final_price_int);
-                                        }
+                        ref4 = ref1.child("userId");
+                        ref4.keepSynced(true);
+                        ref4.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String userID = dataSnapshot.getValue(String.class);
+                                ref5 = root.child("deliveryApp").child("users").child(userID);
+                                ref5.keepSynced(true);
+                                ref5.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        Integer wal_bal_user = dataSnapshot.getValue(Integer.class);
+                                        int balance_user = wal_bal_user;
+                                        ref5.child("wallet").setValue(balance_user - final_price_int);
+                                    }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                        }
-                                    });
-                                }
+                                    }
+                                });
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
+                            }
+                        });
 
-                            ref2 = ref1.child("acceptedBy").child("delivererID");
-                            ref2.keepSynced(true);
-                            ref2.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    String delivererID = dataSnapshot.getValue(String.class);
-                                    ref3 = root.child("deliveryApp").child("users").child(delivererID);
-                                    ref3.keepSynced(true);
-                                    ref3.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            Integer wal_bal_deliverer = dataSnapshot.getValue(Integer.class);
-                                            int balance_deliverer = wal_bal_deliverer;
-                                            ref3.child("wallet").setValue(balance_deliverer + final_price_int);
-                                        }
+                        ref2 = ref1.child("acceptedBy").child("delivererID");
+                        ref2.keepSynced(true);
+                        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String delivererID = dataSnapshot.getValue(String.class);
+                                ref3 = root.child("deliveryApp").child("users").child(delivererID);
+                                ref3.keepSynced(true);
+                                ref3.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        Integer wal_bal_deliverer = dataSnapshot.getValue(Integer.class);
+                                        int balance_deliverer = wal_bal_deliverer;
+                                        ref3.child("wallet").setValue(balance_deliverer + final_price_int);
+                                    }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                        }
-                                    });
-                                }
+                                    }
+                                });
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
-                        }
+                            }
+                        });
 
                         Toast.makeText(Otp_screen.this, "Delivery Finished!!", Toast.LENGTH_LONG).show();
                         //TODO display a congrats 'you just delivered a order screen'
@@ -277,7 +275,7 @@ public class Otp_screen extends AppCompatActivity {
                 try {
                     JSONObject notificationContent = new JSONObject("{'contents': {'en': '" + order.description + "'}," +
                             "'include_player_ids': ['" + player_id + "'], " +
-                            "'headings': {'en': 'Congo !!\n Your order with order id "+order.orderId+" just got delivered .'} " +
+                            "'headings': {'en': 'Your Order got delivered\nOrder Id : "+order.orderId+" '} " +
                             "}");
                     JSONObject order = new JSONObject();
                     order.put("userId", myOrder.userId);

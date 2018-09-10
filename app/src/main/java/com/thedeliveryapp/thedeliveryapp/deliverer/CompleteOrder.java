@@ -152,7 +152,7 @@ public class CompleteOrder extends AppCompatActivity {
                 try {
                     JSONObject notificationContent = new JSONObject("{'contents': {'en': '" + otp + "'}," +
                             "'include_player_ids': ['" + player_id + "'], " +
-                            "'headings': {'en': 'Your OTP for order id   "+ order.orderId+"'} " +
+                            "'headings': {'en': 'Your OTP for Order Id : "+ order.orderId+"'} " +
                             "}");
                     JSONObject order = new JSONObject();
                     order.put("userId", myOrder.userId);

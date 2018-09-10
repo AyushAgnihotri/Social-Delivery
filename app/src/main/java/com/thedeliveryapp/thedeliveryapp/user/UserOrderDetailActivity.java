@@ -35,7 +35,7 @@ import com.thedeliveryapp.thedeliveryapp.user.order.OrderData;
 public class UserOrderDetailActivity extends AppCompatActivity  implements ConnectivityReceiver.ConnectivityReceiverListener{
 
     private TextView category, description, orderId, min_range, max_range, userName, userPhoneNumber, userLocationName,
-            userLocationLocation, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status, otp_h, otp, mop;
+            userLocationLocation, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status, otp_h, otp;
     private String date, time, deliverer_details, userID;
     Button acceptedBy;
     private DatabaseReference root, forUserData;
@@ -72,7 +72,6 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         status = findViewById(R.id.status);
         otp_h = findViewById(R.id.otp_h);
         otp = findViewById(R.id.otp);
-        mop = findViewById(R.id.mop);
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
@@ -148,7 +147,6 @@ public class UserOrderDetailActivity extends AppCompatActivity  implements Conne
         userLocationLocation.setText(myOrder.userLocation.Location);
         deliveryCharge.setText((myOrder.deliveryCharge+""));
         otp.setText(myOrder.otp);
-        mop.setText(myOrder.mode_of_payment);
 
         if (myOrder.final_price == -1) {
             final_item_price.setText("- - - - -");

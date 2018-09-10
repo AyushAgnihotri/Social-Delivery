@@ -4,9 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class OrderData implements Parcelable {
-    public String category, description, userId, status, otp, mode_of_payment;
-    public int orderId, min_range, max_range, final_price;
-    public float deliveryCharge;
+    public String category, description, userId, status, otp;
+    public int orderId, min_range, max_range, final_price, deliveryCharge;
     public UserLocation userLocation = new UserLocation();
     public ExpiryDate expiryDate = new ExpiryDate();
     public ExpiryTime expiryTime = new ExpiryTime();
@@ -24,7 +23,7 @@ public class OrderData implements Parcelable {
         min_range = in.readInt();
         max_range = in.readInt();
         status = in.readString();
-        deliveryCharge = in.readFloat();
+        deliveryCharge = in.readInt();
         userId = in.readString();
 
         userLocation.Name = in.readString();
@@ -45,8 +44,6 @@ public class OrderData implements Parcelable {
         acceptedBy.delivererID = in.readString();
 
         otp = in.readString();
-
-        mode_of_payment = in.readString();
 
         final_price = in.readInt();
     }
@@ -86,8 +83,6 @@ public class OrderData implements Parcelable {
 
         dest.writeString(otp);
 
-        dest.writeString(mode_of_payment);
-
         dest.writeInt(final_price);
     }
 
@@ -104,7 +99,7 @@ public class OrderData implements Parcelable {
 
     public OrderData(String category, String description, int orderId, int max_range, int min_range,
                      UserLocation location, ExpiryDate expiryDate, ExpiryTime expiryTime, String status,
-                     Float deliveryCharge, AcceptedBy acceptedBy, String userId, String otp, String mode_of_payment, int final_price) {
+                     int deliveryCharge, AcceptedBy acceptedBy, String userId, String otp, int final_price) {
         this.category = category;
         this.description = description;
         this.orderId = orderId;
@@ -118,7 +113,6 @@ public class OrderData implements Parcelable {
         this.acceptedBy = acceptedBy;
         this.userId = userId;
         this.otp = otp;
-        this.mode_of_payment = mode_of_payment;
         this.final_price = final_price;
 
     }

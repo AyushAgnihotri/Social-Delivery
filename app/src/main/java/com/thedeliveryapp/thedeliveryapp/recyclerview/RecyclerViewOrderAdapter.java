@@ -43,7 +43,7 @@ import java.util.zip.CheckedOutputStream;
 
 public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHolder> {
 
-    List<OrderData> list;
+    public List<OrderData> list;
     Context context;
     String status;
     String price;
@@ -97,7 +97,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
             //Use the provided View Holder on the onCreateViewHolder method to populate the current row on the RecyclerView
             status = String.valueOf(order.status.charAt(0));
             price = Integer.toString(order.max_range);
-            charge = Float.toString(order.deliveryCharge);
+            charge = Integer.toString(order.deliveryCharge);
             holder.category.setText(order.category);
             setExpiry(order.expiryDate,order.expiryTime);
             String date = DateFormat.getDateInstance(DateFormat.MEDIUM).format(calendar.getTime());
@@ -215,7 +215,9 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<OrderViewHold
             notifyItemRemoved(position);
         }
     }
-
+    public int getPosition(OrderData orderData) {
+        return list.indexOf(orderData);
+    }
     public void remove(int position) {
         if(list.isEmpty())
             return;
