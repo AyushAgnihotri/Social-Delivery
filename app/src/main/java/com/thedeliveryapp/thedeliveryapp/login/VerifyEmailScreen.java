@@ -1,11 +1,13 @@
 package com.thedeliveryapp.thedeliveryapp.login;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,11 +25,14 @@ public class VerifyEmailScreen extends AppCompatActivity {
     TextView email_to_verify;
     Button btn_resend_email, btn_refresh, btn_logout;
     private FirebaseAuth auth;
+    AnimationDrawable animationDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_email_screen);
+        animation();
+
 
         email_to_verify = findViewById(R.id.email_to_verify);
         btn_resend_email = findViewById(R.id.btn_resend_email);
@@ -95,7 +100,27 @@ public class VerifyEmailScreen extends AppCompatActivity {
         auth.signOut();
         sendToLogin();
     }
+    void animation() {
+        /*LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.activity_login,null);*/
+        RelativeLayout verifyEmail = findViewById(R.id.verifyEmail);
+        animationDrawable = (AnimationDrawable)verifyEmail.getBackground();
+        animationDrawable.setEnterFadeDuration(5000);
+        animationDrawable.setExitFadeDuration(5000);
 
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (animationDrawable != null && !animationDrawable.isRunning())
+            animationDrawable.start();
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (animationDrawable != null && animationDrawable.isRunning())
+            animationDrawable.stop();
+    }
     public void sendToLogin() {
         Intent loginIntent = new Intent(VerifyEmailScreen.this, LoginActivity.class);
         startActivity(loginIntent);
