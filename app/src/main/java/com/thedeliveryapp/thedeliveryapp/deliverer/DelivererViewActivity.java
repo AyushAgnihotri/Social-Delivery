@@ -27,6 +27,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -565,6 +566,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                 isRefreshing = true;
                 Calendar curr = Calendar.getInstance();
                 Calendar exp = Calendar.getInstance();
+                boolean somethingExpired = false;
                 for (DataSnapshot userdata : dataSnapshot.getChildren()) {
                     if (userdata.getKey().equals(userId)) {
                         continue;
@@ -577,15 +579,19 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                             boolean isExpired = curr.after(exp);
                             if(isExpired) {
                                 order.status = "EXPIRED";
-                                Toast.makeText(DelivererViewActivity.this, "Some orders expired", Toast.LENGTH_LONG).show();
+                                somethingExpired = true;
                                 allorders.child(userdata.getKey()).child(Integer.toString(order.orderId)).child("status").setValue("EXPIRED");
+                                continue;
                             }
                         }
+                        else if(order.status.equals("CANCELLED"))
+                            continue;
                         String order_address = order.userLocation.Location;
                         if(order_address == null) continue;
-
                         String[] tokens = order_address.split(",");
                         int size = tokens.length;
+                        //TODO : BUG FIX
+                        Log.e("ADDRESS",order.userId + " " + order_address + " " + order.orderId);
                         String city = tokens[size-3];
                         city = city.substring(1);
                         if ((city.equals(address.getLocality())) && ((order.status.equals("PENDING") && pending) ||
@@ -594,7 +600,8 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                             adapter.insert(0, order);
                     }
                 }
-
+                if(somethingExpired)
+                    Toast.makeText(DelivererViewActivity.this, "Some orders expired", Toast.LENGTH_LONG).show();
                 isRefreshing = false;
                 progressBar.setVisibility(View.GONE);
             }

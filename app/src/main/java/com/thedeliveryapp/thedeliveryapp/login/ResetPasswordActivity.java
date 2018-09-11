@@ -1,8 +1,10 @@
 package com.thedeliveryapp.thedeliveryapp.login;
 
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -26,11 +28,13 @@ public class ResetPasswordActivity extends AppCompatActivity implements Connecti
     private Button btnReset, btnBack;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
+    AnimationDrawable animationDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
+        animation();
 
         checkConnection();
 
@@ -114,9 +118,26 @@ public class ResetPasswordActivity extends AppCompatActivity implements Connecti
     }
 
 
+    void animation() {
+        /*LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.activity_login,null);*/
+        CoordinatorLayout activity_reset_password = findViewById(R.id.activity_reset_password);
+        animationDrawable = (AnimationDrawable)activity_reset_password.getBackground();
+        animationDrawable.setEnterFadeDuration(5000);
+        animationDrawable.setExitFadeDuration(5000);
+
+    }
     @Override
     protected void onResume() {
         super.onResume();
+        if (animationDrawable != null && !animationDrawable.isRunning())
+            animationDrawable.start();
         CheckConnectivityMain.getInstance().setConnectivityListener(ResetPasswordActivity.this);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (animationDrawable != null && animationDrawable.isRunning())
+            animationDrawable.stop();
     }
 }

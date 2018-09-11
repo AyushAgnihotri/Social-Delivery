@@ -82,9 +82,10 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        checkConnection();
+        setContentView(R.layout.activity_login);
         animation();
+        checkConnection();
+
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
@@ -115,7 +116,6 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // set the view now
-        setContentView(R.layout.activity_login);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -318,19 +318,26 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
                 });
     }
     void animation() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.activity_login,null);
-        LinearLayout linearLayout = view.findViewById(R.id.loginLinear);
+        /*LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.activity_login,null);*/
+        LinearLayout linearLayout = findViewById(R.id.loginLinear);
         animationDrawable = (AnimationDrawable)linearLayout.getBackground();
         animationDrawable.setEnterFadeDuration(5000);
-        animationDrawable.setExitFadeDuration(2000);
+        animationDrawable.setExitFadeDuration(5000);
 
     }
     @Override
     protected void onResume() {
         super.onResume();
-        animationDrawable.start();
+        if (animationDrawable != null && !animationDrawable.isRunning())
+            animationDrawable.start();
         CheckConnectivityMain.getInstance().setConnectivityListener(LoginActivity.this);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (animationDrawable != null && animationDrawable.isRunning())
+            animationDrawable.stop();
     }
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {

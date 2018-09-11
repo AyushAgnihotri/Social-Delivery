@@ -508,6 +508,7 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
                 isRefreshing = true;
                 Calendar curr = Calendar.getInstance();
                 Calendar exp = Calendar.getInstance();
+                boolean somethingExpired = false;
                 for(DataSnapshot orders: dataSnapshot.getChildren()) {
                     OrderData order = orders.getValue(OrderData.class);
                     if(order.status.equals("PENDING")) {
@@ -515,7 +516,7 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
                         boolean isExpired = curr.after(exp);
                         if(isExpired) {
                             order.status = "EXPIRED";
-                            Toast.makeText(UserViewActivity.this, "Your some orders expired", Toast.LENGTH_LONG).show();
+                            somethingExpired = true;
                             deliveryApp.child(Integer.toString(order.orderId)).child("status").setValue("EXPIRED");
                         }
                     }
@@ -529,6 +530,8 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
                     //Toast.makeText(ItemListActivity.this,Integer.toString(adapter.getItemCount()), Toast.LENGTH_LONG).show();
 
                 }
+                if(somethingExpired)
+                    Toast.makeText(UserViewActivity.this, "Your some orders expired", Toast.LENGTH_LONG).show();
                 isRefreshing = false;
                 progressBar.setVisibility(View.GONE);
 
