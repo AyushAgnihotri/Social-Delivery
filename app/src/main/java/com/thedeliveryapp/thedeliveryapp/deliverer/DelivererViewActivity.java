@@ -151,15 +151,13 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
             public void onLocationResult(LocationResult locationResult) {
                 Location location = locationResult.getLastLocation();
                 if (location != null) {
-                    System.out.println("returnLatAndLong ke onSuccess ke andar, location not null");
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
-                    Toast.makeText(DelivererViewActivity.this, "Latitude = " + latitude + "\nLongitude = " + longitude, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(DelivererViewActivity.this, "Latitude = " + latitude + "\nLongitude = " + longitude, Toast.LENGTH_SHORT).show();
                     getAddressFromLatAndLong(latitude, longitude);
                     // Logic to handle location object
                 } else {
-                    System.out.println("returnLatAndLong ke onSuccess ke andar, location NULL");
-                    Toast.makeText(DelivererViewActivity.this, "location has NULL value", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(DelivererViewActivity.this, "location has NULL value", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -203,24 +201,20 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     }
 
     void getLatAndLong() {
-        System.out.println("Inside getLatAndLong");
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            System.out.println("Permission lerha");
             ActivityCompat.requestPermissions(this, new String[]
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION_PERMISSION);
         } else {
-            System.out.println("Permission pehle se hai");
-            //Toast.makeText(DelivererViewActivity.this, "Location permission granted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DelivererViewActivity.this, "Location permission granted", Toast.LENGTH_SHORT).show();
             setGpsOn();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        System.out.println("Inside onRequestPermissionsResult");
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSION:
@@ -228,7 +222,6 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                 // otherwise, show a Toast
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    System.out.println("onRequestPermissionsResult ki if condition ke andar");
                     setGpsOn();
                 } else {
                     Toast.makeText(DelivererViewActivity.this, "Location permission Denied", Toast.LENGTH_LONG).show();
@@ -246,7 +239,6 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     }
 
     void setGpsOn() {
-        System.out.println("Inside setGpsOn");
         LocationRequest mLocationRequest = getLocationRequest();
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
@@ -258,7 +250,6 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
         task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
             @Override
             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                System.out.println("task ke OnSuccess mai hoon");
                 mFusedLocationClient.requestLocationUpdates
                         (getLocationRequest(), mLocationCallback,
                                 null /* Looper */);
@@ -271,7 +262,6 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
         task.addOnFailureListener(this, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                System.out.println("task ke onFailure mai hoon");
                 if (e instanceof ResolvableApiException) {
                     // Location settings are not satisfied, but this can be fixed
                     // by showing the user a dialog.
@@ -291,10 +281,8 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("Inside onActivityResult");
         //super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CHECK_SETTINGS) {
-            System.out.println("onActivityResult ke if mai hoon");
             mFusedLocationClient.requestLocationUpdates
                     (getLocationRequest(), mLocationCallback,
                             null /* Looper */);

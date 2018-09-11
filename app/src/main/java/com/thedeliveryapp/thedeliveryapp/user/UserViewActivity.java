@@ -379,16 +379,20 @@ public class UserViewActivity extends AppCompatActivity implements ConnectivityR
                 OrderData temp = null;
                 if(order.status == "CANCELLED")
                     return;
-                for(OrderData myOrder : orderList) {
+                for(OrderData myOrder : adapter.list) {
                     if(myOrder.orderId == order.orderId) {
-                        temp = myOrder;
+                        //temp = myOrder;
+                        //myOrder.status = order.status;
+                        int pos = adapter.getPosition(myOrder);
+                        adapter.remove(myOrder);
+                        adapter.insert(pos,order);
                         break;
                     }
                 }
-                if(temp != null && orderList.contains(temp)) {
-                    adapter.remove(temp);
-                    adapter.insert(0, order);
-                }
+              //  if(temp != null && orderList.contains(temp)) {
+                //    adapter.remove(temp);
+                  //  adapter.insert(0, order);
+                //}
             }
 
             @Override

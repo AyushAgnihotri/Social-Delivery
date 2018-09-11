@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
 public class DelivererOrderDetailActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener {
     private LinearLayout userName_h;
     private TextView category, description, orderId, min_range, max_range, userName, userPhoneNumber, userLocationName,
-            userLocationLocation, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status, mop;
+            userLocationLocation, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status;
     private String date, time, userId;
     private Button btn_accept, btn_show_path, btn_mark_delivered, btn_complete_order;
     private DatabaseReference root, ref1, ref2, ref3, wallet_ref, deliverer, forUserData;
@@ -97,7 +97,6 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         btn_accept = (Button) findViewById(R.id.btn_accept);
         btn_show_path = (Button) findViewById(R.id.btn_show_path);
         btn_complete_order = (Button) findViewById(R.id.btn_complete_order);
-        mop = findViewById(R.id.mop);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -140,7 +139,6 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
         userLocationName.setText(myOrder.userLocation.Name);
         userLocationLocation.setText(myOrder.userLocation.Location);
         deliveryCharge.setText((myOrder.deliveryCharge+""));
-        mop.setText(myOrder.mode_of_payment);
 
         if (myOrder.final_price == -1) {
             final_item_price.setText("- - - - -");
@@ -359,7 +357,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                 try {
                     JSONObject notificationContent = new JSONObject("{'contents': {'en': '"+ order.description +"'}," +
                             "'include_player_ids': ['" + player_id + "'], " +
-                            "'headings': {'en': 'woah ! your order just got accepted'} " +
+                            "'headings': {'en': 'Your Order Accepted!\n Order Id : "+order.orderId+"'} " +
                             "}");
                     JSONObject order = new JSONObject();
                     order.put("userId",myOrder.userId);
@@ -390,7 +388,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                 try {
                     JSONObject notificationContent = new JSONObject("{'contents': {'en': '" + order.description + "'}," +
                             "'include_player_ids': ['" + player_id + "'], " +
-                            "'headings': {'en': 'oops ! your order got rejected , order id : "+order.orderId+"'} " +
+                            "'headings': {'en': 'Your Order Rejected\n Order Id : "+order.orderId+"'} " +
                             "}");
                     JSONObject order = new JSONObject();
                     order.put("userId", myOrder.userId);

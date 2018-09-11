@@ -117,46 +117,6 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="3dp"
                 android:paddingTop="20dp"
-                android:text="@string/mop"
-                android:textColor="@color/primary"
-                android:textSize="15sp" />
-
-            <RadioGroup
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/radio_wallet"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:checked="false"
-                        android:onClick="onRadioButtonClicked"
-                        android:text="@string/radio_wallet" />
-
-                    <RadioButton
-                        android:id="@+id/radio_cash"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="70dp"
-                        android:checked="true"
-                        android:onClick="onRadioButtonClicked"
-                        android:text="@string/radio_cash" />
-                </LinearLayout>
-
-            </RadioGroup>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="3dp"
-                android:paddingTop="20dp"
                 android:text="@string/expiry"
                 android:textColor="@color/primary"
                 android:textSize="15sp" />
