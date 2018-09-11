@@ -569,7 +569,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
 
         //getting the tax amount first.
-        String txnAmount = Float.toString(calc.total_price).trim();
+        String txnAmount = Integer.toString(calc.total_price).trim();
 
         //creating a retrofit object.
         Retrofit retrofit = new Retrofit.Builder()
@@ -610,12 +610,14 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
 
                 //once we get the checksum we will initiailize the payment.
                 //the method is taking the checksum we got and the paytm object as the parameter
+                Toast.makeText(getApplicationContext(), "Payment initialized ", Toast.LENGTH_SHORT).show();
                 initializePaytmPayment(response.body().getChecksumHash(), paytm);
             }
 
             @Override
             public void onFailure(Call<Checksum> call, Throwable t) {
-
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), " Checksum Failed to fetch. ", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -666,7 +668,11 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
     public void onTransactionResponse(Bundle inResponse) {
 
         Log.d("LOG", "Payment Transaction : " + inResponse);
-
+        if(inResponse.getString("STATUS").equals("TXN_FAILURE")) {
+            Toast.makeText(getApplicationContext(), "Payment Transaction Failed " , Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         //Toast.makeText(getApplicationContext(), "Payment Transaction response "+inResponse.toString(), Toast.LENGTH_LONG).show();
         Toast.makeText(getApplicationContext(), "Payment Transaction Successful ", Toast.LENGTH_LONG).show();
         final String order_description = description.getText().toString();
@@ -713,7 +719,8 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
             }
         });
         finish();
-        Toast.makeText(getApplicationContext(), "Payment Transaction Successful ", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Payment Transaction Successful " , Toast.LENGTH_SHORT).show();
+        Log.d("RESPONSE",inResponse.toString());
     }
 
     @Override
