@@ -449,7 +449,6 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
     void setUpSwipeRefresh() {
         //Swipe Refresh Layout
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -479,6 +478,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                     (getLocationRequest(), mLocationCallback,
                             null /* Looper */);
         }
+        Log.d("REFRESH",String.valueOf(havelocation) + " " + String.valueOf(!resumed));
         if(havelocation && !resumed) {
             resumed = true;
             refreshOrders();
@@ -511,6 +511,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                 Intent intent = new Intent(DelivererViewActivity.this,DelivererOrderDetailActivity.class);
                 intent.putExtra("MyOrder",(Parcelable) clickedOrder);
                 startActivity(intent);
+                resumed = false;
 
             }
 
