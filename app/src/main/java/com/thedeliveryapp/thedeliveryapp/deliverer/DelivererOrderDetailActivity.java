@@ -323,6 +323,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                     Intent intent = new Intent(DelivererOrderDetailActivity.this, CompleteOrder.class);
                     intent.putExtra("MyOrder",(Parcelable) myOrder);
                     startActivity(intent);
+                    finish();
                 }
             }
         });

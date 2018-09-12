@@ -101,6 +101,7 @@ public class CompleteOrder extends AppCompatActivity {
                     intent.putExtra("OTP",(String) secret);
                     intent.putExtra("MyOrder",(Parcelable) myOrder);
                     startActivity(intent);
+                    finish();
                 }
             }
         });
