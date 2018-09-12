@@ -337,9 +337,11 @@ public class EditOrderForm extends AppCompatActivity implements ConnectivityRece
                                 .setMessage(getString(R.string.dialog_save))
                                 .setPositiveButton(getString(R.string.dialog_ok), null)
                                 .show();
+                        return ;
                     }
                     else if (Integer.parseInt(order_min_range) > Integer.parseInt(order_max_range)) {
                         Toast.makeText(getApplicationContext(), "Min value cannot be more than Max value!", Toast.LENGTH_SHORT).show();
+                        return;
                     }
 
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
