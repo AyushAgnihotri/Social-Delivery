@@ -5,14 +5,18 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,10 +39,11 @@ import com.thedeliveryapp.thedeliveryapp.deliverer.DelivererViewActivity;
 import com.thedeliveryapp.thedeliveryapp.user.UserViewActivity;
 public class MainActivity extends AppCompatActivity implements ConnectivityReceiver.ConnectivityReceiverListener{
 
-    private Button use_as_user, use_as_deliverer;
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
+    GridLayout mainGrid;
+    AnimationDrawable animationDrawable;
 
     public static final int REQUEST_LOCATION_PERMISSION = 10;
     public static final int  REQUEST_CHECK_SETTINGS = 20;
@@ -47,12 +52,10 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        animation();
 
         checkConnection();
         requestLocationPermissions();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
-        setSupportActionBar(toolbar);
 
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -74,29 +77,34 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
             }
         };
 
-        use_as_user = (Button) findViewById(R.id.use_as_user);
-        use_as_deliverer = (Button) findViewById(R.id.use_as_deliverer);
-
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
+        mainGrid = findViewById(R.id.mainGrid);
+        ordererMode(mainGrid);
+        delivererMode(mainGrid);
+    }
 
-        use_as_user.setOnClickListener(new View.OnClickListener() {
+    private void ordererMode( GridLayout mainGrid){
+        CardView cardView = (CardView) mainGrid.getChildAt(0);
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, UserViewActivity.class));
             }
         });
+    }
 
-        use_as_deliverer.setOnClickListener(new View.OnClickListener() {
+    private void delivererMode( GridLayout mainGrid){
+        CardView cardView = (CardView) mainGrid.getChildAt(1);
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, DelivererViewActivity.class));
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, UserViewActivity.class));
             }
         });
-
     }
 
     void requestLocationPermissions() {
@@ -194,13 +202,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        progressBar.setVisibility(View.GONE);
-        CheckConnectivityMain.getInstance().setConnectivityListener(MainActivity.this);
 
-    }
 
     @Override
     public void onStart() {
@@ -243,7 +245,29 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         textView.setTextColor(color);
         snackbar.show();
     }
+    void animation() {
+        /*LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.activity_login,null);*/
+        LinearLayout linearLayout = findViewById(R.id.mainLinearLayout);
+        animationDrawable = (AnimationDrawable)linearLayout.getBackground();
+        animationDrawable.setEnterFadeDuration(5000);
+        animationDrawable.setExitFadeDuration(5000);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        progressBar.setVisibility(View.GONE);
+        if (animationDrawable != null && !animationDrawable.isRunning())
+            animationDrawable.start();
+        CheckConnectivityMain.getInstance().setConnectivityListener(MainActivity.this);
 
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (animationDrawable != null && animationDrawable.isRunning())
+            animationDrawable.stop();
+    }
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {

@@ -11,11 +11,12 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        app:cardCornerRadius="3dp"
-        app:cardElevation="3dp">
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
