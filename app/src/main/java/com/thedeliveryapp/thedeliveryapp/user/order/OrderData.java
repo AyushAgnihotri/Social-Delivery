@@ -61,7 +61,7 @@ public class OrderData implements Parcelable {
         dest.writeInt(min_range);
         dest.writeInt(max_range);
         dest.writeString(status);
-        dest.writeFloat(deliveryCharge);
+        dest.writeInt(deliveryCharge);
         dest.writeString(userId);
 
         dest.writeString(userLocation.Name);

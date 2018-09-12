@@ -163,13 +163,6 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
         };
     }
 
-
-
-    void checkLocation() {
-        String s = "prefix/dir1/dir2/dir3/dir4";
-        String[] tokens = s.split("/");
-    }
-
     void getAddressFromLatAndLong(double lat, double lng) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
@@ -192,7 +185,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
             */
             add = add + address.getLocality(); //City
             //add = add + "\n" + address.getSubThoroughfare();
-            Toast.makeText(DelivererViewActivity.this, add, Toast.LENGTH_LONG).show();
+            //Toast.makeText(DelivererViewActivity.this, add, Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -208,7 +201,7 @@ public class DelivererViewActivity extends AppCompatActivity implements Connecti
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION_PERMISSION);
         } else {
-            Toast.makeText(DelivererViewActivity.this, "Location permission granted", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(DelivererViewActivity.this, "Location permission granted", Toast.LENGTH_SHORT).show();
             setGpsOn();
         }
     }
