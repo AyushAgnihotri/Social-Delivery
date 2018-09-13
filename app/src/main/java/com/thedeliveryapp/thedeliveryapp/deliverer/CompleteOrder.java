@@ -151,7 +151,8 @@ public class CompleteOrder extends AppCompatActivity {
                 String player_id = dataSnapshot.getValue(String.class);
                 //TOAST
                 try {
-                    JSONObject notificationContent = new JSONObject("{'contents': {'en': '" + otp + "'}," +
+                    String notif = otp + "\nActual price of order : " + Integer.parseInt(actual_price.getText().toString()) + "\nDelivery charge : " + myOrder.deliveryCharge + "\nTotal to pay : " + (Integer.parseInt(actual_price.getText().toString())+myOrder.deliveryCharge);
+                    JSONObject notificationContent = new JSONObject("{'contents': {'en': '" + notif + "'}, " +
                             "'include_player_ids': ['" + player_id + "'], " +
                             "'headings': {'en': 'Your OTP for Order Id : "+ order.orderId+"'} " +
                             "}");

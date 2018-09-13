@@ -140,6 +140,7 @@
     <string name="confirmation">Pay</string>
     <string name="deliveryChargeDialog">Price estimated over this order is :</string>
     <string name="btn_save">Save</string>
+    <string name="insufficientBalance">You have insufficient balance!</string>
 
 
 </resources>

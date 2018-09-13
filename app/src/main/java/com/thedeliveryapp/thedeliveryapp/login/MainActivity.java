@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements ConnectivityRecei
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, UserViewActivity.class));
+                startActivity(new Intent(MainActivity.this, DelivererViewActivity.class));
             }
         });
     }

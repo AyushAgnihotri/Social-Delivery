@@ -56,7 +56,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
             userLocationLocation, expiryTime_Date, expiryTime_Time, final_item_price, deliveryCharge, final_total, status;
     private String date, time, userId;
     private Button btn_accept, btn_show_path, btn_mark_delivered, btn_complete_order;
-    private DatabaseReference root, ref1, ref2, ref3, wallet_ref, deliverer, forUserData;
+    private DatabaseReference root, ref1, ref2, wallet_ref, deliverer, forUserData;
     private UserDetails deliverer_data;
     public OrderData myOrder;
     private int balance;
@@ -203,6 +203,8 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                         ref1.keepSynced(true);
                         ref2 = ref1.child("acceptedBy");
                         ref2.keepSynced(true);
+                        wallet_ref = root.child("deliveryApp").child("users").child(myOrder.userId).child("wallet");
+                        wallet_ref.keepSynced(true);
 
                         if (myOrder.status.equals("PENDING")) {
                             deliverer = root.child("deliveryApp").child("users").child(userId);
@@ -230,20 +232,15 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                             myOrder.status = "ACTIVE";
                             status.setText((myOrder.status));
-                            setUpAcceptNotif(myOrder);
 
-                            /*
-                            // Deducts max_int money from orderer's wallet when order accepted
-                            wallet_ref = root.child("deliveryApp").child("users").child(myOrder.userId).child("wallet");
-                            wallet_ref.keepSynced(true);
+
+                            // Deducts max_int+deliveryCharge money from orderer's wallet when order accepted
                             wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     Integer wal_bal = dataSnapshot.getValue(Integer.class);
                                     balance = wal_bal;
-                                    wallet_ref.setValue(balance-myOrder.max_range);
-                                    setUpAcceptNotif(myOrder);
-
+                                    wallet_ref.setValue(balance-(myOrder.max_range+myOrder.deliveryCharge));
                                 }
 
                                 @Override
@@ -251,7 +248,8 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
 
                                 }
                             });
-                            */
+
+                            setUpAcceptNotif(myOrder);
 
                             btn_complete_order.setEnabled(true);
                             btn_complete_order.setVisibility(View.VISIBLE);
@@ -275,10 +273,26 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                             ref1.child("otp").setValue("");
                             ref1.child("final_price").setValue(-1);
 
+                            // Refunds max_int+deliveryCharge money from orderer's wallet when order accepted
+                            wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Integer wal_bal = dataSnapshot.getValue(Integer.class);
+                                    balance = wal_bal;
+                                    wallet_ref.setValue(balance+(myOrder.max_range+myOrder.deliveryCharge));
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                            setUpRejectNotif(myOrder);
+
                             btn_complete_order.setEnabled(false);
                             btn_complete_order.setVisibility(View.GONE);
                             userName_h.setVisibility(View.GONE);
-                            setUpRejectNotif(myOrder);
                         }
                     }
                 });

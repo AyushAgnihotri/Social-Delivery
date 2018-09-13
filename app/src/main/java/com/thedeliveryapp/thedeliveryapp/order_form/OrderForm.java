@@ -107,9 +107,10 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private ProgressBar progressBar;
-    private DatabaseReference root, deliveryApp, ref1;
+    private DatabaseReference root, deliveryApp, walletBalance;
     private String userId, otp;
-    private int OrderNumber, order_id, value, final_price = -1;
+    private int OrderNumber, order_id, value, final_price = -1, userBalance;
+    private DeliveryChargeCalculater calc = new DeliveryChargeCalculater();
     int flag;
     UserLocation userLocation = null;
     ExpiryTime expiryTime = null;
@@ -297,10 +298,10 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                     showSnack(false);
                 }
                 else {
-                    DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
-                    delivery_charge.setText("₹"+Float.toString(calc.deliveryCharge));
-                    price.setText("₹"+Float.toString(calc.max_price));
-                    total_charge.setText("₹"+Float.toString(calc.total_price));
+                    calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
+                    delivery_charge.setText("₹"+Integer.toString(calc.deliveryCharge));
+                    price.setText("₹"+Integer.toString(calc.max_price));
+                    total_charge.setText("₹"+Integer.toString(calc.total_price));
                     mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
             }
@@ -316,8 +317,33 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                     showSnack(false);
                 }
                 else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    generateCheckSum();
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    userId = user.getUid();
+
+                    root = FirebaseDatabase.getInstance().getReference();
+
+                    walletBalance = root.child("deliveryApp").child("users").child(userId).child("wallet");
+                    walletBalance.keepSynced(true);
+
+                    walletBalance.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                userBalance = dataSnapshot.getValue(Integer.class);
+                                if (userBalance >= calc.total_price) {
+                                    progressBar.setVisibility(View.VISIBLE);
+                                    generateCheckSum();
+                                } else {
+                                    new AlertDialog.Builder(OrderForm.this)
+                                            .setMessage(getString(R.string.insufficientBalance))
+                                            .setPositiveButton(getString(R.string.dialog_ok), null)
+                                            .show();
+                                }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
         });
@@ -566,7 +592,6 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
 
     private void generateCheckSum() {
         final String order_max_range = max_int_range.getText().toString();
-        DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
 
         //getting the tax amount first.
         String txnAmount = Integer.toString(calc.total_price).trim();
@@ -679,7 +704,6 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
         final String order_category = category.getText().toString();
         final String order_min_range = min_int_range.getText().toString();
         final String order_max_range = max_int_range.getText().toString();
-        final DeliveryChargeCalculater calc= new DeliveryChargeCalculater(Integer.parseInt(order_max_range));
         flag = 0;
         //Default text for date_picker = "ExpiryDate"
         //Default text for time_picker = "ExpiryTime"

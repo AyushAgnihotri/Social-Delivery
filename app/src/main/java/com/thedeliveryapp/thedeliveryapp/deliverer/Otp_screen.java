@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,10 +33,10 @@ public class Otp_screen extends AppCompatActivity {
 
     private EditText f1, f2, f3, f4, f5;
     private Button btn_mark_delivered;
-    private String otp, final_price;
-    private DatabaseReference root, ref1, ref2, ref3, ref4, ref5;
+    private String otp, final_price, userId;
+    private DatabaseReference root, wallet_ref, deliverer_ref;
     private OrderData myOrder;
-    private int final_price_int;
+    private int final_price_int, balance;
 
 
     @Override
@@ -165,31 +167,18 @@ public class Otp_screen extends AppCompatActivity {
                             }
                         });
 
-                        ref1 = root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId));
-                        ref1.keepSynced(true);
-                        ref1.child("status").setValue("FINISHED");
+                        root.child("deliveryApp").child("orders").child(myOrder.userId).child(Integer.toString(myOrder.orderId)).child("status").setValue("FINISHED");
 
-                        ref4 = ref1.child("userId");
-                        ref4.keepSynced(true);
-                        ref4.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        wallet_ref = root.child("deliveryApp").child("users").child(myOrder.userId).child("wallet");
+                        wallet_ref.keepSynced(true);
+
+                        wallet_ref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String userID = dataSnapshot.getValue(String.class);
-                                ref5 = root.child("deliveryApp").child("users").child(userID);
-                                ref5.keepSynced(true);
-                                ref5.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        Integer wal_bal_user = dataSnapshot.getValue(Integer.class);
-                                        int balance_user = wal_bal_user;
-                                        ref5.child("wallet").setValue(balance_user - final_price_int);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
+                                Integer wal_bal = dataSnapshot.getValue(Integer.class);
+                                balance = wal_bal;
+                                wallet_ref.setValue(balance+(myOrder.max_range-final_price_int));
                             }
 
                             @Override
@@ -198,27 +187,18 @@ public class Otp_screen extends AppCompatActivity {
                             }
                         });
 
-                        ref2 = ref1.child("acceptedBy").child("delivererID");
-                        ref2.keepSynced(true);
-                        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        userId = user.getUid();
+
+                        deliverer_ref = root.child("deliveryApp").child("users").child(userId).child("wallet");
+                        deliverer_ref.keepSynced(true);
+
+                        deliverer_ref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String delivererID = dataSnapshot.getValue(String.class);
-                                ref3 = root.child("deliveryApp").child("users").child(delivererID);
-                                ref3.keepSynced(true);
-                                ref3.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        Integer wal_bal_deliverer = dataSnapshot.getValue(Integer.class);
-                                        int balance_deliverer = wal_bal_deliverer;
-                                        ref3.child("wallet").setValue(balance_deliverer + final_price_int);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
+                                Integer wal_bal = dataSnapshot.getValue(Integer.class);
+                                balance = wal_bal;
+                                deliverer_ref.setValue(balance+myOrder.deliveryCharge);
                             }
 
                             @Override

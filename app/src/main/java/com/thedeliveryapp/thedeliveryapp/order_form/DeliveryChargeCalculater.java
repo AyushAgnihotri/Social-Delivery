@@ -18,4 +18,8 @@ public class DeliveryChargeCalculater {
         max_price = max_range;
         total_price = max_price + deliveryCharge;
     }
+
+    DeliveryChargeCalculater () {
+
+    }
 }
