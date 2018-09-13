@@ -283,7 +283,7 @@ public class OrderForm extends AppCompatActivity implements ConnectivityReceiver
                 final String order_max_range = max_int_range.getText().toString();
 
 
-                if(userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")) {
+                if(expiryDate == null || expiryTime == null || userLocation == null || order_description.equals("") || order_category.equals("None") || order_min_range.equals("") || order_max_range.equals("")) {
                     new AlertDialog.Builder(OrderForm.this)
                             .setMessage(getString(R.string.dialog_save))
                             .setPositiveButton(getString(R.string.dialog_ok), null)

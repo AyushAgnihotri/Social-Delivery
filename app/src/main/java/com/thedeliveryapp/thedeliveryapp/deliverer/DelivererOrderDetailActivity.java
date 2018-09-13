@@ -372,7 +372,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                 try {
                     JSONObject notificationContent = new JSONObject("{'contents': {'en': '"+ order.description +"'}," +
                             "'include_player_ids': ['" + player_id + "'], " +
-                            "'headings': {'en': 'Your Order Accepted!\n Order Id : "+order.orderId+"'} " +
+                            "'headings': {'en': 'Your Order Accepted! Order Id : "+order.orderId+"'} " +
                             "}");
                     JSONObject order = new JSONObject();
                     order.put("userId",myOrder.userId);
@@ -403,7 +403,7 @@ public class DelivererOrderDetailActivity extends AppCompatActivity implements C
                 try {
                     JSONObject notificationContent = new JSONObject("{'contents': {'en': '" + order.description + "'}," +
                             "'include_player_ids': ['" + player_id + "'], " +
-                            "'headings': {'en': 'Your Order Rejected\n Order Id : "+order.orderId+"'} " +
+                            "'headings': {'en': 'Your Order Rejected Order Id : "+order.orderId+"'} " +
                             "}");
                     JSONObject order = new JSONObject();
                     order.put("userId", myOrder.userId);
