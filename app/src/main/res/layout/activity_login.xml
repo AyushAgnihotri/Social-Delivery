@@ -23,7 +23,11 @@
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
 
-
+        <ImageView
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_gravity="center_horizontal"
+            app:srcCompat="@mipmap/ic_icon" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
