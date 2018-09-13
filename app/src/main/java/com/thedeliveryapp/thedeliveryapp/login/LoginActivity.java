@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectivityRece
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        animation();
+        //animation();
         checkConnection();
 
         //Get Firebase auth instance

@@ -18,7 +18,7 @@
         android:id = "@+id/loginLinear"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/animation_list"
+        android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
@@ -84,7 +84,7 @@
             android:background="@null"
             android:text="@string/btn_forgot_password"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/primary_dark" />
 
         <!-- Link to Login Screen -->
 
@@ -96,7 +96,7 @@
             android:background="@null"
             android:text="@string/btn_link_to_register"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/primary_dark"
             android:textSize="15dp" />
     </LinearLayout>
 
