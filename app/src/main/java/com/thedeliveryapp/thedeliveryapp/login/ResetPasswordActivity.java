@@ -34,7 +34,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements Connecti
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
-        animation();
+        //animation();
 
         checkConnection();
 

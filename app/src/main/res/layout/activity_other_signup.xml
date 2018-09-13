@@ -38,7 +38,7 @@
                 android:focusable="false"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -55,7 +55,7 @@
                 android:maxLines="1"
                 android:maxLength="10"
                 android:singleLine="true"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -70,8 +70,9 @@
                 android:hint="@string/user_alt_mobile"
                 android:inputType="phone"
                 android:maxLines="1"
+                android:maxLength="10"
                 android:singleLine="true"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -88,7 +89,7 @@
                 android:focusable="false"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/black" />
 
         </android.support.design.widget.TextInputLayout>
 

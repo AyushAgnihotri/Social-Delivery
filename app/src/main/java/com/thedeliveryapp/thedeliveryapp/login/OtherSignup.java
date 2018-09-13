@@ -51,7 +51,7 @@ public class OtherSignup extends AppCompatActivity implements ConnectivityReceiv
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_signup);
-        animation();
+       // animation();
 
         checkConnection();
 
@@ -186,6 +186,8 @@ public class OtherSignup extends AppCompatActivity implements ConnectivityReceiv
     @Override
     protected void onPause() {
         super.onPause();
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        auth.signOut();
         if (animationDrawable != null && animationDrawable.isRunning())
             animationDrawable.stop();
     }
